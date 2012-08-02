@@ -1,4 +1,4 @@
 .bundle
-db/*.sqlite3
+db/*.mysql5
 log/*.log
 tmp/**/*
