@@ -1,0 +1,28 @@
+<div class="updateStatus">
+	<h2><%=t('general.exams')%></h2>
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+
+<th><%=t('result.view_res')%></th>
+
+</tr>
+
+<%@category_exam.each do|exam|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<% exam = Exam.find_by_id(exam.exam_id)%>
+<td><%=exam.name%></td>
+
+
+<td>
+<a href="/viewExamResult?exam_id=<%=exam.id%>&category_id=<%=@category_id%>&examType=<%=@examtype%>&currentyear=<%=@academicYear%>&lay=1&height=250&width=680" style="font-size:13px;" class="thickbox" id='email_id'><%=t('general.view')%></a>
+
+
+</td>
+
+</tr>
+<%end%>
+
+</table>
+
+</div>

@@ -1,0 +1,28 @@
+	<!--Note:(Click the link <%#=link_to "show as options","#",:id=>"showoptions"%> for system evaluation.)-->
+	<span class="keywords">
+	
+	<table class="answer_name" style="float:left; width:100%; padding:0; margin:0;" >
+		<tr>
+			<th style='float:left;'>Enter Keywords(Answer)</th>
+		</tr>
+		<% 1.upto(2) do |i| %>
+				<tr><td>
+				  <%= text_field_tag "fields[#{i}][name]",'', :class=>"validate[required,funcCall[checkHELLO]] text-input keywordOption",:style=>"width:115px; height:19px; border:#d1d1d1 1px solid;" %>
+				</td></tr>				
+				<br />
+				<% end %>
+
+    </table>
+	<%=link_to image_tag("plus.jpg", :alt=>"Add Option"),"#",:id=>"add_likert_option"%>
+	</span>
+	<script type="text/javascript">	
+	$(document).ready(function(){
+		$(".keywordOption").attr("disabled", "disabled");
+		$(".keywords").hide();
+		
+		$("#showoptions").click(function(){
+			$(".keywordOption").removeAttr("disabled");
+			$(".keywords").show();
+		});
+		});
+	</script>

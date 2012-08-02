@@ -1,0 +1,53 @@
+
+
+<% if @flag == 'q'%>
+$('.showComment').hide();
+$("#userQuestions").show()
+$("#userQuestions").html("<%= escape_javascript(render("userQuestions"))%>")
+<%end%>
+
+<% if @flag == 'e'%>
+$("#userQuestions").hide()
+$(".examineesOuter").show();
+$("#examinees").html("<%= escape_javascript(render("examinees"))%>")
+<%end%>
+
+<%if @examComplete == 'f'%>
+$("#userQuestions").hide()
+$("#examinees").html("<%= escape_javascript(render("examinees"))%>")
+$('.showComment').show();
+$('.evalComplete').show();
+$('.evalComplete').append("<%=t('evaluate.evaluation_completed')%>").delay(2000);
+		setTimeout(function() {
+		                     $("#notallowed").empty();
+							 $('.evalComplete').empty();
+						     $(".evalComplete").hide();
+						     }, 5000);
+<%elsif @examComplete == 'nf'%>
+$('.showComment').show();
+$('.showComment').append("<%=t('evaluate.evaluate_all')%>").delay(2000);
+		setTimeout(function() {
+		                     $("#notallowed").empty();
+							 $(".showComment").empty();
+						     $(".showComment").hide();
+						     }, 5000);
+<%end%>
+
+<%if @notallowed == 'n'%>
+$(".examineesOuter").hide();
+$("#userQuestions").hide()
+$('#notallowed').append("<%=t('evaluate.not_permitted')%>").delay(2000);
+							setTimeout(function() {
+						     $("#notallowed").empty();
+						     }, 5000);
+<%end%>
+
+<%if @manualflag == 'm'%>
+$('.showComment').show();
+$('.showComment').append("<%=t('evaluate.mark_added')%>").delay(2000);
+		setTimeout(function() {
+						     $(".showComment").empty();
+							 $(".showComment").hide();
+						     }, 5000);
+
+<%end%>

@@ -1,0 +1,87 @@
+
+<div style="float:left; width:98%; position:relative;padding:5px 5px; border:1px solid #ccc">
+  <%unless @descriptive == nil%>
+	<%@descriptive.each do|question|%>
+	<% form_tag evaluate_path,:method=>"get", :remote=>true,:id=>"question_filter", :class=>"assign_examinee" do -%>
+	<%@eval = Evaluation.find_by_categoryuser_id_and_categoryexam_id_and_question_id_and_attempt(@categoryuser.id,@categoryexam.id,question.id,@attempt)%>
+    <%=hidden_field_tag "flag",'eval'%>
+	<%=hidden_field_tag "categoryexam", @eval.categoryexam_id%>
+	<%=hidden_field_tag "categoryuser", @eval.categoryuser_id%>
+	<%=hidden_field_tag "attempt", @eval.attempt%>
+	<%=hidden_field_tag "evaluate",@eval.id%>
+	<%#=hidden_field_tag "examinee",@examinee%>
+	<%#pageno = @page_no.to_i + 1%>
+    <%#=hidden_field_tag "page",2%>
+	
+
+		<div style="background:#efefef; padding:5px 5px; display:block;">
+			<div class="floatR"><b style="margin-right:15px;"><%=t('evaluate.exam_mark')%>: <%=@exam.total_mark%></b>&nbsp;&nbsp;<b><%=t('evaluate.mark_secured')%>: <%=@mark_secured%></b></div>
+			<div class="clear"></div>
+		</div><br>
+		<div style="background:#efefef; padding:5px 5px"><b><%=t('evaluate.question')%> <%= @page_no == nil ? 1 : @page_no%></b><br><%=question.description.html_safe%></div><br>
+		<div style="background:#efefef; padding:5px 5px"><b><%=t('evaluate.answer')%></b><br><%=@eval.descriptive_answer == '' ? t('evaluator.no_answer'): @eval.descriptive_answer.html_safe%></div>
+		
+		<div class="clear"></div><br>
+		<span id="markStatus">
+			<%=render :partial=>"markStatus", :locals=>{:question=>question,:eval=>@eval}%>
+		</span>
+    
+<p style="color:#db3939; font-style:normal;  text-align:center; font-size:12px; display:inline;   background:#0f2; color:#fff; padding:5px 5px; border:1px solid #cdcdcd; width:200px; clear:left; margin:10px 0" class="showComment"></p>
+	
+	<div style="float:left;width:100%; margin:0; padding:5px 0">		
+		<%#=image_tag("btn_bg.jpg", :size => "50x30", :alt => "Evaluate", :id=>@eval.id, :class=>"evaluate")%>
+		<%#=image_tag("btn_bg.jpg", :size => "70x30", :alt => "Complete", :class=>"finish")%>
+<div style="float:left;width:40%; margin:0; padding:0px 0">        
+		<%= submit_tag t('evaluate.eval'), :id=>"assign", :class=>'btnBg evaluate', :style=>"margin-right:5px; float:left" %>
+    <%= link_to image_tag("btnComplete.jpg"), {:controller=>"exams", 
+        :action => 'evaluate',:examCategory=>@category_id,:academicYear=>@academicYear,:examtype=>@examtype,:exam=>@examname,:finish=>"f",:categoryexam=>@eval.categoryexam_id, :categoryuser=>@eval.categoryuser_id, :attempt=>@eval.attempt}, :remote=> true, :class=>"yes-button finish btnCopml" , :style=>"margin:15px 5px 10px; float:left;" %>
+
+
+	
+	<%# form_tag evaluate_path,:method=>"get", :remote=>true,:id=>"class_form", :class=>"assign_examinee" do -%>	
+	
+	<%#=hidden_field_tag "examCategory",@category_id%>
+	<%#=hidden_field_tag "academicYear",@academicYear%>
+	<%#=hidden_field_tag "examtype",@examtype%>
+	<%#=hidden_field_tag "exam",@examname%>	
+	
+    <%#=hidden_field_tag "categoryexam", @eval.categoryexam_id%>
+	<%#=hidden_field_tag "categoryuser", @eval.categoryuser_id%>
+	<%#=hidden_field_tag "attempt", @eval.attempt%>
+	
+	<%#= submit_tag "Complete", :id=>"assign", :class=>'btnBg' %>
+	<%#end%>
+	
+
+</div>
+
+	<%= will_paginate @descriptive, 
+                :prev_label => t('evaluate.prev_question'), 
+                :next_label => t('evaluate.next_question'),
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer,
+				:style=>"clear:none!important"
+              %>
+</div>
+    		<%end%>
+	<%end%>	
+	
+   <%else%>
+     <%=t('question.no_q_found')%>
+
+   <%end%>
+   
+</div>
+  <!--<script type="text/javascript" src="/javascripts/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>-->
+
+<script type="text/javascript">	
+
+$(document).ready(function() {
+	$("#question_filter").validationEngine();
+$('.showComment').hide();	
+
+		
+  });
+  
+
+</script>			 

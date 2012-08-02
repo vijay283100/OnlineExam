@@ -1,0 +1,22 @@
+
+        
+        <table class="answer_name" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<th style='text-align:left; padding-right:10px;'><%=t('question.answer_order')%></th>
+			<th style='padding-right:10px;padding-left:10px;'><%=t('question.display_order')%></th>
+		</tr>
+		
+			
+		<% 1.upto(2) do |i| %>
+		<tr align="center">
+			<td>	
+			 <%= text_field_tag "fields[#{i}][name]",'', :class=>"validate[required,funcCall[checkHELLO]] text-input hrclBlank", :style=>"width:115px; height:19px; border:#d1d1d1 1px solid;" %>
+		        </td>	
+			<td>	  
+			 <%= select_tag "fields[#{i}][is_question_order]", options_for_select(@h_order.to_a), :class=>"displayOrder hrclselect_order" %>
+		        </td>
+
+		</tr>		  
+		<% end %>
+
+        </table>

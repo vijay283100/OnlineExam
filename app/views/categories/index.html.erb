@@ -1,0 +1,67 @@
+<div class="updateStatus">
+<h3><%=t('general.categories')%></h3>
+
+<%= form_tag({:action => "create"}, {:id => "class_form"}) do %>
+<table border="1" width="100%">
+<tr class="updateHeader">
+<%unless @category_types == nil%>
+<%@category_types.each do|c|%>
+<%if c.id == 1%>
+<th><%=t('org.class')%></th>
+<%elsif c.id == 2%>
+<th><%=t('org.section')%></th>
+<%elsif c.id == 3%>
+<th><%=t('org.course')%></th>
+<%elsif c.id == 4%>
+<th><%=t('org.year')%></th>
+<%elsif c.id == 5%>
+<th><%=t('org.dept')%></th>
+<%elsif c.id == 6%>
+<th><%=t('org.semester')%></th>
+<%elsif c.id == 7%>
+<th><%=t('org.dept')%></th>
+<%elsif c.id == 8%>
+<th><%=t('org.domain')%></th>
+<%end%>
+<%end%>
+<%else%>
+<div class="formContainer">
+<%=t('not_found.no_org_level')%>
+</div>
+<%end%>
+</tr>
+
+<tr class="updateAltrRow">
+<%if @organization_id == 1%>
+<td><%=select_tag 'courseName', options_for_select([[t('general.select'),""]] + @courses.collect{ |ca| [truncate(ca.name,:length=>35), ca.id,{:title=>ca.name}] }),:class=>"validate[required]", :style=>"width:200px; height:19px; border:#d1d1d1 1px solid;"%></td>
+<td><%=select_tag 'section', options_for_select([[t('general.select'),""]] + @sections.collect{ |ca| [truncate(ca.name,:length=>35), ca.id,{:title=>ca.name}] }),:class=>"validate[required]", :style=>"width:200px; height:19px; border:#d1d1d1 1px solid;"%></td>
+
+<%end%>
+
+<%if @organization_id == 2%>
+<td><%=select_tag 'courseName', options_for_select([[t('general.select'),""]] + @courses.collect{ |ca| [truncate(ca.name,:length=>28), ca.id,{:title=>ca.name}] }),:class=>"validate[required]", :style=>"width:150px; height:19px; border:#d1d1d1 1px solid;"%></td>
+<td><%=select_tag 'academicYear', options_for_select([[t('general.select'),""]] + @academicYears.collect{ |ca| [truncate(ca.name,:length=>28), ca.id,{:title=>ca.name}] }),:class=>"validate[required]", :style=>"width:150px; height:19px; border:#d1d1d1 1px solid;"%></td>
+<td><%=select_tag 'department', options_for_select([[t('general.select'),""]] + @departments.collect{ |ca| [truncate(ca.name,:length=>28), ca.id,{:title=>ca.name}] }),:class=>"validate[required]", :style=>"width:150px; height:19px; border:#d1d1d1 1px solid;"%></td>
+<td><%=select_tag 'semester', options_for_select([[t('general.select'),""]] + @semesters.collect{ |ca| [truncate(ca.name,:length=>28), ca.id,{:title=>ca.name}] }),:class=>"validate[required]", :style=>"width:150px; height:19px; border:#d1d1d1 1px solid;"%></td>
+
+<%end%>
+
+<%if @organization_id == 3%>
+<td><%=select_tag 'department', options_for_select([[t('general.select'),""]] + @departments.collect{ |ca| [truncate(ca.name,:length=>40), ca.id,{:title=>ca.name}] }),:class=>"validate[required]", :style=>"width:200px; height:19px; border:#d1d1d1 1px solid;"%></td>
+
+<%end%>
+
+
+<%if @organization_id == 4%>
+<td><%=select_tag 'department', options_for_select([[t('general.select'),""]] + @departments.collect{ |ca| [truncate(ca.name,:length=>40), ca.id,{:title=>ca.name}] }),:class=>"validate[required]", :style=>"width:200px; height:19px; border:#d1d1d1 1px solid;"%></td>
+
+<%end%>
+
+</tr> 
+
+</table><br> <br>
+<%unless @category_types == nil%>
+<%= submit_tag t('general.create'),:class=>'btnBg' %>
+<%end%>
+<%end%>
+</div>

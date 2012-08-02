@@ -1,0 +1,124 @@
+
+<%unless @results.empty?%>
+<div id="chart-container-1" style="width:700px; height:350px;"></div>
+<%end%>
+
+<div class="updateStatus">
+<div class="qestionhead"><h3><%=t('reports.repo')%></h3> <span class="paginationDiv floatR"> <%#=link_to_function("Print this Page", "javascript:print()")%></span></div>
+
+
+
+<%unless @results.empty?%>
+<div id="PrintDiv">
+<div class="questionTabele">
+
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('exam.name')%></th>
+<th><%=t('exam.attempt')%></th>
+<th><%=t('exam.total_mark')%></th>
+<th><%=t('exam.mark_scored')%></th>
+<th><%=t('exam.percent')%></th>
+<th><%=t('general.status')%></th>
+<th><%#=t('reports.excel')%></th>
+<th><%=t('reports.pdf')%></th>
+</tr>
+<%@results.each do|result|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+
+<td>
+	<%="#{result.examname}"%>
+</td>
+<td>
+ 	<%="#{result.attempt}"%>
+</td>
+<td>
+	<%="#{result.total_mark}"%>
+</td>
+<td>
+	<%="#{result.score.to_f.round(2)}"%>
+</td>
+<td>
+	<%="#{result.percent.to_f.round(2)}"%>
+</td>
+<td>
+	<%#=result.status == 'p' ? t('reports.pass') : t('reports.fail')%>
+	<%=result.result_pending.to_i == 0 ? ("#{result.status}" == "p" ? t('reports.pass') : t('reports.fail')) : "pending"%>
+</td>
+<td>
+	<%#=link_to image_tag("excel.png", :alt=>"excel report"), :action=>"generateUser", :categoryexam_id=>"#{result.categoryexamId}", :categoryuser_id=>"#{result.categoryuserId}", :attempt=>"#{result.attempt}", :csv =>1%>
+</td>
+<td>
+	<% if result.result_pending.to_i == 1%>
+	<%=image_tag("pdf_fade.jpg", :alt=>"pdf report")%>
+	<%else%>
+	<%=link_to image_tag("pdf.png", :alt=>"pdf report"), :action=>"generateUser", :categoryexam_id=>"#{result.categoryexamId}", :categoryuser_id=>"#{result.categoryuserId}", :attempt=>"#{result.attempt}", :pdf =>1, :format=>"pdf"%>
+    <%end%>
+</td>
+</tr>
+<%end%>
+
+</table>
+</div>
+</div>
+<%else%>
+<div class="formContainer">
+  <%=t('not_found.no_result')%>
+ </div>
+<%end%>
+</div>
+
+<script type="text/javascript">
+var chart1; // globally available
+$(document).ready(function() {
+      chart1 = new Highcharts.Chart({
+         chart: {
+            renderTo: 'chart-container-1',
+            defaultSeriesType: 'column'
+
+         },
+         title: {
+            text: '<%=t('general.examinees_report')%>'
+         },
+         xAxis: {
+
+            //categories: ['Apples', 'Bananas', 'Oranges', 'Grapes']
+			categories: [<%@results.each do |d|%>
+ 					'<%=raw "#{d.examname}" %>',
+			        <%end%>],
+		    title: {
+                text: '<%=t('general.exams')%>'
+            }
+         },
+         yAxis: {
+            min: 0,
+            max: 100,
+            tickInterval: 5,
+            title: {
+                text: '<%=t('exam.percent')%>'
+            }
+        },
+         series: [{
+            name: '<%=t('exam.percent')%>',
+            data: [ <%@results.each do |d|%>
+ 					<%=raw "#{d.percent.to_f.round(2)}" %>,
+			        <%end%>
+			]
+         }]
+
+      });
+   });
+</script>
+
+<style media="print" type="text/css">
+  @media print
+  {
+    body * { visibility: hidden; }
+	.virtualxLogo * { visibility: visible; }
+	 
+    #PrintDiv * { visibility: visible; }
+    #PrintDiv { position: absolute; top: 160px; left: 
+
+30px; }
+  }
+</style>

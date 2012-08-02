@@ -1,0 +1,69 @@
+	       	<%unless @category_user == nil or @category_user.empty? or @manual == '0' %>
+			<% form_tag evaluate_path,:method=>"get",:remote=>true, :id=>"formID1", :class=>"examinees" do -%>
+            <%=hidden_field_tag "flag",'q'%>
+			
+				<%=hidden_field_tag "examCategory",@category_id%>
+				<%=hidden_field_tag "academicYear",@academicYear%>
+				<%=hidden_field_tag "examtype",@examtype%>
+				<%=hidden_field_tag "exam",@examname%>
+			
+		    <div style="height:140px; overflow-x: hidden;overflow-y: auto;float:left; padding-right:15px">
+			
+			<table  cellspacing="5" cellpadding="0" border="0" align="left" style="width:190px!important;float:left">
+              
+			  <!--<td align="left" valign="top"  style="width:100%!important;">Temporary Examinee(s): ( <%#=@exam.tempCount(@exam.id)%> ) </td>-->
+
+			  
+			  
+			  	<%# unless "#{examinee.temp_examinee}" == '1'%>
+                
+                <%@category_user.each do|examinee|%>
+				<tr>
+				<td align="left" valign="top"  style="width:50%!important;" title="<%=examinee.name%>"><%= examinee.name == nil ? examinee.login : examinee.name[0..13] %> </td>
+				<%#=hidden_field_tag "examinee", examinee.categoryexamuser_id%>
+				<td align="left" valign="top"  style="width:10%!important;"><%= radio_button_tag "examinee", examinee.categoryexamuser_id,false, {:class=>"validate[minCheckbox[1]] checkbox"} %></td>			
+				<td align="left" valign="top"  style="width:40%!important;">
+					<%if examinee.need_evaluation == '0'%>
+					<span style="color:#00a651"><b><%=t('evaluate.evaluated')%></b></span>
+					<%elsif examinee.need_evaluation == '1'%>
+					<span style="color:#f7941d"><b><%=t('evaluate.eval')%></b></span>
+					<%elsif examinee.need_evaluation == '2'%>
+					<span style="color:#ff0000"><b><%=t('evaluate.not_taken')%></b></span>
+					<%end%>
+				</td>
+              </tr>				
+				<%end%>
+
+				
+
+			  <%#end%>
+			  <%#else%>
+			  <%#=t('not_found.no_examinees_asg')%>
+		      
+            </table>
+			</div>
+		<%= submit_tag t('evaluate.validate'), :id=>"assign", :class=>'btnBg' %>
+		<%end%>
+		
+	   <%else%>
+	   <%=t('evaluate.no_examinees')%>
+	   
+	   <%end%>
+	   
+	   
+<script type="text/javascript">	
+
+$(document).ready(function() {
+
+	$("#examinees").validationEngine();	
+	$("#assign .pagination a").live("click", function(){
+	
+	$.getScript(this.href);
+	return false;
+   });
+		
+		
+  });
+  
+
+</script>	

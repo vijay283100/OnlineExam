@@ -1,0 +1,34 @@
+<div class="updateStatus">
+<h2><%=t('email.email_template')%></h2>
+
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+<th><%=t('general.edit')%></th>
+</tr>
+
+<% @email_templates.each do|key,value| %>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<%if value ==  't1'%>
+<td><%=t('email.examinee_reg')%><%#= key%></td>
+<%elsif value == 't2'%>
+<td><%=t('email.examinee_reg_conf')%></td>
+<%elsif value == 't3'%>
+<td><%=t('email.examinee_acc_rej')%></td>
+<%elsif value == 't4'%>
+<td><%=t('email.user_create')%></td>
+<%elsif value == 't5'%>
+<td><%=t('email.forgot_pass')%></td>
+<%elsif value == 't6'%>
+<td><%=t('email.temp_examinee')%></td>
+<%elsif value == 't7'%>
+<td><%=t('email.user_reg_email_confirm')%></td>
+<%elsif value == 't8'%>
+<td><%=t('email.exam_schedule')%></td>
+<%end%>
+<td><%=link_to image_tag("edit.png", :alt=>"Edit"), edit_email_path(value)%><%#= link_to t('general.edit'), edit_email_path(value) %></td>
+</tr> 
+<%end%>
+
+</table><br>
+</div>

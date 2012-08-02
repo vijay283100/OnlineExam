@@ -1,0 +1,10 @@
+		
+		<tr>
+			<td>
+				  <%= text_field_tag "fields[#{@val}][name]",'', :class=>"validate[required] text-input" %>
+				  <%= check_box_tag "fields[#{@val}][is_answer]", '1', false, :class=>"validate[minCheckbox[1]] checkbox" %>
+				
+			</td>
+			<td style="border: none;"><a class="deleteClassInfo">Delete</a></td>
+
+		</tr>

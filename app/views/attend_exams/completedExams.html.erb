@@ -1,0 +1,111 @@
+
+<div class="updateStatus">
+<h2><%=t('general.exams')%></h2>
+<%unless @exams_list.empty?%>
+<div class="questionTabele">
+<table border="0" cellspacing="0" id="exams_pending">
+
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+<th><%=t('exam.exam_code')%></th>
+<th><%=t('exam.duration')%></th>
+<th><%=t('exam.exam_date')%></th>
+<th><%=t('exam.start_time')%></th>
+
+<%if @setting == true%>
+<th><%=t('welcome.confirm')%>/<%=t('welcome.reject')%></th>
+<%else%>
+<th><%=t('attend_exam.attend')%></th>
+<%end%>
+<th></th>
+</tr>
+
+<% @exams_list.each do|exam| %>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<% exam_hrs = exam.exam_date.hour()%>
+<% exam_min = exam.exam_date.min()%>
+<% dur_hrs = exam.time_hour.to_i%>
+<% dur_min = exam.time_min.to_i%>
+
+<% tot_hrs = exam_hrs + dur_hrs%>
+<% tot_min = exam_min + dur_min%>
+
+<%if tot_min >= 60%>
+<% hr_carry = tot_min/60%>
+<% tot_hrs = tot_hrs + hr_carry%>
+<% mns_diff = tot_min - 60%>
+<%end%>
+
+<%if tot_min < 60%>
+<% tot_hrs = tot_hrs %>
+<% mns_diff = tot_min%>
+<%end%>
+
+<% if tot_hrs == 0 or tot_hrs == 1 or tot_hrs == 2 or tot_hrs == 3 or tot_hrs == 4 or tot_hrs == 5 or tot_hrs == 6 or tot_hrs == 7 or tot_hrs == 8 or tot_hrs == 9 %>
+<% tot_hrs = "0" + tot_hrs.to_s %>
+<%end%>
+
+<% if mns_diff == 0 or mns_diff == 1 or mns_diff == 2 or mns_diff == 3 or mns_diff == 4 or mns_diff == 5 or mns_diff == 6 or mns_diff == 7 or mns_diff == 8 or mns_diff == 9 %>
+<% final_time = tot_hrs.to_s + ":0" + mns_diff.to_s%>
+<%else%>
+<% final_time = tot_hrs.to_s + ":" + mns_diff.to_s%>
+<%end%>
+
+<td class="firstblock"><%= "#{exam.name}"%></td>
+<td><%= "#{exam.exam_code}"%></td>
+<td><%#= "#{exam.total_time.strftime('%I:%M')}"%> <%= "#{exam.time_hour.to_i}"%> hrs <%= "#{exam.time_min.to_i}"%> min</td>
+<td><%= "#{exam.exam_date.strftime('%m/%d/%Y')}"%></td>
+<td><%= "#{exam.exam_date.strftime('%I:%M %p')}"%></td>
+<%if @setting == true%>
+
+<td><%if "#{exam.is_confirmed}" == '1'%>
+    <%=t('general.confirmed')%>
+	<%elsif "#{exam.is_confirmed}" == '2'%>
+	<%=t('general.rejected')%>
+	<%else%>
+	<%= link_to t('welcome.confirm'), :action=>"confirm_exam", :controller=>"attend_exams", :categoryuser_id=>"#{exam.categoryuser_id}", :categoryexam_id=>"#{exam.categoryexam_id}" %>
+	| <%= link_to t('welcome.reject'), :action=>"reject_exam", :controller=>"attend_exams", :categoryuser_id=>"#{exam.categoryuser_id}", :categoryexam_id=>"#{exam.categoryexam_id}" %>
+
+	<%end%>
+</td>
+
+<%else%>
+<td>Confirmed</td>
+<%end%>
+
+<td>
+	<%if @setting == true%>
+	    <%if @current_time.strftime('%m/%d/%Y') == "#{exam.exam_date.strftime('%m/%d/%Y')}" and @current_time.strftime('%H:%M') >= "#{exam.exam_date.strftime('%H:%M')}" and (final_time >= @current_time.strftime('%H:%M+1')) and "#{exam.is_confirmed}" == '1' and "#{exam.has_attended}" == '0' and "#{exam.start_exam}" == '1'%>
+		<%=link_to t('general.attend'), :action=>"instruction", :categoryuser_id=>"#{exam.categoryuser_id}", :categoryexam_id=>"#{exam.categoryexam_id}", :exam_id=>"#{exam.exam_id}",:attempt=>"#{exam.attempt}"%>
+	    <%elsif "#{exam.is_confirmed}" == '1' and "#{exam.has_attended}" == '0'%>
+		<%=t('general.attend')%>
+		<%elsif "#{exam.is_confirmed}" == '1' and "#{exam.has_attended}" == '1'%>
+		<%=t('general.done')%>	
+		<%end%>
+	<%else%>
+		<%if @current_time.strftime('%m/%d/%Y') == "#{exam.exam_date.strftime('%m/%d/%Y')}" and @current_time.strftime('%H:%M') >= "#{exam.exam_date.strftime('%H:%M')}" and (final_time >= @current_time.strftime('%H:%M+1')) and "#{exam.has_attended}" == '0' and "#{exam.start_exam}" == '1'%>
+		<%=link_to t('general.attend'), :action=>"instruction", :categoryuser_id=>"#{exam.categoryuser_id}", :categoryexam_id=>"#{exam.categoryexam_id}", :exam_id=>"#{exam.exam_id}",:attempt=>"#{exam.attempt}"%>
+		<%=t('general.attend')%>
+		<%elsif "#{exam.is_confirmed}" == '1' and "#{exam.has_attended}" == '1'%>
+		<%=t('general.done')%>			
+		<%end%>
+	<%end%>
+</td>
+
+</tr> 
+<%end%>
+
+</table>
+</div>
+<%else%>
+<div class="formContainer">
+  <%=t('not_found.no_exam_found')%>
+ </div>
+<%end%>
+</div>
+
+    <script language="javascript" type="text/javascript">
+	        $(document).ready(function() {
+	            setInterval("location.reload(true)", 30000);
+	        });   
+	 </script>

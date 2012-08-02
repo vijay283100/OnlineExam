@@ -1,0 +1,21 @@
+
+	<table class="answer_name" style="width:100%; float:left;">
+		<tr>
+			<th style='float:left;'><%=t('question.enter_opt')%></th>
+		</tr>
+		<tr>
+			
+			<td> 
+				<% 1.upto(2) do |i| %>
+				<div class="uploadRept"> 
+				  <%= file_field "fields[#{i}]image","photo",:id=>i,:onchange => "preview_answer(this,this.id);", :class=>"validate[required] text-input blankCount uploadReptCtrl" %>
+	                <div class="imageRept"><img alt="<%=t('general.preview')%>" id="preview-answer-photo_<%=i%>" width="200" height="80" ></div>
+				  <%= check_box_tag "fields[#{i}][is_answer]", '1', false, :class=>"validate[maxCheckbox[1]] checkbox chkBox" %>
+				</div>
+				<div class="clear"></div>
+				<% end %>
+				
+			</td>
+
+		</tr>
+    </table>

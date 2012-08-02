@@ -1,0 +1,9 @@
+<h1><%#=t('registration.register')%></h1>
+
+<%= form_for :user, :url => {:action => "create"}, :html => { :id => "class_form"} do |f| %>
+  <%= f.error_messages %>
+  <%= render :partial => "form", :object => f %>
+  <%= f.submit t('registration.register'),:class=>"btnBg floatL" %> <div class="back_btn"> | <%= link_to t('general.cancel'), new_user_session_path%></div>
+<% end %>
+
+

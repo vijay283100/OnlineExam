@@ -1,0 +1,74 @@
+<h2><%=t('evaluator.filter_evaluator')%>:</h2>
+
+<div class="formContainer" style="position:relative;">
+     <% form_tag evaluator_path,:method=>"get", :remote=>true,:id=>"class_form", :class=>"assign_examinee" do -%>
+            <%=hidden_field_tag "flag",'e'%>
+			<table class="formTable" style="border:0px;">
+            <tr>
+            <td> 
+           <div style="float:left; padding:0px; margin:0 20px 0 0;">
+		   <label style="float:left; padding-right:10px; width:120px;"><%=t('general.select_cat')%>: </label>
+		   <%= select_tag "examCategory",options_for_select([[t('general.select') , "" ]] + @c.collect{|p| [p.gathercat(p),p.id,{:title=>p.gathercat(p)}]},:selected=>@category_id), {:id=>"examCategory", :class=>"category w530 bdr validate[required]"} %>
+		   </div>
+		   <div class="clear"></div><br>
+		   		   
+	       <div style="float:left; padding:0px; margin:0; clear: left;">
+		   <label style="float:left; padding-right:10px; width:120px;"><%=t('exam.year')%>:</label>
+		   <%= select_tag 'academicYear', options_for_select(([[t('general.select'),""]] + @yrs.to_a),:selected=>@academicYear),:class=>"validate[required] w120 bdr" %>		   
+		   </div>
+		   <div class="clear"></div><br>		   
+
+			<div style="float:left; padding:0px; margin:0; clear: left;">
+			<label style="float:left; padding:3px 10px 0 0; width:120px;"><%=t('general.examtype')%>:</label>
+			<%= select_tag 'examtype',options_for_select([[t('general.select'),""]] + @examTypes.collect{|p| [truncate(p.name,:length=>30),p.id,{:title=>p.name}]},:selected=>@examtype), {:style=>"width: 200px; height: 19px; border: 1px solid rgb(209, 209, 209);",:class=>"validate[required]"} %>
+            </div>
+			<div class="clear"></div><br>
+
+			<div style="float:left; padding:0px; margin:0; clear: left;">
+			<label style="float:left; padding:3px 10px 0 0; width:120px;">Exam:</label>
+			<%= select_tag 'exam',options_for_select([[t('general.select'),""]] + @exam.collect{|p| [truncate(p.name,:length=>30),p.id,{:title=>p.name}]},:selected=>@examname), {:style=>"width: 200px; height: 19px; border: 1px solid rgb(209, 209, 209);",:class=>"validate[required]"} %>
+            </div>			
+            </td> 
+			</tr> 
+            </table>
+			<%= submit_tag t('general.filter'), :id=>"assign", :class=>'btnBg' %>
+	<%end%>
+</div>
+
+<span id="evaluators">
+
+	<%=render :partial=>"collect_evaluators"%>
+
+</span>
+
+<script type="text/javascript">	
+
+$(document).ready(function() {
+	
+$("#formID1").validationEngine();
+
+				$("#examCategory, #academicYear, #examtype").change(function(){
+				//var thischeck = $(this);
+				 var target = '<%= url_for(getCategoryexams_path)%>';
+				 
+				 var data = {category_id:$("#examCategory").val(), year:$("#academicYear").val(),examtype_id:$("#examtype").val()};
+				$.get(target, data, function(data){
+					var arr = data.examNames
+					$("#exam").empty(); 
+					$("#exam").append("<option value=" + "" + ">" + "<%=t('general.select')%>" + "</option>");
+				 jQuery.each(arr, function(index, value) {
+					$("#exam").append("<option title='"+value.exam.name+"' value=" + value.exam.id + ">" + value.exam.name + "</option>");
+				    });
+                   }, 'json')
+               });
+			   
+		
+	$("#evaluators .pagination a").live("click", function(){
+	
+	$.getScript(this.href);
+	return false;
+   });
+		
+		
+  });
+</script>

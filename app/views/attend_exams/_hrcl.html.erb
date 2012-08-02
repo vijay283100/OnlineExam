@@ -1,0 +1,60 @@
+		  <%if @checkAttended.empty?%>
+		  <%= hidden_field_tag "question_type_id", @question.question_type_id%>	
+	      <%= hidden_field_tag "question_id", @question.id%>
+                <%@sub_questions = Question.where(["parent_id = ?", @question.id]).sort! { |a,b| a.sort_order <=> b.sort_order }%>
+			    <table cellpadding="0" cellspacing="0" border="0" class="tblRepeter" id="toggle_<%=@question.id%>">
+			    	<tr>
+				  		<td valign="top"></td>
+				  	</tr>	
+					<tr align="left">		 
+						<td>
+							<ul id="sortable">
+								<%@sub_questions.each do|s|%> 
+								  <%ans = Answer.find_by_question_id(s.id)%>
+									<li class="ui-state-default"  title="<%=s.name%>"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+									 <%= label_tag truncate(s.name, :length=>30), nil%>
+									 <%= hidden_field_tag "answer_id[]",ans.id %>
+
+									</li>
+								<%end%>
+
+							</ul>
+						<br><br>		
+						</td>
+					</tr>
+			 	</table>
+		    <%else%>
+			   <%= hidden_field_tag "question_type_id", @question.question_type_id%>	
+	           <%= hidden_field_tag "question_id", @question.id%>
+		          <%@checkAttended = Evaluation.where(["question_id = ? and categoryexam_id = ? and categoryuser_id = ? and has_attended = ? and attempt = ?", @question.id,@categoryExam,@categoryUser,true,@attempt])%>
+				   <table cellpadding="0" cellspacing="0" border="0" class="tblRepeter" id="toggle_<%=@question.id%>">
+			    	<%@checkAttended.each do|attended|%> 
+					<%= hidden_field_tag "current_answer_id[]", attended.id%>
+					<%end%>
+					
+					<tr>
+				  		<td valign="top"></td>
+				  	</tr>	
+					<tr align="left">		 
+						<td>
+							<ul id="sortable">
+							 	<%@checkAttended.each do|attended|%> 
+									 <% answer = Answer.find_by_id(attended.answer_id)%>
+									 <% question = Question.find_by_id(answer.question_id)%>								
+									<li class="ui-state-default" title="<%=question.name%>"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+									 <%= label_tag truncate(question.name,:length=>30), nil%>
+                                     <%= hidden_field_tag "attendedSort[]",attended.sort_order %>
+									 <%= hidden_field_tag "evaluation_id[]", attended.id%>
+									 <%= hidden_field_tag "answer_id[]", attended.answer_id%>
+									</li>
+								<%end%> 
+								
+
+							</ul> 
+	
+						<br><br>
+	
+						</td>
+					</tr>
+			 	</table>
+			<%end%>	

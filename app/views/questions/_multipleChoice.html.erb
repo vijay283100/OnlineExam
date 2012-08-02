@@ -1,0 +1,14 @@
+	<table class="answer_name" style="float:left; width:100%; padding:0; margin:0;" >
+		<tr><th></th>
+			<th style='float:left;'><%=t('question.enter_opt')%> (Click the link <%=link_to "show as editor","#",:id=>"showEditor"%> to change options to editor)</th>
+		</tr>
+		<% 1.upto(2) do |i| %>
+				<tr class="editor_last">
+					<td style='width:20px; text-align:center; vertical-align:middle;'> <%= check_box_tag "fields[#{i}][is_answer]", '1', false, :class=>"validate[maxCheckbox[1]] checkbox", :style=>"margin-left: 10px; margin-right: 5px;" %></td>
+					<td>
+				  <%= text_area_tag "fields[#{i}][name]",'', :class=>"validate[required,funcCall[checkHELLO]] text-input options",:style=>"width:115px; height:19px; border:#d1d1d1 1px solid;" %>
+				 
+				</tr>				<br />
+				<% end %>
+
+        </table>

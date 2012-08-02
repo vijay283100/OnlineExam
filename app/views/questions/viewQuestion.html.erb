@@ -1,0 +1,295 @@
+
+<fieldset class="formContainer">
+<legend>Question</legend>
+
+		 <%if @question.question_type_id == 12%>
+		  <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+
+         <%end%> 
+		 
+		 <%if @question.question_type_id == 1 or @question.question_type_id == 4 or @question.question_type_id == 5%>
+		  <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+
+
+		      <table class="answer_name" id="toggle_<%=@question.id%>" style="width:80%;">
+			 	<tr><th></th></tr>
+			 	<tr>
+			 	 <td>	
+				  <% answers = Answer.find_all_by_question_id(@question.id)%>
+				   <%answers.each do|answer|%>
+				       <div style="width:100%; margin-bottom:10px; float:left;">
+						<%= radio_button_tag "answer_id", answer.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish", :style=>"margin-left: 10px; margin-right: 5px; margin-top:2px; float:left;"} %>
+					    
+						<div title="<%=answer.name%>" style="float:left;"><%= label_tag "answer_label",answer.name.html_safe, :style=>"width:115px; float:left;", :readonly => true%></div>
+					<div class="clear"></div>
+					
+					</div>					 
+				   <%end%>				
+			 	 </td>
+				</tr>
+			  </table> 
+
+		 <%end%>
+		 
+		 
+		 
+		  <%if @question.question_type_id == 6%>
+           <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+		   
+		      <%image = Image.find(@question.image_id)%>
+			  <table>
+			  <tr>
+			  	 <td>
+				  <div id="draggable" class="ui-widget-content" style="position: relative; left: 207px; top: 0px;">
+				  	<p>Drag me to my target</p>
+				  	<%= image_tag image.photo.url(:original), :size => "200x80", :id=>"preview-photo" %>
+				       <%=hidden_field_tag "dragImage", @question.id%>
+				  </div> <br>
+				 </td> 
+			  </tr>
+
+
+			  <% answers = Answer.find_all_by_question_id(@question.id)%>
+			   <tr>
+			   <%answers.each do|answer|%>
+			   <%ansImage = Image.find(answer.image_id)%>
+			     <td>
+			     	<div class="ui-widget-header droppable" id="<%=answer.id%>">
+			     		<p class="drop" id="ansImage_<%=answer.id%>"></p>
+			     		<span><%= image_tag ansImage.photo.url(:original), :size => "200x80", :id=>"preview-photo", :value=>answer.id %></span>
+					</div>
+				 </td>
+			   <%end%>
+			      
+			   </tr>
+			 </table>
+			 <%end%> 
+		 
+		 
+		 
+		 <%if @question.question_type_id == 2%>
+		  <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+		      <table class="answer_name" id="toggle_<%=@question.id%>" style="width:80%;">
+			 	<tr><th></th></tr>
+			 	<tr>
+			 	 <td>
+				  <% answers = Answer.find_all_by_question_id(@question.id)%>
+				   <%answers.each do|answer|%>
+					<div style="float:left; width:100%; margin-bottom:10px;">
+					<%= check_box_tag "answer_id[]", answer.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish", :style=>"margin-left: 10px; margin-right: 5px; float:left; margin-top:3px"} %>
+				        
+						<div title="<%=answer.name%>" style="float:left;"><%= label_tag "answer_label[]",answer.name.html_safe, :style=>"width:115px; height:19px; border:#d1d1d1 0px solid; ", :readonly => true%></div>
+					 </div>
+				   <%end%>				
+			 	 </td>
+				</tr>
+			  </table> 
+		 <%end%>
+		 
+		 <%if @question.question_type_id == 3%>
+		  <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+
+			    <table class="answer_name" id="toggle_<%=@question.id%>" style="width:80%;">
+				 	<tr><th></th></tr>
+					<tr><td>
+				   <% answers = Answer.find_all_by_question_id(@question.id)%>
+				   <%answers.each do|answer|%>
+				   <div style="float:left; width:100%; margin-bottom:10px;">
+				      <div title="<%=answer.name%> style="float:left;"><%= label_tag "fields[#{answer.id}][name]",raw(answer.name), :class=>"validate[required,funcCall[checkHELLO]] text-input",:style=>"width:115px; height:19px; border:#d1d1d1 0px solid;", :readonly => true %></div>
+	               </div>
+
+				        <%end%>
+					</td></tr>
+				 </table>
+
+		 <%end%>
+		 
+
+			
+		 <%if @question.question_type_id == 7%>
+		  <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+		  
+		 <table class="answer_name" id="toggle_<%=@question.id%>">
+			 	<tr><th></th></tr>
+				<tr><td>
+			   <% answers = Answer.find_all_by_question_id(@question.id)%>
+			   <%answers.each do|answer|%>
+				    <span title="<%=answer.name%>"><%= text_field_tag :answer,truncate(answer.name,:length=>20), :style=>"width:115px; height:19px; border:#d1d1d1 1px solid;", :readonly => true%></span>
+					<%= radio_button_tag "answer[]", answer.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish", :style=>"margin-left: 10px; margin-right: 5px;"} %><br><br>
+			   <%end%>
+			   </td></tr>
+			 </table>
+		 <%end%>
+		 
+		 <%if @question.question_type_id == 8%>
+		  <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+		  
+		    <%@sub_questions = Question.where(["parent_id = ?", @question.id])%>
+
+					<%@ans = Answer.where(["question_id = ?",@question.id])%>	 
+					<%@ans_length = @sub_questions.length%>
+  			        <table cellpadding="0" cellspacing="0" border="0" class="tblRepeter alignVM" id="toggle_<%=@question.id%>" style="margin: 0 0 10px 4px; width:auto;">
+			        
+					<tr>  	 
+						 
+		  				<div class="tblCols rowValue">	
+						<td>&nbsp;</td>
+						
+						<%@sub_questions.each do|s|%>  
+				         <td align="center" title="<%=s.name%>">
+				    			<%= label_tag :answer,truncate(s.name, :length=>20), :style=>"min-width:80px; width:auto!important; width:80px; display:inline-block; height:19px; border:#d1d1d1 1px solid; text-align:center;", :readonly => true, :id=>s.id%>
+						 
+						 </td>	
+						<%end%>
+		 				</div>
+						
+					</tr>
+						
+						 
+					
+		  				<div class="tblCols rowValue">	
+						<%@ans.each do|a|%>
+			    		<tr align="center">	
+						
+							<td title="<%=a.name%>">
+				         	  <%= label_tag :answer,truncate(a.name,:length=>20), :style=>"min-width:80px; width:auto!important; width:80px; display:inline-block; height:19px; border:#d1d1d1 1px solid; padding-left:2px;", :readonly => true, :id=>a.id %>
+							</td>	
+											
+							<%for i in (1 .. @ans_length)%>
+								<td>
+						         <%= radio_button_tag "sample_#{a.id}","",false, :disabled => true, :style=>"border:none;"%>
+								
+								</td>
+							<%end%>												
+						</tr>
+						<%end%>
+		 				</div>
+				    
+
+					</table>	
+		 <%end%>
+		 
+		 <%if @question.question_type_id == 9%>
+		  <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+		 
+		  <span id="toggle_<%=@question.id%>">
+			 <table cellpadding="0" cellspacing="0" border="0" class="tblRepeter">
+				<tr>
+					<td>
+				    <%unless @question.image_id == nil%>		
+			  		<%image = Image.find(@question.image_id)%>
+			  		<div class="imageRept"><%= image_tag image.photo.url(:original), :size => "200x80", :id=>"preview-photo" %></div>
+			  		<%end%>
+					</td>
+				</tr>
+			</table>
+			<div class="clear"></div>
+
+
+		      <table class="answer_name" id="toggle_<%=@question.id%>">
+			 	<tr><th></th></tr>
+			 	<tr>
+			 	 <td>
+				  <% answers = Answer.find_all_by_question_id(@question.id)%>
+				   <%answers.each do|answer|%>
+				        <span title="<%=answer.name%>"><%= text_field_tag "answer_name[]",truncate(answer.name,:length=>20), :style=>"width:115px; height:19px; border:#d1d1d1 1px solid;", :readonly => true%></span>
+						<%= check_box_tag "answer_id[]", answer.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish", :style=>"margin-left: 10px; margin-right: 5px;"} %><br><br>
+					 
+				   <%end%>				
+			 	 </td>
+				</tr>
+			  </table>   
+
+			 <%#end%>
+			 </span>
+		 <%end%>
+		 
+		 <%if @question.question_type_id == 10%>
+		  <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+		  
+
+                <%@sub_questions = Question.where(["parent_id = ?", @question.id])%>
+			    <table cellpadding="0" cellspacing="0" border="0" class="tblRepeter" id="toggle_<%=@question.id%>">
+			    	<tr>
+				  		<td valign="top"></td>
+				  	</tr>	
+					<tr align="left">		 
+						<td>
+							<ul id="sortable">
+								<%@sub_questions.each do|s|%> 
+								  <%ans = Answer.find_by_question_id(s.id)%>
+									<li class="ui-state-default" title="<%=s.name%>"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+									 <%= label_tag truncate(s.name, :length=>30), nil%>
+
+									</li>
+								<%end%>
+
+							</ul>
+						<br><br>		
+						</td>
+					</tr>
+			 	</table>
+
+
+		   <%end%> 
+		   
+		   
+ 
+			 
+		   <%if @question.question_type_id == 11%>
+             <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+			 
+
+		  			 
+			 	<%@sub_questions = Question.where(["parent_id = ?", @question.id])%>
+				     <%@ans = []%> 
+    					 <%@sub_questions.each do|sq|%> 
+        				  <%@answer = Answer.find_by_question_id(sq.id)%>
+       					  <%@ans << @answer%> 
+      					 <%end%>
+						 
+			        <table cellpadding="0" cellspacing="0" border="0" class="tblRepeter" id="toggle_<%=@question.id%>" style="margin: 0pt 5px 10px; width: 99%;">
+				  	<tr>
+				  		<th valign="top"><strong>Match Option A</strong></td>
+						<th valign="top"><strong>Match Option B</strong></td>
+				  	</tr>	
+					<tr align="left">		 
+					<td>
+		  				<div class="tblCols rowValue" style="width: 256px; margin: 0pt 0pt 0pt 60px;">	
+						<ul class="formlist">
+						<%@sub_questions.each do|s|%> 
+							<li><div class="tblRepeaterRow" style="margin-bottom: 11px;" title="<%=s.name%>">
+
+			    			<%= label_tag :answer,truncate(s.name,:length=>30), :style=>"width: 200px; height: 18px; border: 1px solid rgb(209, 209, 209); display: block; float: left; padding-left: 2px;", :disabled => true, :id=>s.id%>
+                            </div>
+							</li>
+						<%end%>
+						</ul>
+		 				</div>
+					</td>  	 
+					
+					
+					<td>
+		  				<div class="tblCols rowValue" style="width: 256px; margin: 0pt 0pt 0pt 60px;">	
+						<ul class="formlist">
+						<%@ans.each do|a|%> 
+						    
+							  <li><div class="tblRepeaterRow" style="margin-bottom: 11px;" title="<%=a.match_answer%>">
+								<%= label_tag :answer,truncate(a.match_answer, :length=>30), :style=>"width: 200px; height: 18px; border: 1px solid rgb(209, 209, 209); display: block; float: left; padding-left: 2px;", :disabled => true, :id=>a.id%>
+								</div>
+							  </li>
+
+						<%end%>
+						</ul>
+		 				</div>
+					</td>
+				</tr>
+		      </table>					 
+			 <%end%> 
+
+</fieldset>
+
+
+
+
+

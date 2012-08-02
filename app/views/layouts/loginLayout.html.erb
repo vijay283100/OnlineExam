@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>VirtualX - Online Examination System</title>
+<%= favicon_link_tag 'favicon.ico' %>
+<%= stylesheet_link_tag "styles", "dropdown.linear", "validationEngine.jquery.css" %>
+    <%= javascript_include_tag :defaults %>
+	<%= javascript_include_tag 'jquery-1.4.2.min', 'jquery-1.4.4'%>
+	
+	<%if t('language.lang') == "en"%>
+	<%= javascript_include_tag 'jquery.validationEngine-en', 'jquery.validationEngine'%>
+	<%elsif t('language.lang') == "de"%>
+	<%= javascript_include_tag 'jquery.validationEngine-de', 'jquery.validationEngine'%>	
+	<%end%>
+
+</head>
+<body style="background:#fff">
+<div class="loginContainer">
+	<div class="loginerror">
+       <% flash.each do |name, msg| %>
+	   <%if name.to_s == "notice"%>
+        <%= content_tag :div, msg, :class => "notice" %>
+	   <%elsif name.to_s == "success"%>
+	   <%= content_tag :div, msg, :class => "success" %>
+	   <%elsif name.to_s == "error"%>
+	   <%= content_tag :div, msg, :class => "error" %>
+	   <%end%>
+      <% end %>
+    </div>
+  <div class="loginWrapper">
+    <div class="loginCol">
+      <div class="loginHeader">
+        <div class="lockIcon">
+          <%= image_tag "lock_icon.png", :size => "42x40", :class=>'image', :alt=>"img" %>
+        </div>
+        <div class="logo">
+          <%= image_tag "virtualx_logo.png", :size => "220x32", :class=>'image', :alt=>"img" %>
+        </div>
+      </div>
+      <div class="loginArea">
+        <div class="errMsg_Login disnone"><span><%= image_tag "exclamation-red.png", :size => "16x16" %></span>
+          <p>Invalid Username / Password</p>
+        </div>
+          <%= yield %>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,15 @@
+		
+		<tr align="center">
+			
+				<% i = 3 %>
+			<td>	
+				  <%= text_field_tag "fields[#{i}][name]",'', :class=>"validate[required] text-input" %>
+		    </td>	
+			<td>	  
+				  <%= select_tag "fields[#{i}][is_question_order]", options_for_select(@h_order.to_a) %>
+		    </td>
+			<td>
+				<%= select_tag "fields[#{i}][is_answer_order]", options_for_select(@h_order.to_a) %>
+			</td>
+		</tr>
+<% i=1+1 %>

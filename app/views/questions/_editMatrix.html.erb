@@ -1,0 +1,51 @@
+
+		<table cellpadding="0" cellspacing="0" border="0" class="tblRepeter" >
+	  	<tr>
+	  		<td valign="top"><strong><%=t('question.matrix_col')%></strong></td>
+			<td valign="top"><strong><%=t('question.matrix_row')%></strong></td>
+	  	</tr>
+	    
+	    <tr align="center">	
+		  <td>
+		  	<div class="tblCols rowValue">
+		    <%@sub_questions.each do|answer|%>
+		     <%= fields_for "answer[]", answer do |answer_fields| %>
+			    <%= answer_fields.hidden_field :id %>
+		
+			    <div class="tblRepeaterRow cnone">  
+				<%= answer_fields.text_field :name, :class=>"tblInputtxt validate[required,funcCall[checkHELLO]] text-input"  %>
+                <span class="tblClsholder">
+				    <%=link_to image_tag("cross.jpg", :alt=>"Add Option"), {:action=>"delete_matrix_row",:controller=>"questions",:id=>answer.id,:question_id=>@question.id}, :confirm => t('json_message.are_you_sure')%>
+				</span>
+			    </div>  
+		     <%end%>
+		    <%end%>
+			</div>
+			</td>  
+			 
+		 <td>
+		  	<div class="tblCols columnValue">	      
+		    <%@answers.each do|answer|%>
+		     <%= fields_for "answerOrder[]", answer do |answerOrder_fields| %>
+				<%= answerOrder_fields.hidden_field :id %>
+				 <div class="tblRepeaterRow cnone">  
+				  <%= answerOrder_fields.text_field :name, :class=>"tblInputtxt validate[required,funcCall[checkHELLO]] text-input" %>
+                   <span class="tblClsholder">
+					<%=link_to image_tag("cross.jpg", :alt=>"Add Option"), {:action=>"delete_matrix_column",:controller=>"questions",:id=>answer.id,:question_id=>@question.id}, :confirm => t('json_message.are_you_sure')%>
+					</span>
+				  </div>
+		     <%end%>
+		    <%end%>	
+			</div>
+		 </td>   
+	    </tr>
+			 
+			 <tr>
+				<td valign="top">
+                                  <%=link_to image_tag("plus.jpg", :alt=>"Add Option"),"#", :id=>"add_new_rowOption"%>
+                                </td>
+				<td valign="top">
+                                  <%=link_to image_tag("plus.jpg", :alt=>"Add Option"),"#", :id=>"add_new_columnOption"%>
+                                </td>
+			</tr>
+	    </table>

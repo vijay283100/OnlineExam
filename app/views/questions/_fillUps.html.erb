@@ -1,0 +1,19 @@
+<div style="float:left; width:100%;">
+<div style="float:right; border:1px solid #ccc; padding:5px; width:220px; height: auto; text-align:center; overflow:hidden;"><%= image_tag "msg_fillup.jpg", :size => "220x111", :alt=>'img' %></div>
+
+       <table class="answer_name" style="float:left; width:100%; padding:0; margin:0;">
+		<tr><th></th>
+			<th style='float:left;'><%=t('question.enter_opt')%> <!--(Click the link <%#=link_to "show as editor","#",:id=>"showEditor"%> to change options to editor)--></th>
+		</tr>		
+				
+        </table>
+		<table class="answer_name" style="float:left; width:100%; padding:0; margin:0;">
+               <tr class="editor_last"><td>
+				<% 1.upto(1) do |i| %>
+				  <%= text_area_tag "fields[#{i}][name]",'', :class=>"validate[required,funcCall[checkHELLO]] text-input blankCount options",:style=>"width:115px; height:19px; border:#d1d1d1 1px solid;" %>
+				<% end %>
+				</td></tr> 
+	   </table>
+		
+		
+</div>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<title>VirtualX - Online Examination System</title>
+	<%= favicon_link_tag 'favicon.ico' %>
+    <%= stylesheet_link_tag "application" %>
+	<%= stylesheet_link_tag "styles", "dropdown.linear", "validationEngine.jquery.css" %>
+	<%= stylesheet_link_tag "jquery-ui"%>
+    <%= javascript_include_tag :defaults %>
+
+	<%= javascript_include_tag 'jquery-1.4.2.min', 'rails', 'application', 'jquery-1.4.4'%>
+	<%= javascript_include_tag "jquery-ui.min.js", "jquery-ui-timepicker.js","application" %>
+	<%if t('language.lang') == "en"%>
+	<%= javascript_include_tag 'jquery.validationEngine-en', 'jquery.validationEngine'%>
+	<%elsif t('language.lang') == "de"%>
+	<%= javascript_include_tag 'jquery.validationEngine-de', 'jquery.validationEngine'%>	
+	<%end%>	
+	
+	
+	
+	<%= csrf_meta_tag %>
+	<%= yield(:head) %>
+	
+  </head>
+<body class="bgimg" style="background-color:#fff">
+<div id="mainWrapper">
+<div class="wrapperContent">
+  <div class="headerCol">
+    
+
+
+  </div>
+  <div class="logoHolder" style="width:100%; clear:both;">
+    <div class="clientLogo" style="float:left">
+    	<%#clientImage = ClientImage.find(:first)%>
+		<%#unless clientImage == nil%>
+    	<%#= image_tag clientImage.image.url(:original)%>
+		<%#else%>
+		<%#= image_tag "clientLogo.png", :size => "236x60", :alt=>'img' %>
+		<%#end%></div>
+    <div class="virtualxLogo" style="float:right"><%= image_tag "virtualx_logo.jpg", :size => "236x60", :alt=>'img' %></div>
+  </div>
+<div class="clear"></div>
+  <div class="navigation"> </div>
+  <div class="contentWrapper">
+
+
+    <div class="midCol" style="width:100%; float:left; clear:left;" >
+       <% flash.each do |name, msg| %>
+	   <%if name.to_s == "notice"%>
+        <%= content_tag :div, msg, :class => "notice" %>
+	   <%elsif name.to_s == "success"%>
+	   <%= content_tag :div, msg, :class => "success" %>
+	   <%elsif name.to_s == "error"%>
+	   <%= content_tag :div, msg, :class => "error" %>
+	   <%end%>
+      <% end %>
+   <%= yield %>
+    </div>
+  </div>
+  
+  <div class="clear"></div>
+</div>
+<div class="clear"></div>
+</div>
+
+  </body>
+</html>
+
+

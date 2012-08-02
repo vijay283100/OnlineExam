@@ -1,0 +1,18 @@
+<p><span style="width:100px; float:left">Question mark:</span><%=text_field_tag "question_mark", question.mark%></p><br>
+<%unless eval.descriptive_answer == ''%>
+<p><span style="width:100px; float:left">Answer mark:</span><%=text_field_tag "answer_mark",eval.answer_mark = nil ? 0 : eval.answer_mark, :style=>"width:30px; height:19px; border:#d1d1d1 1px solid;",:class=>"validate[required,funcCall[checkHELLO],min[0],max[funcCall[maximumMark]]] text-input"%></p><br>
+<%else%>
+<p><span style="width:100px; float:left">Answer mark:</span><%=text_field_tag "answer_mark",0,:readonly=>true, :style=>"width:30px; height:19px; border:#d1d1d1 1px solid;"%></p><br>
+<%end%>
+<script>
+	            function maximumMark(field, rules, i, options){
+				var s = field.val()
+				//var t = s.replace(/\s+/g,'')
+				var m = $("#question_mark").val()
+                if (parseFloat(s) > parseFloat(m)) {
+
+                    // this allows to use i18 for the error msgs
+                    return options.allrules.maxMark.alertText;
+                }
+            }
+</script>

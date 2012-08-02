@@ -1,0 +1,155 @@
+<h2><%=t('exam.filter_exam')%></h2>
+
+<div class="formContainer">
+	<table class="formTable" style="border:0px;">
+		<tr>
+			
+	<td class="pb0">
+		<div style="float:left; padding:0px; margin:0 20px 5px 0;">
+			<label style="float:left; padding-right:10px; width:95px;"><%=t('exam.from_date')%>:</label>
+		          <%= text_field_tag "from_date","",:class=>"validate[required,custom[dateOnly]] text-input datepicker", :style=>"border:#d1d1d1 1px solid; height:19px; width:160px; margin-bottom:8px;" %>
+		</div>
+		<div class="clear"></div><br>
+	    <div style="float:left; padding:0px; margin:0; clear: left;">
+			<label style="float:left; padding-right:10px; width:95px;"><%=t('exam.to_date')%>:</label>
+		          <%= text_field_tag "to_date","",:class=>"validate[required,custom[dateOnly]] text-input datepicker", :style=>"border:#d1d1d1 1px solid; height:19px; width:160px; margin-bottom:8px;" %>
+		</div>
+
+	</td>				
+  		</tr>
+</table>
+<%=link_to(content_tag('span',t('general.filter')),'#nogo',{:title=>t('general.filter'),:class=>"btnLink w105", :id=>"filterExam"}) %>
+
+</div>
+
+
+<h2><%=t('exam.select_exam')%></h2>
+<div class="formContainer">
+<%# form_tag getEvaluator_path,:method=>"get",:remote=>true, :id=>"formID1", :class=>"assign_examinee" do -%>
+
+            <table class="formTable" style="border:0px;">
+              <tr>
+                <td class="pb0">
+				<div style="float:left; padding:0px; margin:0 20px 5px 0;">
+					<label style="float:left; padding-right:10px; width:95px;"><%=t('exam.select_exam')%>:</label>
+					<%=  select_tag "examName", options_for_select([[t('general.select') , "" ]] + @examNames.collect{|e| [e.name[0..30],e.id,{:title=>e.name}] },:selected=>@exam_id), {:id=>"examName", :style=>"width:200px; height:19px; border:#d1d1d1 1px solid;",:class=>"validate[required]"}%>
+					<%=hidden_field_tag "flag", "c"%>
+				</div>								
+				</td>
+               </tr> 
+            </table>
+			
+			<%#= submit_tag t('general.filter'), :id=>"assign", :class=>'btnBg', :name=>"sub" %>
+<%#end%>
+</div>
+
+<br><br><br>
+
+<h2><%=t('general.select_cat')%>:</h2>
+<div class="formContainer">
+	<% form_tag getEvaluator_path,:method=>"get",:remote=>true, :id=>"class_form", :class=>"assign_examinee" do -%>
+
+            
+			<span id="select_category"><%=render :partial=>"select_category_evaluator"%></span><br>
+			
+			<%= submit_tag t('general.filter'), :id=>"getCategory", :class=>'btnBg' %> <%end%>
+</div>
+
+<div class="updateStatus examineeList floatL w100pc">
+<% form_tag assignEvaluator_path,:method=>:post, :id=>"formID2", :class=>"assign_examinee" do -%>
+<%=hidden_field_tag "examId" %>	
+<%#=hidden_field_tag "categoryId"%>
+
+<span id="collectUser"><%=render :partial=>"evaluators" unless @category_id == 0%></span><br>
+
+<%end%>
+</div>
+
+
+<script type="text/javascript">	
+
+function checkUncheckAll(checkAllState, cbGroup)
+{
+	// Check that the group has more than one element
+	if(cbGroup.length > 0)
+	{
+		// Loop through the array
+		for (i = 0; i < cbGroup.length; i++)
+		{
+			cbGroup[i].checked = checkAllState.checked;
+		}
+	}
+	else
+	{
+		// Single element so not an array
+		cbGroup.checked = checkAllState.checked;
+	}
+}
+
+
+$(document).ready(function() {
+
+$("#formID1").validationEngine();
+$("#formID2").validationEngine();
+$("#class_form").validationEngine();
+$("#formID3").validationEngine();
+
+$(".examineeList").hide();
+
+$( ".datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
+
+$("#collectUser .pagination a").live("click", function(){
+	
+	$.getScript(this.href);
+	return false;
+   });
+
+
+$("#getCategory").click(function(){
+	
+        
+		
+	    //var c = $("#examCategory").val();
+		var e = $("#examName").val();
+        if(e != 0){
+			$(".examineeList").show();
+			$("#examId").val(e)
+			//$("#categoryId").val(c)
+		}
+		else{
+			$(".examineeList").hide();
+		}
+	    
+
+})
+
+
+  //Fetch Exam-------------------------------------------------------
+	
+   	 $("#filterExam").click(function() {
+	  //var data = {categoryId:$("#examCategory").val(), year:$("#academicYear").val(),examType:$(this).val()};
+	  var data = {
+	  	from_date: $("#from_date").val(),
+	  	to_date: $("#to_date").val()	  	
+	  };
+	  var url = "<%= url_for(getExam_path)%>";
+	  
+	  			$.get(url, data, function(resp_data){
+				   var arr = resp_data.examNames
+				    $("#examName").empty();  
+				 $("#examName").append("<option value=" + "" + ">" + "<%=t('general.select')%>" + "</option>");
+				 jQuery.each(arr, function(index, value) {
+					$("#examName").append("<option title='"+value.exam.name+"' value=" + value.exam.id + ">" + value.exam.name + "</option>");
+				    });
+
+		    }, 'json')
+	  
+     });	
+		
+  //--------------------------------------------------------	
+
+  });
+  
+
+  </script>
+

@@ -1,0 +1,35 @@
+<div class="updateStatus">
+	<h2><%=t('user.examinees')%></h2>
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+<th><%=t('reports.view_report')%></th>
+<th><%=t('reports.excel')%></th>
+<th><%=t('reports.pdf')%></th>
+</tr>
+
+<%@category_user.each do|examinee|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<% user = User.find_by_id(examinee.userid)%>
+
+<%if user.is_temp_examinee == 1%>
+<td><%=user.login%></td>
+<%else%>
+<td><%=user.name%></td>
+<%end%>
+
+
+<td>
+<%= link_to t('general.view'), :action =>"viewuserReport", :user_id=>user.id, :category_id=>examinee.categoryid, :academicYear => examinee.academicyear, :examType=>examinee.examtype%>
+
+</td>
+<td><%= link_to image_tag("excel.png", :alt=>"excel report"), :action=>"userSubjectwise", :user_id=>user.id, :category_id=>examinee.categoryid, :academicYear => examinee.academicyear, :examType=>examinee.examtype, :csv => 1%>
+<td><%= link_to image_tag("pdf.png", :alt=>"pdf report"), :action=>"userSubjectwise", :user_id=>user.id, :category_id=>examinee.categoryid, :academicYear => examinee.academicyear, :examType=>examinee.examtype, :pdf => 1%>
+
+</td>
+</tr>
+<%end%>
+
+</table>
+
+</div>

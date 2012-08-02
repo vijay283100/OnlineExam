@@ -1,0 +1,30 @@
+
+<%if @create_id == '2'%>
+<div style="color: #5C5C5C; float: left; font-weight: bold; padding: 0 0 12px; width: 100%; font-size:14px;"><%=t('user.create_examiners')%></div>
+<%elsif @create_id == '3'%>
+<div style="color: #5C5C5C; float: left; font-weight: bold; padding: 0 0 12px; width: 100%; font-size:14px;"><%=t('user.create_qsetters')%></div>
+<%else%>
+<div style="color: #5C5C5C; float: left; font-weight: bold; padding: 0 0 12px; width: 100%; font-size:14px;"><%=t('user.create_examinees')%></div>
+<%end%>
+
+<fieldset class="formContainer">
+<% form_for @user, :id=>'create_user_form',:action => 'create', :html => { :id => "class_form"} do |f| %>
+  <%= f.error_messages %>
+  <%= render :partial => "form", :object => f %>
+  <%= f.submit t('general.create'), :class=>'btnBg floatL',:id=>"Submit" %>
+  
+  	 <%if @create_id == '2'%>
+		<div class="back_btn">| <%=link_to t('general.back'), :action=>"index", :controller=>"users", :create_id=>@create_id%></div>
+		<%elsif @create_id == '3'%>
+		<div class="back_btn">| <%=link_to t('general.back'), :action=>"index", :controller=>"users", :create_id=>@create_id%></div>
+		<%else%>
+		<div class="back_btn">| <%=link_to t('general.back'), :action=>"index", :controller=>"users", :create_id=>@create_id%></div>
+	 <%end%>
+<% end %>
+
+</fieldset>
+
+
+
+
+

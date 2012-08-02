@@ -1,0 +1,59 @@
+<div style="color: #5C5C5C; float: left; font-weight: bold; padding: 0 0 12px; width: 100%; font-size:14px;"><%=t('registration.register')%></div>
+<fieldset class="formContainer">
+<table  style="width:100%;">
+<tr>
+	<td><div class="regformRep">
+    <label><%=t('general.name')%></label>
+	<%= form.text_field :name, :class=>"validate[required,minSize[3],funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:160px; margin-bottom:8px;" %>
+	</div></td>
+</tr>
+
+<tr>
+<td><div class="regformRep"><label><%=t('login.userid')%></label><%#= form.label :login %>
+<%= form.text_field :login, :class=>"validate[required,minSize[3],funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:160px; margin-bottom:8px;" %>
+</div></td>
+
+</tr>
+<tr>
+<td><div class="regformRep"><label><%=t('general.email')%></label>
+<%= text_field_tag "email","", :class=>"validate[required,custom[email]] text-input", :id=>"userEmail", :style=>"border:#d1d1d1 1px solid; height:19px; width:160px; margin-bottom:8px;" %>
+</div></td>
+<td ><div style="width:285px; float:left;">
+                    <div id="sss" style="color:#db3939; font-style:italic;  float:left;"></div>
+                  </div>
+</td>
+
+</tr>
+<tr>
+<td><div class="regformRep"><label><%=t('login.password')%></label>
+<%=password_field_tag "password", '',:class=>"validate[required,minSize[6],funcCall[checkHELLO]] text-input", :id=>"password", :style=>"border:#d1d1d1 1px solid; height:19px; width:160px; margin-bottom:8px;"%>
+</div></td>
+</tr>
+<tr>
+<td><div class="regformRep"><label><%=t('login.confirm_pwd')%></label>
+<%=password_field_tag "confirm_password", '',:class=>"validate[required,minSize[6],equals[password],funcCall[checkHELLO]]", :id=>"password", :style=>"border:#d1d1d1 1px solid; height:19px; width:160px; margin-bottom:8px;"%>
+</div></td>
+
+</tr>
+<%= form.hidden_field :role_id, :value => 4 %>
+</table>
+</fieldset>
+<script type="text/javascript">	
+$(document).ready(function() {
+
+        $('#userEmail').mouseout(function(){
+          var value = $(this).val();
+          $.get($('#userEmail').attr('action'),$("#userEmail").serialize(),function(data){
+            if (data == "true"){
+              //alert("Email id already present")
+              $("#sss").text("Email id already exists.")
+            }
+            else
+              $("#sss").text("");
+          })
+        });
+        
+        
+  });
+$('#userEmail').trigger("blur");
+</script>

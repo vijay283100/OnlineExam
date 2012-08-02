@@ -1,0 +1,154 @@
+
+  <div class="navigation">
+    <div class="nav w100pc ">
+    <div class="col textaL floatL"><%=t('exam.exam_start_time')%> : <span id="examStart"></span></div>
+   <div class="col"><%=t('exam.exam_duration')%> : <span id="totalTime"></span> hrs</div>
+
+  <div class="col"><span><%=t('exam.time_left')%> : <span id="clock1"></span></span></div>
+    </div>
+  </div>
+
+
+<%= hidden_field_tag "exam_date",@exam_date, :id=>"examDate"%>
+<%= hidden_field_tag "year",@exam_date.year(), :id=>"year"%>
+<%= hidden_field_tag "month",@exam_date.month(), :id=>"month"%>
+<%= hidden_field_tag "day",@exam_date.day(), :id=>"day"%>
+<%= hidden_field_tag "hour",@exam_date.hour(), :id=>"hour"%>
+<%= hidden_field_tag "minute",@exam_date.min(), :id=>"minute"%>
+<%= hidden_field_tag "totalHour",@start_hour, :id=>"totalHour"%>
+<%= hidden_field_tag "totalMin",@start_min, :id=>"totalMin"%>
+
+<!-- newly added start-->
+<%= hidden_field_tag "now_year",Time.now().year(), :id=>"nowYr"%>
+<%= hidden_field_tag "now_month",Time.now().month(), :id=>"nowMnth"%>
+<%= hidden_field_tag "now_day",Time.now().day(), :id=>"nowDt"%>
+<%= hidden_field_tag "now_hr",Time.now().hour(), :id=>"nowHr"%>
+<%= hidden_field_tag "now_min",Time.now().min(), :id=>"nowMin"%>
+<%= hidden_field_tag "now_sec",Time.now().sec(), :id=>"nowSec"%>
+<!-- newly added end-->
+
+
+<script>
+	
+var yr = document.getElementById("year").value
+var mnth = document.getElementById("month").value
+var dy = document.getElementById("day").value
+var hr = document.getElementById("hour").value
+var minu = document.getElementById("minute").value
+var tot_hr = document.getElementById("totalHour").value
+var tot_min = document.getElementById("totalMin").value
+
+
+var examTotal_time = tot_hr+':'+tot_min
+document.getElementById("totalTime").innerHTML = examTotal_time
+
+var c_dT = new Date();
+var examDate = document.getElementById("examDate").value
+
+var monPlus = c_dT.getMonth()
+var month = monPlus+1
+
+var current_dateTime = month+'/'+c_dT.getDate()+'/'+c_dT.getFullYear()+' '+c_dT.getHours()+':'+c_dT.getMinutes() 
+var exam_dateTime = mnth+'/'+dy+'/'+yr+' '+hr+':'+minu
+
+document.getElementById("examStart").innerHTML = exam_dateTime
+
+var clockHour = parseInt(hr) + parseInt(tot_hr);
+var clockMinute = parseInt(minu) + parseInt(tot_min);
+
+//new calculation start
+
+var now_yr = document.getElementById("nowYr").value
+var now_mnth = document.getElementById("nowMnth").value
+var now_dy = document.getElementById("nowDt").value
+var now_hr = document.getElementById("nowHr").value
+var now_minu = document.getElementById("nowMin").value
+var now_sec = document.getElementById("nowSec").value
+
+if (clockMinute >= 60) {
+	
+	var hr_carry_float = parseInt(clockMinute)/60
+	var hr_carry = parseInt(hr_carry_float);
+	
+	var tot_hrs = parseInt(clockHour) + parseInt(hr_carry)
+	var mns_diff = parseInt(clockMinute)-60
+}
+
+if (clockMinute < 60) {
+	var tot_hrs = clockHour
+	var mns_diff = clockMinute
+}
+
+//*****************************************************
+
+if (tot_hrs > 24) {
+	var hr_diff = parseInt(tot_hrs)-24
+	var f_day = parseInt(dy)+1
+	var total_hrs = hr_diff
+}
+else {
+  var f_day = dy
+  var total_hrs = tot_hrs
+}
+
+//*******************************************************
+
+
+if (mns_diff == 0 || mns_diff == 1 || mns_diff == 2 || mns_diff == 3 || mns_diff == 4 || mns_diff == 5 || mns_diff == 6 || mns_diff == 7 || mns_diff == 8 || mns_diff == 9){
+	var final_time = total_hrs+':0'+mns_diff+':'+'00'
+}
+else {
+var final_time = total_hrs+':'+mns_diff+':'+'00'
+}
+
+var exam_start_time = now_mnth+'/'+now_dy+'/'+now_yr+' '+now_hr+':'+now_minu+':'+now_sec+' '+'+0530'
+
+StartCountDown("clock1", mnth+'/'+f_day+'/'+yr+' '+final_time+' '+'+0530', exam_start_time)
+
+
+  function StartCountDown(myDiv,myTargetDate,startTime)
+  {
+    var dthen	= new Date(myTargetDate);
+    var dnow	= new Date(startTime);
+    ddiff		= new Date(dthen-dnow);
+    gsecs		= Math.floor(ddiff.valueOf()/1000);
+    CountBack(myDiv,gsecs);
+  }
+  
+  function Calcage(secs, num1, num2)
+  {
+    s = ((Math.floor(secs/num1))%num2).toString();
+    if (s.length < 2) 
+    {	
+      s = "0" + s;
+    }
+    return (s);
+  }
+  
+  function CountBack(myDiv, secs)
+  {
+    var DisplayStr;
+    //var DisplayFormat = "%%D%% Days %%H%%:%%M%%:%%S%%";
+	var DisplayFormat = "%%H%%:%%M%%:%%S%%";
+    DisplayStr = DisplayFormat.replace(/%%D%%/g,	Calcage(secs,86400,100000));
+    DisplayStr = DisplayStr.replace(/%%H%%/g,		Calcage(secs,3600,24));
+    DisplayStr = DisplayStr.replace(/%%M%%/g,		Calcage(secs,60,60));
+    DisplayStr = DisplayStr.replace(/%%S%%/g,		Calcage(secs,1,60));
+    if(secs > 0)
+    {	
+      document.getElementById(myDiv).innerHTML = DisplayStr;
+      setTimeout("CountBack('" + myDiv + "'," + (secs-1) + ");", 990);
+    }
+    else
+    {
+      document.getElementById(myDiv).innerHTML = "00:00:00";
+      
+	  
+	  $("#examNext").hide()
+	  $("#examPrev").hide()
+	  $("#finishBtn").show()
+	  alert("<%=t('exam.time_elapsed')%>.")
+    }
+  }
+  
+</script>

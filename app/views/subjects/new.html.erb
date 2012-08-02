@@ -1,0 +1,17 @@
+<fieldset class="formContainer">
+<legend><%=t('subject.create_sub')%></legend> <br>
+<%form_for @subject, :html => { :id => "class_form"} do |f|%>
+ 
+ <span style="width: 130px; float: left;"><%=t('subject.subject_name')%>:</span>
+ <%= f.text_field :name, :class=>"validate[required,funcCall[checkHELLO]] text-input", :style=>"width:200px; height:19px; border:#d1d1d1 1px solid;" %><br><br>
+
+ <span style="width: 130px; float: left;"><%=t('general.select_cat')%>:</span>
+   <%= f.select :id,[[t('general.select'),""]] + @categories.collect{|p| [p.gathercat(p),p.id,{:title=>p.gathercat(p)}]}, {},:class=>"validate[required] w530 bdr" %>
+
+
+<br><br>
+
+ <%= f.submit t('general.create'), :class=>'btnBg floatL',:id=>"Submit" %> <div class="back_btn">| <%=link_to t('general.back'), :action=>'index', :controller=>'subjects'%></div>
+
+<%end%>
+</fieldset>

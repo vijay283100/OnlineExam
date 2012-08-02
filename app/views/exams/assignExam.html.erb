@@ -1,0 +1,156 @@
+<h2><%=t('exam.filter_exam')%></h2>
+
+<div class="formContainer">
+	<table class="formTable" style="border:0px;">
+		<tr>
+			
+	<td class="pb0">
+		<div style="float:left; padding:0px; margin:0 20px 5px 0;">
+			<label style="float:left; padding-right:10px; width:95px;"><%=t('exam.from_date')%>:</label>
+		          <%= text_field_tag "from_date","",:class=>"validate[required,custom[dateOnly]] text-input datepicker", :style=>"border:#d1d1d1 1px solid; height:19px; width:160px; margin-bottom:8px;" %>
+		</div>
+		<div class="clear"></div><br>
+	    <div style="float:left; padding:0px; margin:0; clear: left;">
+			<label style="float:left; padding-right:10px; width:95px;"><%=t('exam.to_date')%>:</label>
+		          <%= text_field_tag "to_date","",:class=>"validate[required,custom[dateOnly]] text-input datepicker", :style=>"border:#d1d1d1 1px solid; height:19px; width:160px; margin-bottom:8px;" %>
+		</div>
+
+	</td>				
+  		</tr>
+</table>
+<%=link_to(content_tag('span',t('general.filter')),'#nogo',{:title=>t('general.filter'),:class=>"btnLink w105", :id=>"filterExam"}) %>
+</div>
+
+
+
+
+<h2><%=t('exam.assign_exam')%></h2>
+<%form_for @exam, :url => { :action => "groupExam" }, :html => { :id => "class_form"} do |f|%>
+<div class="formContainer">
+	<table class="formTable" style="border:0px;">
+		<tr>
+			
+	<td class="pb0">
+		<div style="float:left; padding:0px; margin:0 20px 5px 0;">
+			<label style="float:left; padding-right:10px; width:95px;"><%=t('exam.select_exam')%>:</label>
+		    <%= f.select :id,[[t('general.select'),""]] + @exams.collect{|p| [p.name[0..40],p.id,{:title=>p.name}]}, {}, :class=>"validate[required] w200 bdr" %>
+		</div>
+		<div class="clear"></div><br>
+	    <div style="float:left; padding:0px; margin:0; clear: left;">
+			<label style="float:left; padding-right:10px; width:95px;"><%=t('exam.exam_type')%>:</label>
+		    <%= f.select :name,[[t('general.select'),""]] + @examTypes.collect{|p| [p.name[0..40],p.id,{:title=>p.name}]}, {}, :class=>"validate[required] w200 bdr" %>
+		</div>
+		<div class="clear"></div><br>
+	    <div style="float:left; padding:0px; margin:0;">
+			<label style="float:left; padding-right:10px; width:95px;"><%=t('exam.year')%>:</label>
+            <%= select_tag 'academicYear', options_for_select(([[t('general.select'),""]] + @yrs.to_a)), :class=>"validate[required] w120 bdr" %>
+		</div>
+	</td>				
+  		</tr>
+</table>
+</div>
+
+<h2><%=t('exam.cat')%></h2>
+<%unless @c.empty?%>
+<div class="updateStatus">
+<span id="collectCategory"><%=render :partial=>"collect_category"%></span>
+<%= submit_tag t('general.assign'), :id=>"assign", :class=>'btnBg' %>  
+
+</div>
+<%else%>
+<div class="formContainer">
+  No category found. Configure categories 
+ </div>
+ <%end%>
+
+<%end%>
+
+
+
+
+
+<script type="text/javascript">	
+
+function checkUncheckAll(checkAllState, cbGroup)
+{
+	// Check that the group has more than one element
+	if(cbGroup.length > 0)
+	{
+		// Loop through the array
+		for (i = 0; i < cbGroup.length; i++)
+		{
+			cbGroup[i].checked = checkAllState.checked;
+		}
+	}
+	else
+	{
+		// Single element so not an array
+		cbGroup.checked = checkAllState.checked;
+	}
+}
+
+
+$(document).ready(function() {
+$("#formID1").validationEngine();
+
+      $('#assign').click(function(){
+            var target = '<%= url_for(assignExaminees_path)%>';
+            $('.assign_examinee').attr('action', target);
+            $('.assign_examinee').submit();
+        });
+		
+		
+		 $('#tempExaminee').change(function(){
+            var target = '<%= url_for(selectExaminee_path)%>';
+            $('.assign_examinee').attr('action', target);
+            $('.assign_examinee').submit();
+        });
+		
+
+		$( ".datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
+
+		
+   $("#collectCategory .pagination a").live("click", function(){
+	
+	var link = this.href
+	var lastChar = link.substr(link.length - 1);	
+	if (lastChar == '#'){
+		return false;
+	}
+	else{
+		$.getScript(this.href);
+		return false;
+	}
+   });
+		
+		
+  //-------------------------------------------------------
+	
+   	 $("#filterExam").click(function() {
+	  //var data = {categoryId:$("#examCategory").val(), year:$("#academicYear").val(),examType:$(this).val()};
+	  var data = {
+	  	from_date: $("#from_date").val(),
+	  	to_date: $("#to_date").val()	  	
+	  };
+	  var url = "<%= url_for(getExam_path)%>";
+	  
+	  			$.get(url, data, function(resp_data){
+				   var arr = resp_data.examNames
+				    $("#exam_id").empty();  
+				 $("#exam_id").append("<option value=" + "" + ">" + "<%=t('general.select')%>" + "</option>");
+				 jQuery.each(arr, function(index, value) {
+					$("#exam_id").append("<option title='"+value.exam.name+"' value=" + value.exam.id + ">" + value.exam.name + "</option>");
+				    });
+
+		    }, 'json')
+	  
+     });	
+		
+  //--------------------------------------------------------		
+		
+
+  });
+  
+
+  </script>
+

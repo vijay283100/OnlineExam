@@ -1,0 +1,93 @@
+<div class="formContainer" style="border:0;">
+    <%= form_tag users_path, :method => 'get', :id=>'users_search' do %>
+  <p style="float: right; width: 285px; margin-right: -12px;"> 
+    <%=hidden_field_tag "create_id", @create_id%>	    
+    <%if t('language.lang') == "en"%>
+	<%= text_field_tag :search, params[:search], :style=>"width:175px; height:19px; border:#d1d1d1 1px solid; font-style:italic; float:left; margin:3px 0 0 0;", :class=>"hint", :value=>"Search User Id" , :onfocus=>"if (this.className=='hint') { this.className = ''; this.value = ''; }", :onblur=>"if (this.value == '') { this.className = 'hint'; this.value = 'Search User Id'; }"%>
+    <%elsif t('language.lang') == "de"%>
+	<%= text_field_tag :search, params[:search], :style=>"width:175px; height:19px; border:#d1d1d1 1px solid; font-style:italic; float:left; margin:3px 0 0 0;", :class=>"hint", :value=>"Suche User Id" , :onfocus=>"if (this.className=='hint') { this.className = ''; this.value = ''; }", :onblur=>"if (this.value == '') { this.className = 'hint'; this.value = 'Suche User Id'; }"%>	
+	<%end%>
+	<%= submit_tag t('general.search'), :name => nil, :class=>'btnBg', :style=>'float:right; margin:0;' %>
+  </p>
+<% end %>
+</div>
+
+<%if @create_id == '4'%>
+<% form_tag '/users',:remote=>true,:method=>"get",:id => "class_form" do -%><br><br>
+
+<h2><%=t('user.filter_temp')%></h2>
+<div class="formContainer">
+            <table class="formTable" style="border:0px;">
+	 
+			   <tr>
+                <td>
+                	<div style="float:left; padding:0px; margin:0;">
+					<label style="float:left; padding-right:10px; width:185px;"><%=t('user.examinee_temp')%>:</label>
+					<%= select_tag 'examinee_temp', options_for_select(([[t('general.select'),""],[t('general.all') , "0" ]] + @Selector_type.to_a)),{:class=>"validate[required]"}%>				
+			</div>
+				</td>
+                </tr>
+			   
+            </table>
+			<%= submit_tag t('general.filter'), :id=>"filter", :class=>'btnBg' %>
+</div>
+<%end%>
+<%end%>
+
+<div class="updateStatus">
+<span id="collectUsers"><%=render :partial=>"collectUsers"%></span>
+</div>
+
+<div class="examinee_links"> 
+<%if @create_id == '2'%>
+<%= link_to t('user.create'), :action=>'new', :controller=>'users', :create_id => 2%> |
+<%end%>
+
+<%if @create_id == '3'%>
+<%= link_to t('user.create'), :action=>'new', :controller=>'users', :create_id => 3%> |
+<%end%>
+
+<%if @create_id == '4'%>
+<%= link_to t('user.create_examinees'), :action=>'new', :controller=>'users', :create_id => 4%> |
+<%= link_to t('user.temp_create'), :action=>'new', :controller=>'temporary_examinee'%> |
+<%end%>
+
+<%if current_user.role_id == 1%>
+<%= link_to t('general.back'), :action=>'user_management', :controller=>'welcome'%>
+<%end%>
+
+<%if current_user.role_id == 2%>
+<%= link_to t('general.back'), :action=>'user_management', :controller=>'welcome'%>
+<%end%>
+</div>
+
+
+<script>		
+$(document).ready(function() {	  
+    $("#collectUsers .pagination a").live("click", function(){
+	
+	var link = this.href
+	var lastChar = link.substr(link.length - 1);	
+	if (lastChar == '#'){
+		return false;
+	}
+	else{
+		$.getScript(this.href);
+		return false;
+	}
+   });
+    
+    
+    	$(".pageNum").live("click", function(){
+		var url = "<%= url_for(users_path)%>";
+		var target = url + "?pageLength=" + this.id + "&create_id=" + $("#create_id").val() + "&examinee_temp=" + $("#examinee_temp").val() + "&search=" + $("#search").val()
+					$.getScript(target,$("#" + this.id).serialize(),function(data){
+                   });
+	//$.getScript(this.href,+"?pageLength="+this.id);
+	return false;
+   });
+   
+     });
+   
+ </script>
+

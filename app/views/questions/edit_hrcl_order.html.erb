@@ -1,0 +1,46 @@
+<br><br>
+<h2>Edit Question</h2><br>
+
+<% form_for(@question) do |f| %>
+  <%= f.error_messages %>
+  
+    <%= f.label :description %><br />
+	<%= f.text_area :description, :size => "30x5"%><br /><br>
+	<br />
+    
+	<%if @question.question_type_id == 1 or @question.question_type_id == 4 or @question.question_type_id == 5%>
+		options <br>
+		<%@answers.each do|answer|%>
+		<%#=text_field_tag a.id,a.name%>
+		<%= fields_for "answer[]", answer do |answer_fields| %>
+			<%= answer_fields.hidden_field :id %>
+			<%= answer_fields.text_field :name%>
+		<%end%>
+		<%= hidden_field_tag('seen[]', answer.id) %>
+		<%= radio_button_tag "is_answer[]", answer.id, answer.is_answer==1 ? true : false %><br>
+		<%end%>
+
+	<%elsif @question.question_type_id == 2%>
+		options <br>
+		<%@answers.each do|answer|%>
+		<%= fields_for "answer[]", answer do |answer_fields| %>
+			<%= answer_fields.hidden_field :id %>
+			<%= answer_fields.text_field :name%>
+		<%end%>
+		<%= hidden_field_tag('seen[]', answer.id) %>
+		<%= check_box_tag "is_answer[]", answer.id, answer.is_answer==1 ? true : false %><br>
+        <%end%>	
+		
+	<%elsif @question.question_type_id == 3%>
+		options <br>
+		<%@answers.each do|answer|%>
+		<%= fields_for "answer[]", answer do |answer_fields| %>
+			<%= answer_fields.hidden_field :id %>
+			<%= answer_fields.text_field :name%><br>
+		<%end%>
+        <%end%>
+
+	<%end%>
+  <br><br>	
+  <%= f.submit t('general.update') %> | <%=link_to "Back", :controller=>"questions"%>
+<% end %>

@@ -1,0 +1,78 @@
+
+<div style="color: #5C5C5C; float: left; font-weight: bold; padding: 0 0 12px; width: 100%; font-size:14px;"><%=t('settings.upload_img')%></div>
+
+<fieldset class="formContainer">
+<%= form_for @image, :url => { :action => "createClientimage" }, :html => { :id => "class_form",:multipart => true } do |f| %>
+
+		<table cellpadding="0" cellspacing="0" border="0" class="tblRepeter mt15">
+			<tr>
+				<td>
+		<div class="uploadRept">
+		<%=t('client.logo_info')%><br><br>
+		<%= f.file_field :image, :onchange => "preview(this);",:class=>"uploadReptCtrl validate[required]" %>
+		<div class="imageRept"><img alt="<%=t('general.preview')%>" id="preview-photo" ></div>
+		</div>
+		</td>
+		</tr>
+		</table>
+		<div class="clear"></div>
+<%= f.submit t('general.create'), :class=>'btnBg',:id=>"Submit" %>
+<% end %>
+</fieldset>
+
+<script>
+	function preview(what) {
+if(jQuery.browser.msie) {
+document.getElementById("preview-photo").src=what.value;
+return;
+}
+else if(jQuery.browser.safari) {
+document.getElementById("preview-photo").src=what.value;
+return;
+}
+document.getElementById("preview-photo").src=what.files[0].getAsDataURL();
+//  alert(jQuery("#preview-photo").height());
+//  alert(jQuery("#preview-photo").width());
+var h = jQuery("#preview-photo").height();  
+var w = jQuery("#preview-photo").width();//assuming width is 68, and height is floating
+if ((h > 68) || (w > 68)){
+if (h > w){
+jQuery("#preview-photo").css("height", "80px");
+jQuery("#preview-photo").css("width", "200px");
+}else {
+jQuery("#preview-photo").css("width", "200px");
+jQuery("#preview-photo").css("height", "80px");
+}
+}
+}
+
+
+
+function preview_answer(what,i) {
+	//var samp = document.getElementById("preview-answer-photo" + "_" + i).src=what.value;
+	//alert(i);
+if(jQuery.browser.msie) {
+document.getElementById("preview-answer-photo" + "_" + i).src=what.value;
+return;
+}
+else if(jQuery.browser.safari) {
+document.getElementById("preview-answer-photo" + "_" + i).src=what.value;
+return;
+}
+document.getElementById("preview-answer-photo" + "_" + i).src=what.files[0].getAsDataURL();
+//  alert(jQuery("#preview-photo").height());
+//  alert(jQuery("#preview-photo").width());
+var h = jQuery("preview-answer-photo" + "_" + i).height();  
+var w = jQuery("preview-answer-photo" + "_" + i).width();//assuming width is 68, and height is floating
+if ((h > 68) || (w > 68)){
+if (h > w){
+jQuery("preview-answer-photo" + "_" + i).css("height", "68px");
+jQuery("preview-answer-photo" + "_" + i).css("width", "auto");
+}else {
+jQuery("preview-answer-photo" + "_" + i).css("width", "68px");
+jQuery("preview-answer-photo" + "_" + i).css("height", "auto");
+}
+}
+}
+
+</script>

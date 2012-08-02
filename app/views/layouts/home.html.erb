@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+	<title>VirtualX - Online Examination System</title>
+	<%= favicon_link_tag 'favicon.ico' %>
+    <%= stylesheet_link_tag "application" %>
+	<%= stylesheet_link_tag "styles", "dropdown.linear", "validationEngine.jquery.css", "thickbox" %>
+	<%= stylesheet_link_tag "jquery-ui"%>
+    <%= javascript_include_tag :defaults %>
+    
+	<%= javascript_include_tag 'jquery-1.4.2.min', 'jquery-1.4.4', 'highcharts' %>
+	<%@setting = Setting.find(:first)%>
+	
+	<%if t('language.lang') == "en"%>
+	<%= javascript_include_tag 'jquery.validationEngine-en', 'jquery.validationEngine'%>
+	<%elsif t('language.lang') == "de"%>
+	<%= javascript_include_tag 'jquery.validationEngine-de', 'jquery.validationEngine'%>	
+	<%end%>
+	
+	<%= javascript_include_tag "jquery-ui.min.js", "jquery-ui-timepicker.js","thickbox" %>
+	<%= csrf_meta_tag %>
+	<%= yield(:head) %>
+	
+  </head>
+<body class="bgimg">
+<div id="mainWrapper">
+	<div class="wrapperContent">
+
+  <div class="headerCol">
+    
+    <div class="welMsg">
+      <%if current_user%>
+	      <%if current_user.is_temp_examinee == 1%>
+	      <p><%=t('general.welcome')%> <strong><%="#{current_user.login} "%></strong></p>
+	      <%else%>
+	      <p><%=t('general.welcome')%> <strong><%="#{current_user.name} "%></strong></p>
+	      <%end%>
+      <%end%>
+    </div>
+    <div class="lan_sign_Col">
+      <div class="signOut">
+      	<%unless current_user%>
+		<p><%= link_to t('general.signin'), new_user_session_path, :id=>"login"%></p>
+		<%else%>
+        <p><%= link_to t('general.signout'), logout_path%></p>
+		<p style="text-align:center; margin:0; padding:0 0 0 10px; width:1px;float:left"><span>|</span></p>
+			<%unless current_user.is_temp_examinee == 1%>
+			
+			<p><%=link_to t('home.edit_profile'), edit_user_path(current_user)%></p>
+			
+			<%end%>
+		
+		
+		<%end%>
+      </div>
+	  <%unless current_user%>
+      <div class="lanSwitch">
+        <p><%=t('general.language')%>:</p>
+        <%=link_to '', url_for(:locale => 'en'),:class=>'one'%> <%=link_to '', url_for(:locale => 'de'),:class=>'two'%>
+	  </div>
+	  <%end%>
+
+      </div>
+  </div>
+  <div class="logoHolder">
+    <div class="clientLogo">
+    	<%clientImage = ClientImage.find(:first)%>
+		<%unless clientImage == nil%>
+    	<%= image_tag clientImage.image.url(:original)%>
+		<%else%>
+		<%= image_tag "clientLogo.png", :size => "236x60", :alt=>'img' %>
+		<%end%></div>
+    <div class="virtualxLogo"><%= image_tag "virtualx_logo.jpg", :size => "236x60", :alt=>'img' %></div>
+  </div>
+ 
+  <div class="navigation">
+    <div class="nav">
+      <ul id="nav" class="dropdown dropdown-linear">
+	
+		      <%if current_user and (current_user.role_id == 1 or current_user.role_id == 2)%>
+			  
+			  <li class="dir">
+			    <%=link_to(content_tag('span',t('general.users')), :action=>'user_management', :controller=>'welcome') %>
+			          <%if current_user.role_id == 1%>
+				    <ul>
+				      <li><%= link_to t('general.examiner'), :action=>'index', :controller=>'users', :create_id => 2%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+				      <li><%= link_to t('welcome.q_setter'), :action=>'index', :controller=>'users', :create_id => 3%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+				      <li><%= link_to t('welcome.examinee'), :action=>'index', :controller=>'users', :create_id => 4%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+				      <li><%= link_to t('general.group_user'), :action=>'groupUser', :controller=>'users'%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>	
+					  <li><%= link_to t('general.activate'), :action=>'activate_inactivate', :controller=>'users'%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>			   
+					  <li><%= link_to t('general.admin_dashboard'), :action=>'admin_dashboard', :controller=>'welcome'%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>					   
+				    </ul>
+				  <%end%>
+				  <%if current_user.role_id == 2%>
+				    <ul>
+				      <li><%= link_to t('welcome.q_setter'), :action=>'index', :controller=>'users', :create_id => 3%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+				      <li><%= link_to t('welcome.examinee'), :action=>'index', :controller=>'users', :create_id => 4%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+				      <li><%= link_to t('general.group_user'), :action=>'groupUser', :controller=>'users'%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>				    
+					</ul>
+				  <%end%>
+			  </li>
+			  <li>
+			    <%=link_to(content_tag('span',t('general.subjects')),:action=>'index', :controller=>'subjects') %>
+			  </li>
+			  <li>
+			    <%=link_to(content_tag('span',t('general.questions')),:action=>'index', :controller=>'questions') %>
+			  </li>
+			  <li>
+			    <%=link_to(content_tag('span',t('general.exams')), :action=>'index', :controller=>'exams') %>
+			  	    <ul>
+				      <li><%= link_to t('general.create_exam'),:action=>"scheduleExam", :controller=>"exams" %></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+				      <li><%= link_to t('general.examtype'),:action=>"listExamtypes", :controller=>"exams" %></li>
+				      <li style="padding:5px 5px 0 5px">|</li>					  
+				      <li><%= link_to t('general.assignexam'),:action=>"assignExam",:controller=>'exams'%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+				      <li><%= link_to t('general.selectquestions'),:action=>"selectQuestion", :controller=>"exams" %></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+				      <li><%= link_to t('general.assignexaminees'),:action=>"selectExaminee", :controller=>"exams" %></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+				      <li><%= link_to t('evaluate.evaluate_exam'),:action=>"evaluate", :controller=>"exams" %></li>
+				      <li style="padding:5px 5px 0 5px">|</li>		
+					  <li><%= link_to t('evaluate.evaluators'),:action=>"evaluator", :controller=>"exams" %></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+				      <li><%= link_to t('evaluate.assign_evaluator'),:action=>"getEvaluator", :controller=>"exams" %></li>
+				      <li style="padding:5px 5px 0 5px">|</li>					  
+				    </ul>
+			  </li>
+			  <li>
+			    <%=link_to(content_tag('span',t('general.result')), :action=>'index', :controller=>'results') %>
+				  <ul>
+				      <li><%= link_to t('general.users'), :action=>"usersResult", :controller=>"results"%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+					  <li><%= link_to t('general.exams'), :action=>"examsResult", :controller=>"results"%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+				      <li><%= link_to t('general.department'), :action=>"departmentResult", :controller=>"results"%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+			      </ul>
+			  </li>
+			  <li>
+			  </li>
+			  <li>
+			  </li>
+			  <li class="dir">
+			    <%=link_to(content_tag('span',t('general.org_levels')), :action=>'index', :controller=>'category_titles') %>
+			    <%@organization_id = Setting.find(:first).organization_id%>
+			    <%@category_types = CategoryType.find_all_by_organization_id(@organization_id.to_i)%>
+			    <ul>
+				    <% @category_types.each do |category_type| %>
+					  <%if category_type.id == 1%>	
+					  <li><%=link_to "Class", :action=>'index', :controller=>"category_titles", :type=>category_type.id%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>	
+					  <%elsif category_type.id == 3%>	
+					  <li><%=link_to t('general.course'), :action=>'index', :controller=>"category_titles", :type=>category_type.id%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>					  	 
+					  <%elsif category_type.title == "academic_year"%>	
+					  <li><%=link_to t('general.academic_year'), :action=>'index', :controller=>"category_titles", :type=>category_type.id%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+					  <%elsif category_type.title == "department"%>	
+					  <li><%=link_to t('general.department'), :action=>'index', :controller=>"category_titles", :type=>category_type.id%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+					  <%elsif category_type.title == "domain"%>	
+					  <li><%=link_to "Domain", :action=>'index', :controller=>"category_titles", :type=>category_type.id%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+					  <%elsif category_type.title == "semester"%>	
+					  <li><%=link_to t('general.semester'), :action=>'index', :controller=>"category_titles", :type=>category_type.id%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+					  <%elsif category_type.title == "section"%>	
+					  <li><%=link_to t('general.section'), :action=>'index', :controller=>"category_titles", :type=>category_type.id%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+					 <%end%>     
+			       <% end %>
+			    </ul>
+			  </li>
+			  <li>
+			    <%=link_to(content_tag('span',t('general.category')), :action=>'listCategories', :controller=>'categories') %>
+			    	    <ul>
+				      <li><%= link_to t('general.config_category'), :action=>'index', :controller=>'categories', :create_id => 3%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+
+				    </ul>
+			  </li>
+				  <%if current_user.role_id == 1 %>
+				  <li>
+				    <%=link_to(content_tag('span',t('general.settings')), :action=>'index', :controller=>'settings') %>
+				  	  <ul>
+					  <li><%= link_to t('general.client_image'), :action=>"clientImage", :controller=>"images"%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+				      <li><%= link_to t('about.aboutus'), :action=>"index", :controller=>"aboutus"%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+				      <li><%= link_to t('client.client_info'), :action=>"index", :controller=>"clientinfo"%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>				      
+					  </ul>
+
+				  </li>
+				  <li>
+				  <%=link_to(content_tag('span',"Email"), :action=>'index', :controller=>'emails') %>
+				  </li>
+				  <%end%>
+				  <%if current_user.role_id == 1 or current_user.role_id == 2%>
+				  <li>
+				    <%=link_to(content_tag('span',t('general.reports')), :action=>'index', :controller=>'reports') %>
+				     <ul>
+				      <li><%= link_to t('general.examinees_report'), :action=>"userReport", :controller=>"reports"%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+					  <li><%= link_to t('general.exams_report'), :action=>"examReport", :controller=>"reports"%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+				      <li><%= link_to t('reports.overall'), :action=>"departmentReport", :controller=>"reports"%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+
+					  <li><%= link_to t('general.org_overview'), :action=>"overall", :controller=>"reports"%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>	
+					  <li><%= link_to t('general.pass_fail'), :action=>"pass_fail", :controller=>"reports"%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>						  				  
+			         </ul>
+				  </li> 
+				  <%end%>
+				  <%if current_user.role_id == 1 %>
+			      <li>
+				  	<%=link_to(content_tag('span',t('general.feedback')), :action=>'index', :controller=>'feedback') %>
+					<ul>
+					  <li><%= link_to t('general.feedback_res'), :action=>"feedbackResponse", :controller=>"feedback"%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+					</ul>
+				  </li>
+				  
+				  <%end%>
+			 <%elsif current_user and current_user.role_id == 3%>
+			   <li><%=link_to(content_tag('span',t('general.questions')),:action=>'index', :controller=>'questions') %></li>
+			   <li><%=link_to(content_tag('span',t('evaluate.evaluate_exam')),:action=>'evaluate', :controller=>'exams') %></li>
+
+			 <%elsif current_user and current_user.role_id == 4%>
+			   <li>
+			    <%=link_to(content_tag('span',t('general.view_exams')), :action=>'index', :controller=>'attend_exams', :user=>current_user) %>
+			          <ul>
+					  <li><%= link_to t('exam.pending'), :action=>"pendingExams", :controller=>"attend_exams"%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+					  <li><%= link_to t('exam.completed'), :action=>"completedExams", :controller=>"attend_exams"%></li>
+				      <li style="padding:5px 5px 0 5px">|</li>
+			         </ul>
+			   </li>
+      		           <li>
+			    <%if current_user and current_user.role_id == 1%>
+			    <%=link_to(content_tag('span',t('general.feedback')), :action=>'index', :controller=>'feedback') %>
+			    <%elsif current_user and current_user.role_id == 4%>
+			    <%=link_to(content_tag('span',t('general.feedback')), :action=>'viewFeedback', :controller=>'feedback') %>			    
+			    <%end%>
+			   </li>
+			   <li>
+			    <%=link_to(content_tag('span',t('general.result')), :action=>'index', :controller=>'results') %>
+			   </li>
+		      <% end %>
+      </ul>
+    </div>
+  </div>
+  <div class="contentWrapper">
+
+
+    <div class="midCol">
+       <% flash.each do |name, msg| %>
+	   <%if name.to_s == "notice"%>
+        <%= content_tag :div, msg, :class => "notice" %>
+	   <%elsif name.to_s == "success"%>
+	   <%= content_tag :div, msg, :class => "success" %>
+	   <%elsif name.to_s == "error"%>
+	   <%= content_tag :div, msg, :class => "error" %>
+	   <%end%>
+      <% end %>
+      <%= yield %>
+	  <div class="clear"></div>
+    </div>
+	<div class="clear"></div>
+  </div>
+
+<div class="clear"></div>
+</div>
+<div class="clear"></div>
+</div>
+
+
+<div id="footer">
+  <div class="footerContent">
+  	
+	<div class="footerNav">
+      <ul>
+        <li class="first"><%= link_to t('about.aboutus'), :action=>"view_aboutus", :controller=>"home"%></li>
+        <li><%= link_to t('about.clients'), :action=>"view_clients", :controller=>"home"%></li>
+        <li><%= link_to t('about.features'), :action=>"view_features", :controller=>"home"%></li>
+        <li><%= link_to t('about.modules'), :action=>"view_modules", :controller=>"home"%></li>
+        <li><%= link_to t('about.contactus'), :action=>"view_contactus", :controller=>"home"%></li>
+      </ul>
+    </div>
+	
+		<div class="copytxt">
+		<p class="copytxt">&copy; PITSolutions Pvt. Ltd., All rights reserved.</p>
+		</div>
+  </div>
+
+
+ </div>
+
+
+
+
+  </body>
+</html>
+
+

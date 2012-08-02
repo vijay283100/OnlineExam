@@ -1,0 +1,97 @@
+<fieldset class="formContainer">
+<legend><%=t('settings.application')%></legend>
+
+<% form_tag({:action => "create"}, {:id => "class_form"}) do %>
+
+<div class="formBg">
+            <table  style="width:100%;">
+              <tr>
+                <td style="width:115px; text-align:right; padding-right:10px;"><%=t('settings.allow_reg')%></td>
+                <td style="width:115px;">
+                   <%= check_box_tag "allow_examinee_reg", @setting.id, @setting.allow_examinee_registration==true ? true : false, :style=>"width:auto; height:19px; border:#d1d1d1 1px solid; float:left;" %></td>
+              <td style="font-style: italic; color: rgb(0, 0, 0); padding-left: 8px;"></td>
+			  </tr>
+            </table>
+</div>
+
+<div class="formBg">
+            <table  style="width:100%;">
+              <tr>
+                <td style="width:115px; text-align:right; padding-right:10px;"><%=t('settings.confirm_exam')%></td>
+                <td style="width:115px;">
+		    <%= check_box_tag "confirm_exam", @setting.id, @setting.confirm_exam==true ? true : false, :style=>"width:auto; height:19px; border:#d1d1d1 1px solid; float:left;" %>
+              <td style="font-style: italic; color: rgb(0, 0, 0); padding-left: 8px;"></td>
+			  </tr>
+            </table>
+</div>
+
+
+
+<div class="formBg">
+            <table  style="width:100%;">
+              <tr>
+                <td style="width:115px; text-align:right; padding-right:10px;"><%=t('settings.org_type')%></td>
+                <td style="width:115px;">
+                <%= select_tag 'orgnization_type', options_for_select(@organization_types.to_a, :selected=>@organizationName), :style=>"width:175px; height:19px; border:#d1d1d1 1px solid;" %>
+			    </td>
+				<td style="font-style: italic; color: rgb(0, 0, 0); padding-left: 8px;"></td>
+				</tr>
+            </table>
+</div>
+
+<div class="formBg">
+            <table  style="width:100%;">
+              <tr>
+                <td style="width:115px; text-align:right; padding-right:10px;"><%=t('settings.language')%></td>
+                <td style="width:115px;">
+                <%= select_tag 'locale', options_for_select(@Locale_type.to_a, :selected=>@locale), :style=>"width:115px; height:19px; border:#d1d1d1 1px solid;" %>
+								</td>
+				<td style="font-style: italic; color: rgb(0, 0, 0); padding-left: 8px;"></td>
+				</tr>	
+            </table>
+</div>
+
+
+<div class="formBg">
+            <table  style="width:100%;">
+              <tr>
+                <td style="width:115px; text-align:right; padding-right:10px;"><%=t('settings.approve_examinee')%></td>
+                <td style="width:115px;">
+                <%= select_tag 'approve_examinee', options_for_select(@approve_examinee.to_a, :selected=>@approveExaminee), :style=>"width:115px; height:19px; border:#d1d1d1 1px solid;" %>
+			    </td>
+				<td style="font-style: italic; color: rgb(0, 0, 0); padding-left: 8px;"></td>
+				</tr>
+            </table>
+</div>
+
+<div class="formBg">
+            <table  style="width:100%;">
+              <tr>
+                <td style="width:115px; text-align:right; padding-right:10px;"><%=t('settings.url')%></td>
+                <td style="width:115px;">
+                <%=text_field_tag 'url', @setting.url,:class=>"validate[custom[hostname],required] text-input", :style=>"width: 115px; height: 19px; border: 1px solid rgb(209, 209, 209);"%>
+				</td>
+				<td style="font-style: italic; color: rgb(0, 0, 0); padding-left: 8px;"></td>
+				</tr>
+            </table>
+</div>
+
+<!--<div class="formBg">
+            <table  style="width:100%;">
+              <tr>
+                <td style="width:115px; text-align:right; padding-right:10px;">Evaluation</td>
+                <td style="width:115px;">
+		       <%#= radio_button_tag "manual_evaluation", 1,@setting.manual_evaluation==1 ? true : false, {:class=>"validate[minCheckbox[1]] checkbox publish"} %>
+			   Manual
+			   <%#= radio_button_tag "manual_evaluation", 0,@setting.manual_evaluation==0 ? true : false, {:class=>"validate[minCheckbox[1]] checkbox publish"} %>
+			   System
+			   </td>
+			  
+              <td style="font-style: italic; color: rgb(0, 0, 0); padding-left: 8px;"></td>
+			  </tr>
+            </table>
+</div>-->
+	
+<%= submit_tag t('general.update'), :class=>'btnBg',:id=>"Submit" %>
+<% end %>
+</fieldset>

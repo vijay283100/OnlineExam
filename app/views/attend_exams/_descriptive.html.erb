@@ -1,0 +1,78 @@
+		  <%checkAttended = Evaluation.find_by_question_id_and_categoryexam_id_and_categoryuser_id_and_has_attended_and_attempt(@question.id,@categoryExam,@categoryUser,true,@attempt) %>
+		  
+		  <%unless checkAttended == nil%>
+		     <table class="answer_name" id="toggle_<%=@question.id%>">
+			 	<tr><th></th></tr>
+			 	<tr>
+			 	 <td>
+			 	  <%= hidden_field_tag "question_type_id", @question.question_type_id%>	
+	              <%= hidden_field_tag "question_id", @question.id%>
+				  <%= hidden_field_tag "attended", checkAttended.has_attended%>
+				  <%= hidden_field_tag "evaluation_id", checkAttended.id%>	
+				  <%# answers = Answer.find_all_by_question_id(@question.id)%>
+				   <%#answers.each do|answer|%>
+				        <span><%= text_area_tag "answer_name",checkAttended.descriptive_answer, :style=>"width:115px; height:19px; border:#d1d1d1 1px solid; background:#cfcfcf", :class=>"description"%></span>
+						<%#= radio_button_tag "answer_id", answer.id, checkAttended.answer_id == answer.id ? true : false, {:class=>"validate[minCheckbox[1]] checkbox publish", :style=>"margin-left: 10px; margin-right: 5px;",:disabled => false} %><br><br>
+					 
+				   <%#end%>				
+			 	 </td>
+				</tr>
+			 </table>
+		   <%else%>
+		      <table class="answer_name" id="toggle_<%=@question.id%>">
+			 	<tr><th></th></tr>
+			 	<tr>
+			 	 <td>
+			 	  <%= hidden_field_tag "question_type_id", @question.question_type_id%>	
+	              <%= hidden_field_tag "question_id", @question.id%>	
+				  <%# answers = Answer.find_all_by_question_id(@question.id)%>
+				   <%#answers.each do|answer|%>
+				        <span><%= text_area_tag "answer_name","", :style=>"width:115px; height:19px; border:#d1d1d1 1px solid;  background:#cfcfcf", :class=>"description"%></span>
+						<%#= radio_button_tag "answer_id", answer.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish", :style=>"margin-left: 10px; margin-right: 5px;"} %><br><br>
+					 
+				   <%#end%>				
+			 	 </td>
+				</tr>
+			  </table>   
+		   <%end%>
+		   
+ <script type="text/javascript" src="/javascripts/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript">
+tinyMCE.init({
+        // General options
+        mode : "textareas",
+		editor_selector : "description",
+        width:"350",
+        theme : "advanced",
+        plugins : "autolink,lists,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
+
+        // Theme options
+        theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
+        theme_advanced_buttons2 : "bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,insertdate,inserttime,preview,|,forecolor,backcolor,|,hr,removeformat,|,sub,sup,charmap,|,ltr,rtl",
+        //theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen",
+        //theme_advanced_buttons4 : "insertlayer,moveforward,movebackward,absolute,|,styleprops,spellchecker,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,template,blockquote,pagebreak,|,insertfile,insertimage",
+        theme_advanced_toolbar_location : "top",
+        theme_advanced_toolbar_align : "left",
+        theme_advanced_statusbar_location : "bottom",
+        theme_advanced_resizing : true,
+
+        // Skin options
+        skin : "o2k7",
+        skin_variant : "silver",
+
+        // Example content CSS (should be your site CSS)
+        content_css : "css/example.css",
+
+        // Drop lists for link/image/media/template dialogs
+        template_external_list_url : "js/template_list.js",
+        external_link_list_url : "js/link_list.js",
+        external_image_list_url : "js/image_list.js",
+        media_external_list_url : "js/media_list.js",
+
+        // Replace values for the template plugin
+        template_replace_values : {
+                username : "Some User",
+                staffid : "991234"
+        }
+});
+</script>

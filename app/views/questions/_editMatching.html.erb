@@ -1,0 +1,41 @@
+
+            <table cellpadding="0" cellspacing="0" border="0" class="tblRepeter" >
+	  	<tr>
+	  		<td valign="top"><strong><%=t('question.opt_a')%></strong></td>
+			<td valign="top"><strong><%=t('question.opt_b')%></strong></td>
+	  	</tr>
+	    
+	    	<tr align="center">
+	       <td>
+		  	<div class="tblCols rowValue">
+    	       <%@sub_questions.each do|answer|%>
+		    <%= fields_for "answer[]", answer do |answer_fields| %>
+			<%= answer_fields.hidden_field :id %>
+		    
+			  <div class="tblRepeaterRow mb0 pb10">  
+			    <%= answer_fields.text_field :name, :class=>"tblInputtxt validate[required,funcCall[checkHELLO]] text-input"%>
+			</div>
+			  
+		    <%end%>
+		  <%end%>
+		 	</div>
+			</td>    
+			  
+			<td>
+		  	<div class="tblCols rowValue">  
+		    <%@ans.each do|answer|%>
+			<%= fields_for "answerOrder[]", answer do |answerOrder_fields| %>
+			    <%= answerOrder_fields.hidden_field :id %>
+			   <div class="tblRepeaterRow mb0 pb10">  
+ 	
+				<%= answerOrder_fields.text_field :match_answer, :class=>"tblInputtxt validate[required,funcCall[checkHELLO]] text-input"%>
+                <div class="tblClsholder">
+			    <%=link_to image_tag("cross.jpg", :alt=>"Add Option"), {:action=>"delete_match_option",:controller=>"questions",:id=>answer.id,:question_id=>@question.id}, :confirm => t('json_message.are_you_sure')%><br>
+				</div>
+			   </div>
+			<%end%>
+		    <%end%>	
+			</div>
+			</td> 	  
+		    </tr>
+	  </table>

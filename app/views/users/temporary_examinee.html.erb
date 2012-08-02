@@ -1,0 +1,7 @@
+<h1>Create Temporary Examinee</h1>
+
+<% form_for @user, :action => 'generate_temporary_password' do |f| %>
+    <%= f.label :count %><br />
+	<%= f.text_field :count %><br />
+    <%= f.submit "Create" %>
+<% end %>

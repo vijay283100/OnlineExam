@@ -1,0 +1,23 @@
+<fieldset class="formContainer">
+<legend><%=t('subject.add_sub_to_cat')%></legend> <br>
+<%#form_for @subject, :html => { :id => "class_form"} do |f|%>
+<%form_tag({:action => "cs"}, {:id => "class_form"}) do%>
+ 
+  <span style="width: 130px; float: left;"><%=t('subject.select_sub')%>:</span>
+  <%=  select_tag :subject, options_for_select([[t('general.select'),""]] + @subjects.collect{|p| [p.name,p.id,{:title=>p.name}]}), {:style=>"width:200px; height: 19px; border: 1px solid rgb(209, 209, 209);", :class=>"validate[required]"}%>
+ <%#=  select_tag "subject", options_from_collection_for_select(@subjects, "id", "name"), :style=>"width:200px; height: 19px; border: 1px solid rgb(209, 209, 209);", :class=>"validate[required]"%><br><br>
+
+ <%#= f.select :id,@categories.collect{|p| [p.gathercat(p,@last_id),p.id]} %>
+
+ <span style="width: 130px; float: left;"><%=t('general.select_cat')%>:</span>
+ <%#= select_tag :id,@categories.collect{|p| [p.gathercat(p),p.id]} %>
+  <%=  select_tag :id, options_for_select([[t('general.select'),""]] + @categories.collect{|p| [p.gathercat(p),p.id,{:title=>p.gathercat(p)}]}), {:class=>"validate[required] w530 bdr"}%>
+
+<br><br><br>
+
+ <%= submit_tag t('general.create'), :class=>'btnBg floatL',:id=>"Submit" %> <div class="back_btn">| <%=link_to t('general.back'), :action=>'index', :controller=>'subjects'%></div>
+<%end%>
+</fieldset>
+
+
+

@@ -1,0 +1,122 @@
+
+<div class="qestionhead"><h3><%= @role %></h3> <%=render :partial=>"users/pageLinks"%></div>
+
+<%unless @users.empty?%>
+<div class="questionTabele">
+<table border="0" cellspacing="0" cellpadding="0">
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+<th><%=t('login.userid')%></th>
+<th><%=t('general.email')%></th>
+<th><%=t('general.act_inact')%></th>
+
+</tr>
+
+<%@users.each do|examinee|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<td><%=examinee.name%></td>
+<td><%=examinee.login%></td>
+<td><%=examinee.email%></td>
+
+<td>
+<%if examinee.active == true and examinee.confirmed == true and examinee.is_approved == 1%>
+<span style="float:left; cursor:pointer;" class="toggle plus" id="<%= examinee.id %>"> <%=image_tag("greenDot.png", :alt=>"active", :height=>"20", :width=>'20')%> </span>
+<%elsif examinee.confirmed == false%>
+<span style="float:left;"> <%=image_tag("redDot.png", :alt=>"inactive", :height=>"20", :width=>'20')%> </span>
+<%else%>
+<span style="float:left; cursor:pointer;" class="toggle minus" id="<%= examinee.id %>"> <%=image_tag("redDot.png", :alt=>"inactive", :height=>"20", :width=>'20')%> </span>
+<%end%>
+</td>
+
+</tr>
+<%end%>
+</table>
+</div>
+<%else%>
+<div class="formContainer">
+  <%=t('user.user_notfound')%> 
+ </div>
+ <%end%>
+
+ <div class="qestionhead">
+   <%= will_paginate @users, 
+                :prev_label => t('general.previous'), 
+                :next_label => t('general.next'),
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+    %>
+</div>	
+	
+<script type="text/javascript">	
+$(document).ready(function() {
+
+$('#filter').click(function(){
+			var s = $("#examineeType").val();
+            $("#textvalue").val(s)
+        })
+
+
+	  
+	$(".pageNum").live("click", function(){
+		var url = "<%= url_for(activate_inactivate_path)%>";
+		var target = url + "?pageLength=" + this.id + "&examineeType=" + $("#textvalue").val() + "&search=" + $("#search").val()
+					$.getScript(target,$("#" + this.id).serialize(),function(data){
+                   });
+	//$.getScript(this.href,+"?pageLength="+this.id);
+	return false;
+   });
+	
+
+
+$(".toggle").click(function(){
+
+	  var plus_sign = ' <img src="/images/greenDot.png" alt="plus" id="plus" width="20" height="20"> '
+	  var minus_sign = ' <img src="/images/redDot.png" alt="minus" id="minus" width="20" height="20"> '
+	  hasplus = $(this).hasClass('plus');
+	  
+	  var symbolSwitch = $(this).hasClass('minus') ?  plus_sign  :  minus_sign
+	  if ($(this).hasClass('minus')) { $(this).addClass('plus');$(this).removeClass('minus') } else {  $(this).addClass('minus');$(this).removeClass('plus') };
+      $(this).html(symbolSwitch);
+
+				if (hasplus == true){
+						var data = {user_id: this.id};
+				        
+						var url = "<%= url_for(inactivate_path)%>";
+				       $.get(url, data)
+				}
+				else {
+	
+						var data = {user_id: this.id};
+				        var url = "<%= url_for(activate_path)%>";
+				        $.get(url, data)	   
+	           }
+ 
+       });
+
+			$('.activate').click(function(){
+
+				var thischeck = $(this);
+	           var recordId = this.id
+				if (thischeck.is (':checked')){
+						var data = {user_id: this.id};
+				        var url = "<%= url_for(activate_path)%>";
+				       $.get(url, data)
+					   $("#record_" + recordId).empty()
+                       $("#record_" + recordId).append("Active")
+
+				}
+                                
+				else {
+	
+						var data = {user_id: this.id};
+				        var url = "<%= url_for(inactivate_path)%>";
+				       $.get(url, data)
+					   $("#record_" + recordId).empty()
+						$("#record_" + recordId).append("Inactive")
+	   
+	           }
+
+        });	
+
+ });	
+ </script>

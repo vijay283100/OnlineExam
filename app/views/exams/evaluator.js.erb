@@ -1,0 +1,19 @@
+var flg = '<%=@flag%>'
+
+
+if(flg == "d") {
+
+$("#evaluators").html("<%= escape_javascript(render("collect_evaluators"))%>")
+
+$('#deleted').append("<%=t('evaluator.deleted')%>").delay(2000);
+							setTimeout(function() {
+						     $("#deleted").empty();
+						     }, 5000);
+
+}
+
+else {
+$("#evaluators").html("<%= escape_javascript(render("collect_evaluators"))%>")
+
+}
+

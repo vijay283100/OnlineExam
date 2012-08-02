@@ -1,0 +1,12 @@
+            <table class="formTable" style="border:0px;">
+              <tr>
+                <td class="pb0">				
+				<div style="float:left; padding:0px; margin:0 20px 5px 0;">
+					<label style="float:left; padding-right:10px; width:95px;"><%=t('general.select_cat')%>:</label>
+		        <%#= select_tag "examCategory",options_for_select([[t('general.select') , "" ]] + @c.collect{|p| [p.gathercat(p),p.category_id,{:title=>p.gathercat(p)}]},:selected=>@category_id), {:id=>"examCategory", :class=>"category w530 bdr validate[required]"} %>	
+			    <%= select_tag "examCategory",options_for_select([[t('general.select') , "" ]] + @c.collect{|p| [p.gathercat(p),p.id,{:title=>p.gathercat(p)}]},:selected=>@category_id), {:id=>"examCategory", :class=>"category w530 bdr validate[required]"} %>	
+
+				</div>													
+				</td>
+               </tr> 
+            </table>

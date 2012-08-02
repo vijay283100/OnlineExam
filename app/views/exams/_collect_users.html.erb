@@ -1,0 +1,49 @@
+
+<div class="updateStatus">
+	<h2><%=t('user.examinees')%></h2>
+	<% unless @category_user.empty?%>
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+
+<th><%= check_box "checkall", "checkall", :onclick => "checkUncheckAll(this,examinee_);" %></th>
+
+</tr>
+
+<%@category_user.each do|examinee|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<% user = User.find_by_id(examinee.user_id)%>
+<td style="width:95%">	
+	<% if user.is_temp_examinee == 1 %> 
+	<%=user.login%>
+	<%end%>
+	<% if user.is_temp_examinee == 0 %>
+	<%=user.name%>
+	<%end%>
+</td>
+
+
+<td style="width:5%">
+<%= check_box_tag "examinee[]", examinee.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish"} %>
+
+</td>
+
+</tr>
+<%end%>
+
+</table>
+	<%= will_paginate @category_user, 
+                :prev_label => t('general.previous'), 
+                :next_label => t('general.next'),
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+              %>
+<%= submit_tag t('general.assign'), :id=>"assign", :class=>'btnBg' %>
+<%else%>
+<div class="formContainer">
+  <%=t('not_found.no_examinees')%>
+ </div>
+<%end%>
+</div>
+
+			  

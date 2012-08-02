@@ -1,0 +1,164 @@
+<div class="qestionhead"><h3><%if @question_type_id%><%=@question_type_name%> <%=t('general.questions')%><%else%><%=t('question.all_question')%><%end%></h3> <%=render :partial=>"users/pageLinks"%></div>
+<%unless @questions.empty?%>
+
+<div class="questionTabele">
+<table border="0" cellspacing="0" cellpadding="0">
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+<th><%=t('question.ques_type')%></th>
+<th><%=t('subject.sub')%></th>
+<th class='alignC'><%=t('subject.publish')%><%#= check_box "checkall", "checkall", :onchange => "checkUncheckAll(this,question_);" %></th>
+<th class='alignC'><%=t('subject.share')%></th>
+<th><%=t('general.edit')%></th>
+<th><%=t('general.delete')%></th>
+
+</tr>
+
+<%@questions.each do|question|%>
+<tr class="<%= cycle("odd", "even") %>">
+
+<td id="reset_share_<%=question.id%>" class="firstblock"><%= link_to question.description.html_safe, :action=>"viewQuestion", :question=> question.id%><span id="question_share_<%=question.id%>"></span></td>
+<td>
+ 	<%qt=QuestionType.find_by_id(question.question_type_id)%>
+ 	<%unless qt == nil%>
+	<%=qt.name%>
+	<%end%>
+</td>
+<td class="thirdblock">
+	<%if question.categorysubject_id != 0%>
+         <% catsub = Categorysubject.find_by_id(question.categorysubject_id)%>
+	     <% unless catsub == nil%>
+		 <% sub = Subject.find_by_id(catsub.subject_id)%>
+	     <%=sub.name%>
+		 <%end%>
+	<%else%>
+   	 General
+ 	<%end%>
+</td>
+<td class='alignC'>
+
+       <%if (current_user.role_id == Admin or current_user.role_id == Examiner)or (question.user_id == current_user.id)%>
+       	<%= check_box_tag "question[]", question.id, question.is_published==true ? true : false, {:class=>"validate[minCheckbox[1]] checkbox publish alignV", :id=> "question_#{question.id}"} %>
+       <%else%>
+       Published
+       <%end%>
+</td>
+<td class='alignC'>
+
+    <%if (current_user.role_id == Admin or current_user.role_id == Examiner)or (question.user_id == current_user.id)%>
+	 
+	 <%= check_box_tag "share[]", question.id,false, {:class=>"validate[minCheckbox[1]] checkbox share alignV", :id=> "share_#{question.id}"} %>
+     
+	   <%else%>
+       Shared
+       <%end%>
+</td>
+<%if question.checkMark(question.id)== 1%>
+<td><%=link_to image_tag("edit.png", :alt=>"Edit"), edit_question_path(question,:qt_id =>question.question_type_id)%></td>
+<td><%=link_to image_tag("del.png", :alt=>"Remove"), question, :confirm => t('json_message.are_you_sure'), :method => :delete%></td>
+<%else%>
+<td><%=link_to image_tag("edit_d.png", :alt=>"Edit"), "#",:class=>"removeHand"%></td>
+<td><%=link_to image_tag("del_g.png", :alt=>"Remove"), "#",:class=>"removeHand"%></td>
+<%end%>
+</tr>
+<%end%>
+
+</table>
+</div>
+<%else%>
+<div class="formContainer">
+  <%=t('question.no_q_found')%>
+ </div>
+ <%end%>
+ 
+ <div class="qestionhead">
+ <div style="margin: 10px 0; padding: 8px 0 0; float:left;">
+<%=link_to t('question.create_ques'), :action=>"question_type_listing", :controller=>"questions", :q_id=>@qId.to_i%>
+</div>
+	<%= will_paginate @questions, 
+                :prev_label => t('general.previous'), 
+                :next_label => t('general.next'),
+   				 :inner_window => "2", 
+  				  :outer_window => "0",
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+              %>
+</div>
+<script type="text/javascript">	
+$(document).ready(function() {
+	
+	    $('#filter').click(function(){
+			var s = $("#question_type").val();
+            $("#textvalue").val(s)
+        }) 
+		
+			
+
+			  
+			$(".pageNum").live("click", function(){
+				var url = "<%= url_for(questions_path)%>";
+				var target = url + "?pageLength=" + this.id + "&question_type=" + $("#textvalue").val()
+							$.getScript(target,$("#" + this.id).serialize(),function(data){
+		                   });
+			//$.getScript(this.href,+"?pageLength="+this.id);
+			return false;
+		   });
+			
+
+
+
+		//$('.publish').click(function(){	
+			$('.publish').click(function(){
+				//qid = $(this).attr("id");
+				//qvalue = $(this).val();
+				//alert(qvalue);
+				var thischeck = $(this);
+				//alert (thischeck);
+				if (thischeck.is (':checked')){
+				 var target = '<%= url_for(publish_unpublish_path)%>';
+			//$('.publish_unpublish').attr('action', target);
+			//$('.publish_unpublish').submit();
+				$.get(target,$("#" + this.id).serialize(),function(data){
+                   });
+
+				}
+                                
+                   else{
+                                  var target = '<%= url_for(unpublish_path)%>';
+                                  var unpublished_target = target + "?question=" + this.id
+                                  $.get(unpublished_target,$("#" + this.id).serialize(),function(data){
+                                    if (data == "true"){
+                                      //TODO Thickbox function call goes here...
+                                      alert("<%=t('question.ques_unpublished')%>")
+                                    }
+                                  });
+                                }
+
+        });
+		
+							$('.share').click(function(){
+					
+			var thischeck = $(this);
+				if (thischeck.is(':checked')) {
+					var target = '<%= url_for(sharewithCategory_path)%>';
+
+                                        var shared_target = target + "?share=" + this.id
+                                        var dialog = "question_" + this.id
+
+                                            $("#"+dialog).dialog({width: 460, minHeight: 300});
+                                            $("#"+dialog).load(shared_target)				
+				}
+				
+				else {
+					var reset = "reset_" + this.id
+				    var dialog = "question_" + this.id
+					var $el = $('<span id=" + dialog + "></span>');
+                    $(".ui-dialog").remove();
+					$("#" + dialog).remove();
+					$("#" + reset).append('<span id="' + dialog + '"></span>');
+				}	
+					
+		});
+		
+                        });
+  </script>

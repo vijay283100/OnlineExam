@@ -1,0 +1,32 @@
+<%= form_for :exam, :url => {:action => "examination"} do |f| %>
+<div style="color: #5C5C5C; float: left; font-weight: bold; padding: 0 0 12px; width: 100%; font-size:14px;"><%=t('general.instruction')%></div>
+
+<fieldset class="formContainer">
+
+ <p style="text-align:justify;">
+ 	<%=t('exam.instruction_start_exam')%>  <br><br>
+	
+	<%=t('exam.instruction_total_mark')%> <%=@questions_length%> <%=t('general.questions')%>. <br><br>
+    
+	<%=@exam.instruction%>
+	
+ </p>
+
+</fieldset>
+<span></span>
+<%end%>
+<span style="float:left;"><button id="parentBtn" class="btnBg_sub" onclick="window.open('<%= url_for(:action=>"examination", :categoryuser_id=>@category_user, :categoryexam_id=> @category_exam, :attempt=>@attempt) %>', '', 'toolbars=0,resizable,scrollbars')">Start</button><span>
+<script>
+	
+	$(document).ready(function() {
+		
+		$('#parentBtn').click(function(){
+
+   			parent.location.href = 'http://<%=@hostname%>/results/index';
+        });
+		
+});
+
+
+
+</script>

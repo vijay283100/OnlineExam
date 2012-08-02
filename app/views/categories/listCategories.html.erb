@@ -1,0 +1,41 @@
+<h2><%=t('general.categories')%></h2>
+
+<% unless @categories.empty?%>
+<div class="updateStatus">
+
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('general.cat_name')%></th>
+<th><%=t('general.delete')%></th>
+</tr>
+
+<%@categories.each do|c|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<td title="<%=c.gathercat(c)%>"><%=c.gathercat(c)%></td>
+
+
+<td>
+<%=link_to(image_tag("del.png", :alt=>"Remove"), {:action=>:delete_category, :controller=>"categories",:category_id => c.id},{ :confirm=> t('json_message.are_you_sure') })%>
+</td>
+
+</tr>
+<%end%>
+
+</table>
+
+<div class="n_s_left mt15"><%=link_to t('general.config_cat'), :action=>:index%></div>
+	<div class="n_s_right"><%= will_paginate @categories, 
+                :prev_label => t('general.previous'), 
+                :next_label => t('general.next'),
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+              %></div>
+</div>
+<br>
+<%else%>
+<div class="formContainer">
+ <%=t('not_found.no_category')%> 
+ </div>
+ <%=link_to t('general.config_cat'), :action=>:index%>
+ <%end%>
+

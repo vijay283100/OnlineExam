@@ -1,0 +1,96 @@
+
+
+<%if current_user.role_id == Examinee%>
+
+<% form_tag resultIndex_path, :method=>"get", :id=>"class_form", :class=>"assign_question floatL w100pc mb15" do -%>
+
+<div class="formContainer">
+	<table class="formTable" style="border:0px;">
+		<tr>
+			
+	<td class="pb0">
+		<div style="float:left; padding:0px; margin:0 20px 5px 0;">
+			<label style="float:left; padding-right:10px; width:95px;"><%=t('general.select_cat')%>:</label>
+            <%= select_tag "categoryId",options_for_select([[t('general.select') , "" ]] + @category_user.collect{|p| [p.gathercat_user(p),p.category_id,{:title=>p.gathercat_user(p)}]},:selected=>@categoryId), {:id=>"examCategory", :style=>"border: 1px solid rgb(209, 209, 209);",:class=>"validate[required] category w530"} %>
+		
+		</div><div class="clear"></div><br>
+	    <div style="float:left; padding:0px; margin:0; clear: left;">
+			<label style="float:left; padding-right:10px; width:95px;"><%=t('exam.exam_type')%>:</label>
+             <%= select_tag 'et_name',options_for_select([[t('general.select') , "" ]] + @examTypes.collect{|p| [truncate(p.name,:length=>30),p.id,{:title=>p.name}]},:selected=>@examType), {:class=>"validate[required] w200 bdr"} %>
+		</div>
+		<div class="clear"></div><br>
+	    <div style="float:left; padding:0px; margin:0;">
+			<label style="float:left; padding-right:10px; width:95px;"><%=t('exam.year')%>:</label>
+			<%= select_tag 'academicYear', options_for_select([[t('general.select') , "" ]] + @yrs.collect{|p| [p]},:selected=>@year), {:class=>"validate[required] w120 bdr academicYear"} %>
+		</div>
+	</td>				
+  		</tr>
+</table>
+<%= submit_tag t('general.filter'), :id=>"filterexam", :class=>'btnBg' %>
+</div>
+<%end%>
+
+
+
+<div class="updateStatus">
+<h3><%=t('result.res')%></h3>
+<%unless @results.empty?%>
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('exam.name')%></th>
+<th><%=t('exam.attempt')%></th>
+<th><%=t('exam.total_mark')%></th>
+<th><%=t('exam.mark_scored')%></th>
+<th><%=t('exam.percent')%></th>
+<th><%=t('general.status')%></th>
+</tr>
+<%@results.each do|result|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+
+<td>
+	<%="#{result.examname}"%>
+</td>
+<td>
+ 	<%="#{result.attempt}"%>
+</td>
+<td>
+	<%="#{result.total_mark}"%>
+</td>
+<td>
+	<%=result.result_pending.to_i == 0 ? result.score.to_f.round(2) : "Pending"%>
+</td>
+<td>
+	<%=result.result_pending.to_i == 0 ? result.percent.to_f.round(2) : "Pending"%>
+</td>
+<td>
+	<%if result.result_pending.to_i == 0%>
+	<%=result.status == 'p' ? 'pass' : 'fail'%>
+	<%else%>
+	Pending
+	<%end%>
+</td>
+</tr>
+<%end%>
+
+</table>
+<%else%>
+<div class="formContainer">
+  <%=t('not_found.no_result')%>
+ </div>
+<%end%>
+</div>
+<%end%>
+
+<%if current_user.role_id == Admin or current_user.role_id == Examiner%>
+<div style="color: #5C5C5C; float: left; font-weight: bold; padding: 0 0 12px; width: 100%; font-size:14px;"><%=t('result.res_type')%></div>
+
+<fieldset class="formContainer">
+
+<!--<legend>Result Types</legend>-->
+<%= link_to t('result.examinees_result'), :action=>"usersResult", :controller=>"results"%> <br><br>
+<%= link_to t('result.exams_result'), :action=>"examsResult", :controller=>"results"%><br><br>
+<%= link_to t('result.department_result'), :action=>"departmentResult", :controller=>"results"%>
+</fieldset>
+
+<%end%>
+

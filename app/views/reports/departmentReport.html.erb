@@ -1,0 +1,42 @@
+
+
+<h2><%=t('reports.overall')%></h2>
+<div class="formContainer">
+     <% form_tag generateDepartmentReport_path,:method=>"get", :id=>"class_form", :class=>"assign_examinee" do -%>
+
+            <table class="formTable" style="border:0px;">
+            <tr>
+            <td> 
+           <div style="float:left; padding:0px; margin:0 20px 0 0;">
+		   <label style="float:left; padding-right:10px; width:120px;"><%=t('general.select_cat')%>: </label>
+		   <%= select_tag "examCategory",options_for_select([[t('general.select') , "" ]] + @c.collect{|p| [p.gathercat(p),p.id,{:title=>p.gathercat(p)}]},:selected=>@category_id), {:id=>"examCategory", :class=>"category w530 bdr validate[required]"} %>
+		   </div>
+		   <div class="clear"></div><br>
+		   		   
+	       <div style="float:left; padding:0px; margin:0; clear: left;">
+		   <label style="float:left; padding-right:10px; width:120px;"><%=t('exam.year')%>:</label>
+		   <%= select_tag 'academicYear', options_for_select(([[t('general.select'),""]] + @yrs.to_a),:selected=>@academicYear),:class=>"validate[required] w120 bdr" %>		   
+		   </div>
+		   <div class="clear"></div><br>		   
+
+			<div style="float:left; padding:0px; margin:0; clear: left;">
+			<label style="float:left; padding:3px 10px 0 0; width:120px;"><%=t('general.examtype')%>:</label>
+			<%= select_tag 'examtype',options_for_select([[t('general.select'),""]] + @examTypes.collect{|p| [truncate(p.name,:length=>30),p.id,{:title=>p.name}]},:selected=>@examtype), {:style=>"width: 200px; height: 19px; border: 1px solid rgb(209, 209, 209);",:class=>"validate[required]"} %>
+            </div>
+			<div class="clear"></div><br>	
+			
+			<div style="float:left; padding:0px; margin:0; clear: left;">
+			<%=t('reports.exl')%>: <%= radio_button_tag "fileType", 1, false,:class=>"validate[minCheckbox[1]] checkbox publish"%>
+		    <%=t('reports.pd')%>: <%= radio_button_tag "fileType", 0, false,:class=>"validate[minCheckbox[1]] checkbox publish"%>
+			</div>
+            </td> 
+			
+			</tr> 
+
+            </table>
+			<%= submit_tag t('general.generate'), :id=>"assign", :class=>'btnBg' %>
+	<%end%>
+</div>
+
+
+

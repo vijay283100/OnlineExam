@@ -1,0 +1,825 @@
+<fieldset class="formContainer">
+  <legend><%=t('question.edit_ques')%></legend><br>
+ 
+    <%if @question.question_type_id == 9%>
+	   <%#= form_for @imageNew, :url => { :action => "update" }, :html => { :id => "class_form" } do |f| %>
+	   <%= form_for @question, :html => { :id => "class_form",:multipart => true } do |f| %>
+	   
+	     <%= f.error_messages %>
+  
+          <%=render :partial=>"edit_add_question", :locals => { :f => f }%>
+	   
+	   <% if @image.photo.exists? then %>
+			
+		<table cellpadding="0" cellspacing="0" border="0" class="tblRepeter">
+			<tr>
+				<td>
+					<div class="uploadRept">
+		<%= file_field 'image','photo', :onchange => "preview(this);",:class=>"uploadReptCtrl" %>
+		<div class="imageRept"><%= image_tag @image.photo.url(:original), :size => "200x80", :id=>"preview-photo" %></div>
+		</div>
+		</td>
+		</tr>
+		</table>	
+	
+	   <% end %>
+	<div class="clear"></div>
+
+		<%=hidden_field_tag "qt_id", @question.question_type_id%>
+		<%=hidden_field_tag "q_id", @question.id%>
+		<table class="answer_name">
+			<tr><th style="text-align:left;"><%=t('question.options')%></th></tr> <br>
+			
+			<%@answers.each do|answer|%>
+			<tr><td>
+			<%#=text_field_tag a.id,a.name%>
+			<%= fields_for "answer[]", answer do |answer_fields| %>
+				<%= answer_fields.hidden_field :id %>
+				<%= answer_fields.text_field :name,:style=>"width:115px; height:19px; border:#d1d1d1 1px solid; margin-right:10px; float:left;",:class=>"validate[required,funcCall[checkHELLO]] text-input"%>
+			<%end%>
+			<%= hidden_field_tag('seen[]', answer.id) %>
+			<%= check_box_tag "is_answer[]", answer.id, answer.is_answer==1 ? true : false, :style=>"float:left; margin-right:5px; margin-top:3px;", :class=>"mtie7" %>
+			<%#= link_to "Delete", :action=>"delete_option",:id=>answer.id%>
+			<%=link_to image_tag("cross.jpg", :alt=>"Add Option"), {:action=>"delete_option",:controller=>"questions",:id=>answer.id,:question_id=>@question.id}, :confirm => t('json_message.are_you_sure')%><br>
+			</td></tr>
+			<%end%>
+			
+		</table>
+        <%#=link_to "Add option", "#", :id=>"add_new" %>
+		<%=link_to image_tag("plus.jpg", :alt=>"Add Option"),"#",:id=>"add_new"%><br><br>
+		  <%=t('question.set_mark')%>: 
+		  <%if @question.checkMark(@question.id)== 1%>
+		  <%=text_field_tag "mark", @question.mark,:class=>"validate[required,custom[number]] text-input",:style=>"width:40px; height:19px; border:#d1d1d1 1px solid;"%>
+          <%else%>
+		  <%=text_field_tag "mark", @question.mark,:class=>"validate[required,custom[number]] text-input",:style=>"width:40px; height:19px; border:#d1d1d1 1px solid;",:disabled=>true%>
+		  <%end%>
+					<p class="showComment" style="color:#db3939; font-style:italic;  text-align:center; font-size:14px; display:inline"></p>
+<br><br>
+	  <%#=link_to "Add option", "#", :id=>"add_imagebased_blank" %>
+	  <%= f.submit t('general.update'), :class=>'btnBg floatL multipleSelection',:id=>"Submit" %> <div class="back_btn"> | <%=link_to t('general.back'), :controller=>"questions", :question_type=>@question_type_id%> </div>
+	  <%end%>
+	  <%end%>
+	  
+    <%if @question.question_type_id == 6%>
+	<%@answer_count=1%>
+	   <%#= form_for @imageNew, :url => { :action => "update" }, :html => { :id => "class_form" } do |f| %>
+	   <%= form_for @question, :html => { :id => "class_form", :name=> 'form1',:multipart => true } do |f| %>
+	   
+	     <%= f.error_messages %>
+  
+	    <%=render :partial=>"edit_add_question", :locals => { :f => f }%>
+				
+		<table cellpadding="0" cellspacing="0" border="0" class="tblRepeter">
+			<tr>
+				<td>
+					<div class="uploadRept">
+		<%= file_field 'image','photo', :onchange => "preview(this);",:class=>"uploadReptCtrl" %>
+		<div class="imageRept"><%= image_tag @question.image.photo.url(:original), :size => "200x80", :id=>"preview-photo" %></div>
+		</div>
+		</td>
+		</tr>
+		</table>
+		<br /><br><br><br>
+	   
+	   <%# if @image.photo.exists? then %>
+			<%#= image_tag @image.photo.url(:original), :size => "80x60", :id=>"preview-photo" %>
+			<%#= file_field 'image','photo', :onchange => "preview(this);" %>
+	   <%# end %>
+	
+		<%=hidden_field_tag "qt_id", @question.question_type_id%>
+		<%=hidden_field_tag "q_id", @question.id%>
+		
+		<%= render :partial=>"editDragdrop"%>
+
+        <div class="clear"></div>
+		  <%=link_to image_tag("plus.jpg", :alt=>"Add Option"),"#",:id=>"add_drag_and_drop_option"%><br><br>
+		  <%=t('question.set_mark')%>: 
+		  <%if @question.checkMark(@question.id)== 1%>
+		  <%=text_field_tag "mark", @question.mark,:class=>"validate[required,custom[number]] text-input",:style=>"width:40px; height:19px; border:#d1d1d1 1px solid;"%>
+          <%else%>
+		  <%=text_field_tag "mark", @question.mark,:class=>"validate[required,custom[number]] text-input",:style=>"width:40px; height:19px; border:#d1d1d1 1px solid;",:disabled=>true%>
+		  <%end%>
+			<p class="showComment" style="color:#db3939; font-style:italic;  text-align:center; font-size:14px; display:inline"></p>
+			
+			<br><br><br>
+
+		    <%= f.submit t('general.update'), :class=>'btnBg floatL multipleChoice',:id=>"Submit" %> <div class="back_btn"> | <%=link_to t('general.back'), :controller=>"questions", :question_type=>@question_type_id%></div>
+
+	  
+	  <%end%>	  
+	  <%end%>
+	  
+  <%#else%>
+
+
+    
+<%if @question.question_type_id == 1 or @question.question_type_id == 2 %>
+   <%= form_for @question, :html => { :id => "class_form" } do |f| %>
+    <%= f.error_messages %>
+  
+		<%=render :partial=>"edit_add_question", :locals => { :f => f }%>
+
+		<%=hidden_field_tag "qt_id", @question.question_type_id%>
+		<%=hidden_field_tag "q_id", @question.id%>
+                <%=render :partial=>"editMultipleChoice"%>
+          <%=link_to image_tag("plus.jpg", :alt=>"Add Option"),"#",:id=>"add_new"%><br><br>
+		  
+		  <%=t('question.set_mark')%>: 
+		  <%if @question.checkMark(@question.id)== 1%>
+		  <%=text_field_tag "mark", @question.mark,:class=>"validate[required,custom[number]] text-input",:style=>"width:40px; height:19px; border:#d1d1d1 1px solid;"%>
+          <%else%>
+		  <%=text_field_tag "mark", @question.mark,:class=>"validate[required,custom[number]] text-input",:style=>"width:40px; height:19px; border:#d1d1d1 1px solid;",:disabled=>true%>
+		  <%end%>
+		  <p class="showComment" style="color:#db3939; font-style:italic;  text-align:center; font-size:14px; display:inline"></p>
+
+	  <br><br><br>
+	  <%if @question.question_type_id == 1%>
+	  <%= f.submit t('general.update'), :class=>'btnBg floatL multipleChoice',:id=>"Submit" %> <div class="back_btn"> | <%=link_to t('general.back'), :controller=>"questions", :question_type=>@question_type_id%></div>
+      <%elsif @question.question_type_id == 2%>
+	  <%= f.submit t('general.update'), :class=>'btnBg floatL multipleSelection',:id=>"Submit" %> <div class="back_btn"> | <%=link_to t('general.back'), :controller=>"questions",:question_type=>@question_type_id%></div>
+	  <%end%>
+   <%end%>
+<%end%>
+	
+<%if @question.question_type_id == 4 or @question.question_type_id == 5%>
+   <%= form_for @question, :html => { :id => "class_form" } do |f| %>
+    <%= f.error_messages %>
+  
+          <%=render :partial=>"edit_add_question", :locals => { :f => f }%>
+		<%=hidden_field_tag "qt_id", @question.question_type_id%>
+		<%=hidden_field_tag "q_id", @question.id%>
+		<%=render :partial=>"editYesno"%><br><br>
+          <%=t('question.set_mark')%>: 
+		  <%if @question.checkMark(@question.id)== 1%>
+		  <%=text_field_tag "mark", @question.mark,:class=>"validate[required,custom[number]] text-input",:style=>"width:40px; height:19px; border:#d1d1d1 1px solid;"%>
+          <%else%>
+		  <%=text_field_tag "mark", @question.mark,:class=>"validate[required,custom[number]] text-input",:style=>"width:40px; height:19px; border:#d1d1d1 1px solid;",:disabled=>true%>
+		  <%end%>
+<p class="showComment" style="color:#db3939; font-style:italic;  text-align:center; font-size:14px; display:inline"></p> 
+ <br><br>
+		  <%= f.submit t('general.update'), :class=>'btnBg floatL multipleChoice',:id=>"Submit" %> <div class="back_btn"> | <%=link_to t('general.back'), :controller=>"questions", :question_type=>@question_type_id%></div>
+   <%end%>
+<%end%>
+
+<%if @question.question_type_id == 3%>
+   <%= form_for @question, :html => { :id => "class_form" } do |f| %>
+    <%= f.error_messages %>
+  
+		<%=render :partial=>"edit_add_question", :locals => { :f => f }%>
+		
+	<%=hidden_field_tag "qt_id", @question.question_type_id%>
+	<%=hidden_field_tag "q_id", @question.id%>
+	<%=render :partial=>"editFillups"%>
+
+	 <%=link_to image_tag("plus.jpg", :alt=>"Add Option"),"#",:id=>"add_new_blank"%>
+	 <br><br><%#=link_to "Add option", "#", :id=>"add_new_blank" %>
+	 		  <%=t('question.set_mark')%>: 
+		  <%=text_field_tag "mark", @question.mark,:class=>"validate[required,custom[number]] text-input",:style=>"width:40px; height:19px; border:#d1d1d1 1px solid;"%>
+
+ <p class="showComment" style="color:#db3939; font-style:italic;  text-align:center; font-size:14px; display:inline"></p>
+ <br><br>
+	 <%= f.submit t('general.update'), :class=>'btnBg fullup_submit floatL',:id=>"Submit" %> <div class="back_btn"> | <%=link_to t('general.back'), :controller=>"questions", :question_type=>@question_type_id%></div>
+
+   <%end%>
+<%end%>	 
+	 
+<%if @question.question_type_id == 7 %>
+   <%= form_for @question, :html => { :id => "class_form" } do |f| %>
+    <%= f.error_messages %>
+  
+		<%=render :partial=>"edit_add_question", :locals => { :f => f }%>
+
+		<%=hidden_field_tag "qt_id", @question.question_type_id%>
+		<%=hidden_field_tag "q_id", @question.id%>
+		<%=render :partial=>"editLikert"%>
+
+          <%=link_to image_tag("plus.jpg", :alt=>"Add Option"),"#", :id=>"add_likert_option"%><br><br>
+	  <%= f.submit t('general.update'), :class=>'btnBg floatL selectLikert',:id=>"Submit" %> <div class="back_btn"> | <%=link_to t('general.back'), :controller=>"questions", :question_type=>@question_type_id%> </div>
+   <%end%>
+<%end%>	
+	 
+	 
+<%if @question.question_type_id == 12 %>
+   <%= form_for @question, :html => { :id => "class_form" } do |f| %>
+    <%= f.error_messages %>
+  
+		<%=render :partial=>"edit_add_question", :locals => { :f => f }%>
+		
+		<%=hidden_field_tag "qt_id", @question.question_type_id%>
+		<%=hidden_field_tag "q_id", @question.id%>
+		<%#=hidden_field_tag "subject_id", @question.categorysubject_id%>
+	       
+	       <% unless @answers.empty? %>
+	       <%=render :partial=>"editDescriptive"%>
+               <%=link_to image_tag("plus.jpg", :alt=>"Add Option"),"#", :id=>"add_likert_option"%><br><br>
+               <%end%>
+          <%=t('question.set_mark')%>: 
+		  <%if @question.checkMark(@question.id)== 1%>
+		  <%=text_field_tag "mark", @question.mark,:class=>"validate[required,custom[number]] text-input",:style=>"width:40px; height:19px; border:#d1d1d1 1px solid;"%>
+          <%else%>
+		  <%=text_field_tag "mark", @question.mark,:class=>"validate[required,custom[number]] text-input",:style=>"width:40px; height:19px; border:#d1d1d1 1px solid;",:disabled=>true%>
+		  <%end%>
+<p class="showComment" style="color:#db3939; font-style:italic;  text-align:center; font-size:14px; display:inline"></p> 
+ <br><br>
+
+	  <%= f.submit t('general.update'), :class=>'btnBg floatL selectLikert',:id=>"Submit" %> <div class="back_btn"> | <%=link_to t('general.back'), :controller=>"questions", :question_type=>@question_type_id%> </div>
+   <%end%>
+<%end%>		 
+	 
+	 
+<%if @question.question_type_id == 10%>
+   <%= form_for @question, :html => { :id => "class_form" } do |f| %>
+    <%= f.error_messages %>
+  
+    <%=render :partial=>"edit_add_question", :locals => { :f => f }%>
+	
+	<%=hidden_field_tag "qt_id", @question.question_type_id%>
+	<%=hidden_field_tag "subject_id", @question.categorysubject_id%>
+	<%=hidden_field_tag "parent_id", @question.id%>
+	<%=hidden_field_tag "q_id", @question.id%>
+	<%=render :partial=>"editHrclorder"%>
+	<div class="clear"></div>
+       <%=link_to image_tag("plus.jpg", :alt=>"Add Option"),"#", :id=>"add_new_hrcl_row",:class=>"floatL"%>
+	   <div style="padding: 0pt; height: auto; width: 75px; float: left; line-height: 16px; margin: 0pt 0pt 0pt 173px;">
+	   <%=link_to "Rearrange", "#", :id=>"refresh"%>
+	   </div>
+	   <br><br>
+			<%=t('question.set_mark')%>: 
+		  <%if @question.checkMark(@question.id)== 1%>
+		  <%=text_field_tag "mark", @question.mark,:class=>"validate[required,custom[number]] text-input",:style=>"width:40px; height:19px; border:#d1d1d1 1px solid;"%>
+          <%else%>
+		  <%=text_field_tag "mark", @question.mark,:class=>"validate[required,custom[number]] text-input",:style=>"width:40px; height:19px; border:#d1d1d1 1px solid;",:disabled=>true%>
+		  <%end%>
+	   <p class="showComment" style="color:#db3939; font-style:italic;  text-align:center; font-size:14px; display:inline"></p>
+	   <br><br>
+       <%= f.submit t('general.update'), :class=>'btnBg floatL hrclbtn',:id=>"Submit" %> <div class="back_btn"> | <%=link_to t('general.back'), :controller=>"questions", :question_type=>@question_type_id%></div>
+   <%end%>
+<%end%>	  
+	
+<%if @question.question_type_id == 11%>
+   <%= form_for @question, :html => { :id => "class_form" } do |f| %>
+    <%= f.error_messages %>
+  
+<%=render :partial=>"edit_add_question", :locals => { :f => f }%>
+
+	<%=hidden_field_tag "qt_id", @question.question_type_id%>
+	<%=hidden_field_tag "subject_id", @question.categorysubject_id%>
+	<%=hidden_field_tag "parent_id", @question.id%>
+	<%=hidden_field_tag "q_id", @question.id%>
+	<%=render :partial=>"editMatching"%>
+	<div class="clear"></div>
+	  	<%#=link_to "Add option", "#", :id=>"add_new_matching_row" %>
+		<%=link_to image_tag("plus.jpg", :alt=>"Add Option"),"#", :id=>"add_new_matching_row"%><br><br>
+		<%=t('question.set_mark')%>: 
+		  <%if @question.checkMark(@question.id)== 1%>
+		  <%=text_field_tag "mark", @question.mark,:class=>"validate[required,custom[number]] text-input",:style=>"width:40px; height:19px; border:#d1d1d1 1px solid;"%>
+          <%else%>
+		  <%=text_field_tag "mark", @question.mark,:class=>"validate[required,custom[number]] text-input",:style=>"width:40px; height:19px; border:#d1d1d1 1px solid;",:disabled=>true%>
+		  <%end%>
+		<p class="showComment" style="color:#db3939; font-style:italic;  text-align:center; font-size:14px; display:inline"></p>
+		<br><br>
+		<%= f.submit t('general.update'), :class=>'btnBg floatL selectLikert',:id=>"Submit" %> <div class="back_btn"> | <%=link_to t('general.back'), :controller=>"questions", :question_type=>@question_type_id%></div>
+   <%end%>
+<%end%>
+
+<%if @question.question_type_id == 8%>
+   <%= form_for @question, :html => { :id => "class_form" } do |f| %>
+    <%= f.error_messages %>
+  
+<%=render :partial=>"edit_add_question", :locals => { :f => f }%>	
+
+	  	<%=hidden_field_tag "qt_id", @question.question_type_id%>
+		<%=hidden_field_tag "subject_id", @question.categorysubject_id%>
+		<%=hidden_field_tag "parent_id", @question.id%>
+	
+	      <%=render :partial=>"editMatrix"%>
+		  <div class="clear"></div>
+	    <%= f.submit t('general.update'), :class=>'btnBg floatL selectLikert',:id=>"Submit" %> <div class="back_btn"> | <%=link_to t('general.back'), :controller=>"questions", :question_type=>@question_type_id%></div>
+	  
+   <%end%>
+<%end%>	  
+</fieldset>
+<script type="text/javascript">	
+
+
+function preview(what) {
+if(jQuery.browser.msie) {
+	//alert(file:///'+what.value);
+document.getElementById("preview-photo").src =what.value;
+return;
+
+}
+else if(jQuery.browser.safari) {
+	//alert("saf");
+document.getElementById("preview-photo").src=what.value;
+return;
+}
+//alert("fire");
+document.getElementById("preview-photo").src=what.files[0].getAsDataURL();
+//  alert(jQuery("#preview-photo").height());
+//  alert(jQuery("#preview-photo").width());
+var h = jQuery("#preview-photo").height();  
+var w = jQuery("#preview-photo").width();//assuming width is 68, and height is floating
+if ((h > 68) || (w > 68)){
+if (h > w){
+jQuery("#preview-photo").css("height", "80px");
+jQuery("#preview-photo").css("width", "200px");
+}else {
+jQuery("#preview-photo").css("width", "200px");
+jQuery("#preview-photo").css("height", "80px");
+}
+}
+}
+
+
+function preview_answer(what,i) {
+	//var samp = document.getElementById("preview-answer-photo" + "_" + i).src=what.value;
+	//alert(i);
+if(jQuery.browser.msie) {
+document.getElementById("preview-answer-photo" + "_" + i).src=what.value;
+return;
+}
+else if(jQuery.browser.safari) {
+document.getElementById("preview-answer-photo" + "_" + i).src=what.value;
+return;
+}
+document.getElementById("preview-answer-photo" + "_" + i).src=what.files[0].getAsDataURL();
+//  alert(jQuery("#preview-photo").height());
+//  alert(jQuery("#preview-photo").width());
+var h = jQuery("preview-answer-photo" + "_" + i).height();  
+var w = jQuery("preview-answer-photo" + "_" + i).width();//assuming width is 68, and height is floating
+if ((h > 68) || (w > 68)){
+if (h > w){
+jQuery("preview-answer-photo" + "_" + i).css("height", "68px");
+jQuery("preview-answer-photo" + "_" + i).css("width", "auto");
+}else {
+jQuery("preview-answer-photo" + "_" + i).css("width", "68px");
+jQuery("preview-answer-photo" + "_" + i).css("height", "auto");
+}
+}
+}
+
+
+
+$(document).ready(function(){	
+var markVal = $("#mark").val();
+
+   // $("#mark").keyup(function() {				
+	//				var question_id = $("#q_id").val();
+	//				 var data = {mark:markVal, q_id:question_id};
+	//				 var url = "<%= url_for(checkMark_path)%>";					 
+	//					$.get(url, data, function(resp_data){
+	//				    if (resp_data == true) {       					 
+	//				    } else {
+	//						$("#mark").val(markVal)
+	//						$(".titles").empty();
+	//						$(".showComment").append("Can't change mark since this question is assigned to exam.");							
+	//					     setTimeout(function() {
+	//					     $(".showComment").empty();
+	//					     }, 3000);
+	//				    }
+	//				}, 'json')
+	//});
+
+ $('.selectLikert').click(function() {
+ 	
+       var text = tinyMCE.get('big-search-box').getContent();
+	   if (text.length == 0){
+	   	alert("Please enter question.");
+		return false;
+	   }	
+});
+
+ $('.multipleChoice').click(function() {
+	  
+	       var text = tinyMCE.get('big-search-box').getContent();
+	   if (text.length == 0){
+	   	alert("Please enter question.");
+		return false;
+	   }  
+	  
+	  
+	  var fields = $(':checkbox:checked').length; 
+	  //if (fields.length == 0) 
+	  if ((fields == 0) || (fields > 1)) 
+	  { 
+	    alert("<%=t('question.sel_one_chk')%>"); 
+		return false
+	  } 
+	  else 
+	  { 
+	    return true
+	  } 
+});
+
+ $('.multipleSelection').click(function() {
+ 	
+	       var text = tinyMCE.get('big-search-box').getContent();
+	   if (text.length == 0){
+	   	alert("Please enter question.");
+		return false;
+	   }	
+	
+	  var fields = $(':checkbox:checked').length; 
+	  //if (fields.length == 0) 
+	  if (fields >= 1)
+	  {  
+		return true
+	  } 
+	  else 
+	  { 
+	  	alert("<%=t('question.sel_atleast_one')%>");
+	    return false
+	  } 
+});
+
+$('.hrclbtn').click(function() {
+
+       var text = tinyMCE.get('big-search-box').getContent();
+	   if (text.length == 0){
+	   	alert("Please enter question.");
+		return false;
+	   }
+
+		var ans = $('select.answerOrder').map(function() { return $(this).val() }).get();
+		var dis = $('select.displayOrder').map(function() { return $(this).val() }).get();
+ 	var dis_arr = dis.sort(); // You can define the comparing function here. JS default uses a crappy string compare.
+	var d = [];
+	for (var i = 0; i < dis.length - 1; i += 1) {
+        if (dis_arr[i + 1] == dis_arr[i]) {
+                d.push(dis_arr[i]);
+        }
+	}
+ 	var ans_arr = ans.sort(); // You can define the comparing function here. JS default uses a crappy string compare.
+	var a = [];
+	for (var i = 0; i < ans.length - 1; i += 1) {
+        if (ans_arr[i + 1] == ans_arr[i]) {
+                a.push(ans_arr[i]);
+        }
+	}	
+	var disLength = d.length
+    var ansLength = a.length
+    
+	 if ((disLength == 0) && (ansLength == 0)) {
+		
+		return true
+	}
+	else{
+		alert("<%=t('question.sel_diff_hrcl')%>");
+		return false
+	}
+	
+});
+
+	
+	$(".blankLength").bind("keyup", function() {
+		//alert('hi');
+		    var textboxElement = $('.blankCount')
+			
+			var textboxElementNumberlength = $(this).val();
+			//alert(textboxElementNumberlength.length);
+			if (textboxElementNumberlength > textboxElement.length){
+		  alert("Blank-Sequence number should not exceed total number of blanks")
+		  }
+	});
+
+
+
+ 	var i=3
+	function addOption(){
+        	    
+		//var optionInfo = $("<tr>	\n    <td>\n <textarea type=\"text\" value='' name=\"fields" + "[" + i + "]" + "[name]\"  class=\"validate[required,funcCall[checkHELLO]] text-input options\"  style=\"width:115px; height:19px; border:#d1d1d1 1px solid; margin-right:10px; float:left;\" id=\"fields" +"_" + i + "_" + "name\" />\n <input type=\"checkbox\" name=\"fields" + "[" + i + "]" + "[is_answer]\" value='1'  style=\"float:left; margin-right:5px; margin-top:3px;\" class=\"mtie7\" id=\"fields" +"_" + i + "_" + "is_answer" + "_1\" />  <a class=\"deleteClassInfo\"><img alt=\"Add Option\" src=\"/images/cross.jpg\" /></a> \n    <\/td> \n <\/tr>	\n");
+		
+		var optionInfo = $("<tr class=\"editor_last\">\n  <td style=\'width:20px; text-align:center; vertical-align:middle;\'> <input type=\"checkbox\" name=\"fields" + "[" + i + "]" + "[is_answer]\" value='1'  style=\"float:left; margin-right:5px; margin-top:3px;\" class=\"mtie7\" id=\"fields" +"_" + i + "_" + "is_answer" + "_1\" /><\/td>  <td>\n <textarea type=\"text\" value='' name=\"fields" + "[" + i + "]" + "[name]\"  class=\"validate[required,funcCall[checkHELLO]] text-input options\"  style=\"width:115px; height:19px; border:#d1d1d1 1px solid; margin-right:10px; float:left;\" id=\"fields" +"_" + i + "_" + "name\" />\n   <a class=\"deleteClassInfo\"><img alt=\"Add Option\" src=\"/images/cross.jpg\" /></a> \n    <\/td> \n <\/tr>	\n");
+
+		i=i+1;
+		return optionInfo;
+	};
+	
+	function addLikert() {
+	    	var optionInfo = $("<tr>	\n    <td>\n <input type=\"text\" value='' name=\"fields" + "[" + i + "]" + "[name]\"  class=\"validate[required,funcCall[checkHELLO]] text-input\"  style=\"width:115px; height:19px; border:#d1d1d1 1px solid;\" id=\"fields" +"_" + i + "_" + "name\" />\n   <a class=\"deleteClassInfo\"><img alt=\"Add Option\" src=\"/images/cross.jpg\" /></a> \n    <\/td> \n <\/tr>	\n");
+
+
+		i=i+1;
+		return optionInfo;
+	    
+	}
+	
+	function checkBlank(){
+		var textboxElement = $('.blankCount')
+	       var formData = $('#big-search-box').val();
+	        var patt1=/_/gi;
+	
+	       var blank = formData.match(patt1).length
+		  if(textboxElement.length < blank) {
+		  	alert("<%=t('question.blank_less')%>")
+			return false
+		  }
+		  else if(textboxElement.length > blank) {
+		  	alert("<%=t('question.blank_more')%>")
+			return false
+		  }
+		  else {
+		  	return true
+		  }
+	}
+	
+	function addOptionblank(){
+		var text = tinyMCE.get('big-search-box').getContent();
+		//var text = tinymce.editors[0].getContent();
+		
+	    	var textboxElement = $('.blankCount')
+	       //var formData = $('#big-search-box').val();
+		   var formData = text
+	        var patt1=/_/gi;
+	
+	       var blank = formData.match(patt1).length
+	     if (textboxElement.length >= blank){
+		  alert("<%=t('question.blank_cant_exceed')%>")
+		  }
+		  else{
+ 		  //		var optionInfo = $("<tr>	\n    <td>\n <input type=\"text\" value='' name=\"fields" + "[" + i + "]" + "[name]\"  class=\"validate[required,funcCall[checkHELLO]] text-input blankCount\"  style=\"width:115px; height:19px; border:#d1d1d1 1px solid;\"  id=\"fields" +"_" + i + "_" + "name\" />\n  <a class=\"deleteClassInfo\"><img alt=\"Add Option\" src=\"/images/cross.jpg\" /></a> \n    <\/td> \n <\/tr>	\n");
+		  		var optionInfo = $("<tr class=\"editor_last\">	\n    <td>\n <textarea type=\"text\" value='' name=\"fields" + "[" + i + "]" + "[name]\"  class=\"validate[required,funcCall[checkHELLO]] text-input blankCount options\"  style=\"width:115px; height:19px; border:#d1d1d1 1px solid;\"  id=\"fields" +"_" + i + "_" + "name\" />\n  <a class=\"deleteClassInfo\"><img alt=\"Add Option\" src=\"/images/cross.jpg\" /></a> \n    <\/td> \n <\/tr>	\n");
+         
+	   }
+	     
+
+
+		i=i+1;
+		return optionInfo;
+	};
+	
+	function addimageBased(){
+				  		var optionInfo = $("<tr>	\n    <td>\n <input type=\"text\" value='' name=\"fields" + "[" + i + "]" + "[name]\"  class=\"validate[required,funcCall[checkHELLO]] text-input blankCount\" id=\"fields" +"_" + i + "_" + "name\" />\n  <input type=\"text\" value='' name=\"fields" + "[" + i + "]" + "[fb_sequence]\"  class=\"validate[required] text-input blankLength\" id=\"fields" +"_" + i + "_" + "fb_sequence\" />\n  <a class=\"deleteClassInfo\">Delete</a> \n    <\/td> \n <\/tr>	\n");
+
+			i=i+1;
+		return optionInfo;
+	}
+	
+	
+    function addhrcl(){
+
+		var optionInfo = $("	\n<tr align=\"center\">	<td colspan=\"2\"> <div class=\"tblCols\"><div class=\"tblRepeaterRow mb0 pb10\"> <input class=\"validate[required,funcCall[checkHELLO]] text-input hrclBlank tblInputtxt\"  id=\"fields" +"_"+i+"_"+"name\" name=\"fields" + "[" + i + "]" + "[name]\" type=\"text\" value=\"\" />\n<select id=\"fields"+"_"+i+"_"+"is_question_order\" class=\"hrclselect_order displayOrder\" name=\"fields" + "[" + i + "]" + "[is_question_order]\"><option value=\"1\">1<\/option><\/select>	<\/div><\/div><\/td>   <td style=\"text-align:left;\"> <div class=\"tblCols\"><div class=\"tblRepeaterRow mb0 pb10\">\n <a class=\"deletehrclClassInfo\"><img style=\"float:left; width:20px;\"  alt=\"Add Option\" src=\"/images/cross.jpg\" /></a> \n<\/div><\/div><\/td> <\/div><\/tr> \n \n\n");
+		
+		//var optionInfo = $("	\n<tr align=\"center\">	<td colspan=\"2\"> <div class=\"tblCols\"><div class=\"tblRepeaterRow mb0 pb10\"> <input class=\"validate[required,funcCall[checkHELLO]] text-input hrclBlank tblInputtxt\"  id=\"fields" +"_"+i+"_"+"name\" name=\"fields" + "[" + i + "]" + "[name]\" type=\"text\" value=\"\" />\n<select id=\"fields"+"_"+i+"_"+"is_question_order\" class=\"hrclselect_order displayOrder\" name=\"fields" + "[" + i + "]" + "[is_question_order]\"><option value=\"1\">1<\/option><\/select>	<\/div><\/div><\/td>   <td style=\"text-align:left;\"> <div class=\"tblCols\"><div class=\"tblRepeaterRow mb0 pb10\">\n <select style=\"float:left; margin-right:5px;\" id=\"fields"+"_"+i+"_"+"is_answer_order\"  class=\"hrclselect_order answerOrder\" name=\"fields" + "[" + i + "]" + "[is_answer_order]\"\"><option value=\"1\">1<\/option><\/select><a class=\"deletehrclClassInfo\"><img style=\"float:left; width:20px;\"  alt=\"Add Option\" src=\"/images/cross.jpg\" /></a> \n<\/div><\/td> <\/div><\/tr> \n \n\n");
+
+		i=i+1;
+		return optionInfo;
+	};
+	
+   function callAppend(){
+		      $('.hrclselect_order >option').remove();
+	  var vText = $("input:text").length - 1;
+	   for (v=1; v<=vText; v++){
+		  $(".hrclselect_order").append("<option value=" + v + ">" + v + "</option>");
+	   }
+	}
+	
+    function add_matching_row(){
+		//alert(i);
+		//var optionInfo = $("<%= escape_javascript(render :partial => 'hrcl_order_options', :locals => { :val => 3 }) %>");
+        
+	    
+
+		//var optionInfo = $("		\n		<tr align=\"center\">\n			\n			<td>	\n				  <input class=\"validate[required] text-input\" style=\"width:115px; height:19px; border:#d1d1d1 1px solid;\"  id=\"fields" +"_"+i+"_"+"name\" name=\"fields" + "[" + i + "]" + "[name]\" type=\"text\" value=\"\" />\n		    <\/td>	\n			<td>\n <input class=\"validate[required] text-input\" style=\"width:115px; height:19px; border:#d1d1d1 1px solid;\"  id=\"fields" +"_"+i+"_"+"match\" name=\"fields" + "[" + i + "]" + "[match]\" type=\"text\" value=\"\" />	<td>\n<a class=\"deleteClassInfo\"><img alt=\"Add Option\" src=\"/images/cross.jpg\" /></a> \n<\/td>\n			<\/tr>\n");
+		//var optionInfo = $("	\n<tr align=\"center\">	<td> <div class=\"tblCols\"><div class=\"tblRepeaterRow\"> <input class=\"validate[required] text-input tblInputtxt\"  id=\"fields" +"_"+i+"_"+"name\" name=\"fields" + "[" + i + "]" + "[name]\" type=\"text\" value=\"\" />\n	<\/div><\/div><\/td>   <td> <div class=\"tblCols\"><div class=\"tblRepeaterRow\">\n <input class=\"validate[required] text-input tblInputtxt\"  id=\"fields" +"_"+i+"_"+"match\" name=\"fields" + "[" + i + "]" + "[match]\" type=\"text\" value=\"\" /> <div class=\"tblClsholder\"><a class=\"deleteClassInfo\"><img alt=\"Add Option\" src=\"/images/cross.jpg\" /></a><\/div>\n<\/div><\/td> <\/div><\/tr> \n \n\n");
+		var optionInfo = $("	\n<tr align=\"center\" class=\"currentRow\">	<td> <div class=\"tblCols\"><div class=\"tblRepeaterRow mb0 pb10\"> <input class=\"validate[required,funcCall[checkHELLO]] text-input tblInputtxt\"  id=\"fields" +"_"+i+"_"+"name\" name=\"fields" + "[" + i + "]" + "[name]\" type=\"text\" value=\"\" />\n	<\/div><\/div><\/td>   <td> <div class=\"tblCols\"><div class=\"tblRepeaterRow mb0 pb10\">\n <input class=\"validate[required,funcCall[checkHELLO]] text-input tblInputtxt\"  id=\"fields" +"_"+i+"_"+"match\" name=\"fields" + "[" + i + "]" + "[match]\" type=\"text\" value=\"\" /> <div class=\"tblClsholder\"><a class=\"deletematchClassInfo\"><img alt=\"Add Option\" src=\"/images/cross.jpg\" /></a><\/div>\n<\/div><\/td> <\/div><\/tr> \n \n\n");
+
+		i=i+1;
+		return optionInfo;
+	};
+	
+	
+    function add_matrix_row(){
+		//alert(i);
+		//var optionInfo = $("<%= escape_javascript(render :partial => 'hrcl_order_options', :locals => { :val => 3 }) %>");
+        
+	    
+
+		//var optionInfo = $("		\n		<tr align=\"center\">\n			\n			<td>	\n				  <input class=\"validate[required] text-input\"  style=\"width:115px; height:19px; border:#d1d1d1 1px solid;\" id=\"fields" +"_"+i+"_"+"name\" name=\"fields" + "[" + i + "]" + "[name]\" type=\"text\" value=\"\" />\n		    <\/td>	\n	\n<td>\n<a class=\"deleteClassInfo\"><img alt=\"Add Option\" src=\"/images/cross.jpg\" /></a> \n<\/td>\n			<\/tr>\n");
+		var optionInfo = $("\n		\n  <div class=\"tblRepeaterRow cnone\"> <input class=\"validate[required,funcCall[checkHELLO]] text-input tblInputtxt\"  id=\"fields" +"_"+i+"_"+"name\" name=\"fields" + "[" + i + "]" + "[name]\" type=\"text\" value=\"\" />\n	 \n <span class=\"tblClsholder\"><a class=\"deleteClassInfo\"><img alt=\"Add Option\" src=\"/images/cross.jpg\" /></a><\/span><\/div> \n	\n");
+
+		i=i+1;
+		return optionInfo;
+	};
+	
+	
+    function add_matrix_column(){
+		//alert(i);
+		//var optionInfo = $("<%= escape_javascript(render :partial => 'hrcl_order_options', :locals => { :val => 3 }) %>");
+        
+	    
+
+		//var optionInfo = $("		\n		<tr align=\"center\">\n		\n			<td>\n <input class=\"validate[required] text-input\" style=\"width:115px; height:19px; border:#d1d1d1 1px solid;\"  id=\"fields" +"_"+i+"_"+"match\" name=\"fields" + "[" + i + "]" + "[match]\" type=\"text\" value=\"\" />	<td>\n<a class=\"deleteClassInfo\"><img alt=\"Add Option\" src=\"/images/cross.jpg\" /></a> \n<\/td>\n			<\/tr>\n");
+		var optionInfo = $("\n	 <div class=\"tblRepeaterRow cnone\"><input class=\"validate[required,funcCall[checkHELLO]] text-input tblInputtxt\"  id=\"fields" +"_"+i+"_"+"match\" name=\"fields" + "[" + i + "]" + "[match]\" type=\"text\" value=\"\" />  \n<span class=\"tblClsholder\"><a class=\"deleteClassInfo\"><img alt=\"Add Option\" src=\"/images/cross.jpg\" /></a><\/span> <\/div>\n");
+
+		i=i+1;
+		return optionInfo;
+	};
+	
+	
+    var dragdrop_fieldlength = $('.dragdropfields')
+	var count = dragdrop_fieldlength.length + 1
+	
+	function addDragDropoptions(){
+		//alert(i);
+		
+
+		//var optionInfo = $("<tr>	\n    <td>\n <input type=\"file\"  class=\"validate[required] text-input\" id=\""+count+"\" name=\"fields" + "[" + count + "]" + "image" + "[" + "photo" + "]\" onchange=\"preview_answer(this,this.id);\" />\n <img type=\"file\"  alt=\"Graphic will preview here\"  id=\"preview" +"-"+"answer" +"-"+"photo"+"_"+""+count+"\" name=\"fields" + "[" + count + "]" + "[match]\" onchange=\"preview_answer(this,this.id);\" />\n <input type=\"checkbox\" name=\"fields" + "[" + count + "]" + "[is_answer]\" value='1'  style=\"margin-left: 10px; margin-right: 5px;\" id=\"fields" +"_" + count + "_" + "is_answer" + "_1\" />  <a class=\"deleteClassInfo\"><img alt=\"Add Option\" src=\"/images/cross.jpg\" /></a> \n    <\/td> \n <\/tr>	\n");
+				var optionInfo = $("<tr>	\n    <td>\n <div class=\"uploadRept\"> <input type=\"file\"  class=\"validate[required] text-input uploadReptCtrl\" id=\""+count+"\" name=\"fields" + "[" + count + "]" + "image" + "[" + "photo" + "]\" onchange=\"preview_answer(this,this.id);\" />\n <div class=\"imageRept\"><img type=\"file\"  alt=\"<%=t('general.preview')%>\"  id=\"preview" +"-"+"answer" +"-"+"photo"+"_"+""+count+"\"  width=\"200\" height=\"80\"  name=\"fields" + "[" + count + "]" + "[match]\" onchange=\"preview_answer(this,this.id);\" />\n<\/div>\n <input type=\"checkbox\" name=\"fields" + "[" + count + "]" + "[is_answer]\" value='1'  style=\"margin-left: 10px; margin-right: 5px;\" id=\"fields" +"_" + count + "_" + "is_answer" + "_1\" />  <a class=\"deleteClassInfo\"><img alt=\"Add Option\" src=\"/images/cross.jpg\" /></a><\/div> \n    <\/td> \n <\/tr>	\n");
+
+		count=count+1;
+		return optionInfo;
+	}
+
+
+
+	$(".fullup_submit").click(function(){
+	var text = tinyMCE.get('big-search-box').getContent();	
+		
+
+
+		   var textboxElement = $('.blankCount')
+	       //var formData = $('#big-search-box').val();
+		   var formData = text
+	        var patt1=/_/gi;
+	
+	       var blank = formData.match(patt1);//.length
+		 
+		   if(blank == null) {
+		   	alert("Please add '_'.");
+			return false;
+		   }		   
+		 	   if (text.length == 0){
+		   	alert("Please enter question.");
+			return false;
+		   }	  
+		   
+		  if(textboxElement.length < blank.length) {
+		  	alert("<%=t('question.blank_less')%>")
+			return false
+		  }
+		  if(textboxElement.length > blank.length) {
+		  	alert("<%=t('question.blank_more')%>")
+			return false
+		  }
+		  if(textboxElement.length == blank.length) {
+		  	return true
+		  }
+		  if(textboxElement.length != blank.length) {
+		  	alert("<%=t('question.add_blank')%>")
+			return false
+		  }
+ 
+		  
+    });
+
+
+    $("#add_new").click(function(){
+		//$(".answer_name tr:last").after(addOption());
+		$(".editor_last:last").after(addOption());
+        return false;
+
+    });
+	
+	 $("#add_new_blank").click(function(){
+		//$(".answer_name tr:last").after(addOptionblank());
+		$(".editor_last:last").after(addOptionblank());
+        return false;
+
+    });
+	
+    $("#add_imagebased_blank").click(function(){
+		$(".answer_name tr:last").after(addimageBased());
+        return false;
+
+    });
+	
+     $("#add_new_hrcl_row").click(function(){
+		//$(".answer_name tr:last").after(addhrcl());
+		$(".tblRepeter tr:last").after(addhrcl());
+		callAppend()
+        return false;
+
+    });
+	
+	$("#refresh").click(function(){
+		//$(".answer_name tr:last").after(addhrcl());
+		callAppend()
+        return false;
+
+    });	
+	
+	
+	$("#add_new_matching_row").click(function(){
+		//$(".answer_name tr:last").after(add_matching_row());
+		$(".tblRepeter tr:last").after(add_matching_row());
+        return false;
+
+    });
+	
+	$("#add_new_rowOption").click(function(){
+		$(".rowValue div:last").after(add_matrix_row());
+        return false;
+
+    });
+	
+	$("#add_new_columnOption").click(function(){
+		$(".columnValue div:last").after(add_matrix_column());
+        return false;
+
+    });
+	
+	$("#add_drag_and_drop_option").click(function(){
+		$(".answer_name tr:last").after(addDragDropoptions());
+        return false;
+
+    });
+	
+    
+        $("#add_likert_option").click(function(){
+		$(".answer_name tr:last").after(addLikert());
+        return false;
+
+    });
+
+	$(".deleteClassInfo").live("click", function(){
+            $(this).parent().parent().remove();
+            return false;
+        });
+	
+	$(".deletehrclClassInfo").live("click", function(){
+            //$(this.className).remove();
+			//$("this:tr").hasClass(currentRow).remove();
+			//$("tr").hasClass(this.className).remove();
+			$(this).parent().parent().parent().parent().remove();
+            return false;
+        });
+		
+		$(".deletematchClassInfo").live("click", function(){
+            //$(this.className).remove();
+			//$("this:tr").hasClass(currentRow).remove();
+			//$("tr").hasClass(this.className).remove();
+			$(this).parent().parent().parent().parent().parent().remove();
+            return false;
+        });
+		
+	$(".deletehrclClassInfo").live("click", function(){
+            
+					      $('.hrclselect_order >option').remove();
+	  var vText = $("input:text").length-1;
+	  for (v=1; v<=vText; v++){
+	      //for (var v = 0; v = vText; v++) {
+		  	$(".hrclselect_order").append("<option value=" + v + ">" + v + "</option>");
+		  }
+		  $(this).parent().parent().remove();
+            return true;
+    });
+	
+	$("#class_form").validationEngine();
+	
+    $("#showEditor").click(function(){
+		addEditor()
+	});
+	
+});
+
+function addEditor(){
+	tinyMCE.init({
+        // General options
+        mode : "textareas",
+		editor_selector : "options",
+        theme : "advanced",
+        plugins : "autolink,lists,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
+
+        // Theme options
+        theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
+        theme_advanced_buttons2 : "bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,insertdate,inserttime,preview,|,forecolor,backcolor,|,hr,removeformat,|,sub,sup,charmap,|,ltr,rtl",
+        //theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen",
+        //theme_advanced_buttons4 : "insertlayer,moveforward,movebackward,absolute,|,styleprops,spellchecker,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,template,blockquote,pagebreak,|,insertfile,insertimage",
+        theme_advanced_toolbar_location : "top",
+        theme_advanced_toolbar_align : "left",
+        theme_advanced_statusbar_location : "bottom",
+        theme_advanced_resizing : true,
+
+        // Skin options
+        skin : "o2k7",
+        skin_variant : "silver",
+
+        // Example content CSS (should be your site CSS)
+        content_css : "css/example.css",
+
+        // Drop lists for link/image/media/template dialogs
+        template_external_list_url : "js/template_list.js",
+        external_link_list_url : "js/link_list.js",
+        external_image_list_url : "js/image_list.js",
+        media_external_list_url : "js/media_list.js",
+
+        // Replace values for the template plugin
+        template_replace_values : {
+                username : "Some User",
+                staffid : "991234"
+        }
+});
+}
+</script>

@@ -1,0 +1,29 @@
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th>Name</th>
+
+<th><%= check_box "checkall", "checkall", :onclick => "checkUncheckAll(this,category_);" %></th>
+
+</tr>
+
+<%@c.each do|p|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<td title="<%=p.gathercat(p)%>"><%=p.gathercat(p)%></td>
+
+
+<td>
+<%= check_box_tag "category[]", p.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish"} %>
+
+</td>
+
+</tr>
+<%end%>
+
+</table>
+
+<%= will_paginate @c, 
+                :prev_label => "previous", 
+                :next_label => "Next",
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+              %>

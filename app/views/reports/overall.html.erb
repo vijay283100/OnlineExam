@@ -1,0 +1,168 @@
+<% unless @allYears == nil or @allYears.empty?%>
+<div id="container" style="width:700px; height:400px;"></div>
+<%end%>
+<div style="color: #5C5C5C; float: left; font-weight: bold; padding: 0 0 12px; width: 100%; font-size:14px;"><%= t('general.filter')%></div>
+
+<div class="formContainer">
+     <% form_tag overall_path,:method=>"get", :id=>"question_filter", :class=>"assign_examinee" do -%>
+            
+			<div style="float:left; padding:0; margin:0 15px 0 0; width:auto;">
+			<label  style="width:110px; float:left; line-height: 21px;"><%=t('exam.yr')%>:</label>
+			 <%= select_tag 'academicYear', options_for_select(([[t('general.select') , "" ]] + @yrs.to_a),:selected=>@y), :class=>"validate[required] w120 bdr" %>
+			</div>	
+				
+			<div style="float:left; padding:0; margin:0 15px 0 0; width:auto;">
+			<label  style="width:110px; float:left; line-height: 21px;"><%=t('general.examtype')%>:</label>
+			 <%= select_tag 'examtype_id', options_for_select(([[t('general.select'),""]] +@examTypes.collect{|p| [truncate(p.name,:length=>30),p.id,{:title=>p.name}]}),:selected=>@examtype_id), :class=>"validate[required] w200 bdr" %>
+			</div><div class='clear'></div>				
+			<%= submit_tag t('general.filter'), :id=>"assign", :class=>'btnBg' %>
+	<%end%>
+</div>
+
+<% if @organization_id == 1 or @organization_id == 2 %>
+     <div class="updateStatus">
+     <h2><%=t('reports.overall')%></h2>
+	 <% unless @allYears.empty? or @allYears == nil%>
+     <table border="0" cellspacing="0">
+     <tr class="updateHeader">
+     <th><%=@organization_id == 1 ? t('org.class') : t('org.course')%></th>
+     <th><%=t('exam.yr')%></th>
+     <th><%=t('reports.tot_examinees')%></th>
+	 <th><%=t('reports.passed')%></th>
+	 <th><%=t('reports.failed')%></th>
+     <th><%=t('reports.pass_percent')%></th>
+     <th></th>
+     </tr>
+	 <%@allYears.each do|ay|%>
+     <tr class="updateAltrRow <%= cycle("odd", "even") %>">
+     <%@displayYear = ay.currentyear%>
+     <td>
+	     <%="#{ay.name}"%>
+     </td>
+     <td>
+	     <%="#{ay.currentyear}"%>
+     </td>
+	 <td><%="#{ay.TotalUser}"%></td>
+	 <td><%="#{ay.PassedUsers.to_i}"%></td>
+	 <td><%="#{ay.FailedUser}" == "" ? 0 : "#{ay.FailedUser}"%></td>     
+     <td>
+	     <%="#{ay.Totalpercentage.to_f.round(2)}"%>
+     </td>
+
+     <td>
+	     <%=link_to t('reports.view_detail'), :action=>"specificDepartment", :course_id =>"#{ay.courseId}", :year_id=>@displayYear, :examtype_id =>@examtype_id%>
+     </td>
+	 
+     </tr>
+     <%end%>
+     </table>
+	 <%else%>
+     <div class="formContainer">
+  		<%= t('not_found.no_data')%>
+ 	 </div>
+	 <%end%>
+     </div>
+<% end%>
+
+<% if @organization_id == 3 or @organization_id == 4 %>
+     <div class="updateStatus">
+     <h2><%=t('reports.overall')%></h2>
+	 <% unless @allYears.empty? or @allYears == nil%>
+     <table border="0" cellspacing="0">
+     <tr class="updateHeader">
+     <th><%=t('org.course')%></th>
+     <th><%=t('exam.yr')%></th>
+     <th><%=t('reports.tot_examinees')%></th>
+	 <th><%=t('reports.passed')%></th>
+	 <th><%=t('reports.failed')%></th>
+     <th><%=t('reports.pass_percent')%></th>
+     <!--<th colspan="2"></th>-->
+     </tr>
+	 <%@allYears.each do|ay|%>
+     <tr class="updateAltrRow <%= cycle("odd", "even") %>">
+     
+     <%@displayYear = ay.currentyear%>
+     <td>
+	     <%="#{ay.name}"%>
+     </td>
+     <td>
+	     <%="#{ay.currentyear}"%>
+     </td>
+	 <td><%="#{ay.TotalUser}"%></td>
+	 <td><%="#{ay.PassedUsers.to_i}"%></td>
+	 <td><%="#{ay.FailedUser}" == "" ? 0 : "#{ay.FailedUser}"%></td>     
+     <td>
+	     <%="#{ay.Totalpercentage.to_f.round(2)}"%>
+     </td>
+
+     </tr>
+     <%end%>
+     </table>
+	 	 <%else%>
+     <div class="formContainer">
+  		<%= t('not_found.no_data')%>
+ 	 </div>
+	 <%end%>
+     </div>
+<% end%>
+
+<script type="text/javascript">
+var chart;
+$(document).ready(function() {
+	
+	$("#question_filter").validationEngine();
+	
+   chart = new Highcharts.Chart({
+      chart: {
+         renderTo: 'container',
+         plotBackgroundColor: null,
+         plotBorderWidth: null,
+         plotShadow: false
+      },
+
+      title: {
+         text: '<b style="font-size:14px;">' + '<%=t('reports.overall_msg')%>' + ' <%=raw "#{@displayYear}"%>' +'</b>'
+      },
+
+      tooltip: {
+         formatter: function() {
+            return ''+
+                this.series.name +': '+ this.y +' ('+ Math.round(this.percentage,2) +'%)';
+         }
+      },
+
+      plotOptions: {
+         pie: {
+            dataLabels: {
+               formatter: function() {
+                  return '<b>'+ this.point.name +'</b>: '+ this.y +' %';
+               }
+            }
+         }
+      },
+
+       series: [{
+         type: 'pie',
+         name: 'Percentage',
+         data: [<%unless @allYears == nil%><%@allYears.each do|ay|%>
+		 
+            ['<%=raw truncate("#{ay.name}",:length=>20) %>', <%=raw "#{ay.Totalpercentage.to_f.round(2)}" %>],
+         
+         <%end%><%end%>]
+      }]
+
+   });
+   
+   
+});
+
+
+</script>
+
+
+
+
+
+
+
+

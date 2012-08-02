@@ -1,0 +1,23 @@
+<div style="float:left; width:100%;">
+<div style="float:right; border:1px solid #ccc; padding:5px; width:220px; height:111px; text-align:center; overflow:hidden;"><%= image_tag "MatchOpt.jpg", :size => "220x111", :alt=>'img' %></div>
+
+        <table class="answer_name" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<th style='text-align:left;'><%=t('question.opt_a')%></th>
+			<th><%=t('question.opt_b')%></th>
+		</tr>
+		
+			
+		<% 1.upto(2) do |i| %>
+		<tr align="center">
+			<td class="pr10">	
+			 <%= text_field_tag "fields[#{i}][name]",'', :class=>"validate[required,funcCall[checkHELLO]] text-input", :style=>"width:115px; height:19px; border:#d1d1d1 1px solid;" %>
+		        </td>	
+			<td>	
+			 <%= text_field_tag "fields[#{i}][match]",'', :class=>"validate[required,funcCall[checkHELLO]] text-input", :style=>"width:115px; height:19px; border:#d1d1d1 1px solid;" %>
+		        </td>
+		</tr>		  
+		<% end %>
+		
+        </table> 
+		</div>

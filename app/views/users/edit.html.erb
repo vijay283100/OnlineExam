@@ -1,0 +1,97 @@
+<h2><%=t('user.edit')%></h2>
+<fieldset class="formContainer">
+<% form_for @user , :html => { :id => "class_form"} do |f| %>
+<table class="formTable">
+
+
+
+
+<tr>
+<td width="120px;"><%= f.label :name %></td>
+<td><%= f.text_field :name, :class=>"validate[required,minSize[3],funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px;" %></td>
+</tr>
+
+<tr>
+<td width="120px;">User Id</td>
+<td><%= f.text_field :login, :class=>"validate[required,minSize[3],funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px;" %></td>
+</tr>
+
+<tr>
+<td width="120px;"><%= f.label :email %></td>
+<td><%= f.text_field :email, :class=>"validate[required,custom[email]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px;" %></td>
+</tr>
+<tr>
+<% if current_user.id == params[:id].to_i %>	
+<td width="120px;"><%=t('login.password')%></td>
+<td><%=password_field_tag "password", '',:class=>"validate[required,minSize[6],funcCall[checkHELLO]] text-input", :id=>"password", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px;"%></td>
+</tr>
+<tr>
+<td width="120px;"><%=t('login.confirm_pwd')%></td>
+<td><%=password_field_tag "confirm_password", '',:class=>"validate[required,minSize[6],equals[password],funcCall[checkHELLO]]", :id=>"password", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px;"%></td>
+</tr>
+<%end%>
+</table>
+<%if @value == 3 and (current_user.role_id == Admin or current_user.role_id == Examiner) %>
+<% unless @organization_id == nil%>
+<span id="editcollectCategorysubject"><%=render :partial=>"editcollectCategorysubject"%></span>
+<%end%>
+
+<%end%>
+
+<%= hidden_field_tag "user_id", @user.id%>
+<%= f.hidden_field :role_id, :value => @value %>
+<%= f.hidden_field :is_approved, :value => 1 %>
+
+ 
+<tr>
+	<td width="120px;">  
+  <%= f.submit t('general.update'), :class=>'btnBg' %>
+  </td></tr>
+
+
+</table>
+<% end %>
+</fieldset>
+
+<script type="text/javascript">	
+$(document).ready(function() {
+
+   
+   $(".assign").click(function() {
+   	var thischeck = $(this);
+	if (thischeck.is(':checked')) {
+	}
+	else {
+		var s = this.id
+		var uid = $("#user_id").val();
+			var data = {user_id:$("#user_id").val(), subject_id:this.id};
+	        var url = "<%= url_for(deleteUsersubject_path)%>";
+	   $.get(url, data)
+	                                 if (data == "true"){
+                                      alert("Successfilly update")
+                                    }
+	   
+	}
+   	
+   	});
+	
+	
+	$(document).ready(function() {
+    $("#editcollectCategorysubject .pagination a").live("click", function(){
+	
+	var link = this.href
+	var lastChar = link.substr(link.length - 1);	
+	if (lastChar == '#'){
+		return false;
+	}
+	else{
+		$.getScript(this.href);
+		return false;
+	}
+   });
+
+  });
+	
+   });
+   
+   </script>

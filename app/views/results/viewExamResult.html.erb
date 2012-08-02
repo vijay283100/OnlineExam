@@ -1,0 +1,41 @@
+<div class="updateStatus">
+<h3><%=t('result.res')%></h3>
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+<th><%=t('exam.attempt')%></th>
+<th><%=t('exam.total_mark')%></th>
+<th><%=t('exam.mark_scored')%></th>
+<th><%=t('exam.percent')%></th>
+<th><%=t('general.status')%></th>
+</tr>
+<tr class="updateAltrRow">
+<%@results.each do|result|%>
+<td>
+	<%="#{result.tempexaminee}" == '1' ? "#{result.login}" : "#{result.name}"%>
+</td>
+<td>
+ 	<%="#{result.attempt}"%>
+</td>
+<td>
+	<%="#{result.total_mark}"%>
+</td>
+<td>
+	<%="#{result.score.to_f.round(2)}"%>
+</td>
+<td>
+	<%="#{result.percent.to_f.round(2)}"%>
+</td>
+<td>
+	<%#=result.status == 'p' ? t('reports.pass') : t('reports.fail')%>
+	<%if result.result_pending.to_i == 0%>
+	<%=result.status == 'p' ? t('reports.pass') : t('reports.fail')%>
+	<%else%>
+	Pending
+	<%end%>	
+</td>
+</tr>
+<%end%>
+
+</table>
+</div>

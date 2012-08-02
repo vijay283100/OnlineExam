@@ -1,0 +1,24 @@
+
+<div style="float:left; width:100%;">                
+       <table class="answer_name" style="float:left; width:100%; padding:0; margin:0;">
+		<tr><th></th>
+			<th style='float:left;'><%=t('question.options')%> <!--(Click the link <%#=link_to "show as editor","#",:id=>"showEditor"%> to change options to editor)--></th>
+		</tr>		
+				
+        </table>
+		<table class="answer_name" style="float:left; width:100%; padding:0; margin:0;">
+			<%@seq = 1%>
+			<%@answers.each do|answer|%>
+			<tr class="editor_last"><td>
+			<%= fields_for "answer[]", answer do |answer_fields| %>
+				<%= answer_fields.hidden_field :id %>
+				<%= answer_fields.text_area :name, :class=>'validate[required,funcCall[checkHELLO]] text-input blankCount options',:style=>"width:115px; height:19px; border:#d1d1d1 1px solid;"%>
+				<%@seq=@seq+1%>
+                <%=link_to image_tag("cross.jpg", :alt=>"Add Option"), {:action=>"delete_option",:controller=>"questions",:id=>answer.id,:question_id=>@question.id}, :confirm => t('json_message.are_you_sure')%><br>
+			<%end%>
+			</td></tr>
+	        <%end%>
+		
+	 </table>
+</div>	 
+	 

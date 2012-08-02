@@ -1,0 +1,39 @@
+<% @collect = []%>
+<%@feedbackResponses.each do|fr|%>
+<%question = Question.find_by_id(fr)%>
+<%unless question.description == nil%>
+<% @collect << fr%>
+<%end%>
+<%end%>
+
+<div class="updateStatus">
+
+<h3>Feedback Responses</h3>
+<%unless @collect.empty?%>
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th>Question</th>
+<th>View Response</th>
+</tr>
+
+
+<% @collect.each do|responseQuestion|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<%question = Question.find_by_id(responseQuestion)%>
+<%unless question.description == nil%>
+<td><%=question.description%></td>
+<td>
+ 	<%= link_to "View", :action=>"viewfeedbackResponse", :question_id=>question.id%>
+</td>
+<%end%>
+</tr>
+<%end%>
+
+</table>
+<%else%>
+<div class="formContainer">
+  No feedback responses. 
+ </div>
+ <%end%>
+</div>
+

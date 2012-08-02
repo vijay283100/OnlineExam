@@ -1,0 +1,57 @@
+
+<div class="formContainer" style="border:0;">
+    <%= form_tag activate_inactivate_path, :method => 'get', :id=>'users_search' do %>
+  <p style="float: right; width: 285px; margin-right: -12px;"> 
+    <%if t('language.lang') == "en"%>
+	<%= text_field_tag :search, params[:search], :style=>"width:175px; height:19px; border:#d1d1d1 1px solid; font-style:italic; float:left; margin:3px 0 0 0;", :class=>"hint", :value=>"Search User Id" , :onfocus=>"if (this.className=='hint') { this.className = ''; this.value = ''; }", :onblur=>"if (this.value == '') { this.className = 'hint'; this.value = 'Search User Id'; }"%>
+    <%elsif t('language.lang') == "de"%>
+	<%= text_field_tag :search, params[:search], :style=>"width:175px; height:19px; border:#d1d1d1 1px solid; font-style:italic; float:left; margin:3px 0 0 0;", :class=>"hint", :value=>"Suche User Id" , :onfocus=>"if (this.className=='hint') { this.className = ''; this.value = ''; }", :onblur=>"if (this.value == '') { this.className = 'hint'; this.value = 'Suche User Id'; }"%>	
+	<%end%>    <%= submit_tag t('general.search'), :name => nil, :class=>'btnBg', :style=>'float:right; margin:0;' %>
+  </p>
+<% end %>
+</div>
+
+<% form_tag activate_inactivate_path, :method=>"get",:remote=>true, :id=>"question_filter", :class=>"assign_question" do -%>
+
+<h2><%=t('user.filter_user')%></h2>
+<div class="formContainer">
+            <table class="formTable" style="border:0px;">
+              <tr><td>
+                <div style="float:left; padding:0px; margin:0 20px 0 0;">
+				<label style="float:left; padding-right:10px; width:95px;"><%=t('user.select_user')%>:</label>
+				<%= select_tag 'examineeType', options_for_select(@examineeTypes.to_a), :style=>"width:115px; height:19px; border:#d1d1d1 1px solid;" %>
+				</div>
+                </td></tr> 
+            </table>
+			<%= submit_tag "Filter", :id=>"filter", :class=>'btnBg' %>
+</div><br><br><br>
+<%end%>
+
+<div class="updateStatus">
+<%= hidden_field_tag "textvalue", @examineeType %>
+<span id="activeInactive"><%=render :partial=>"active_inactiveUsers"%></span>
+</div>
+
+
+<script type="text/javascript">	
+
+$(document).ready(function() {
+
+  $("#activeInactive .pagination a").live("click", function(){
+	
+	var link = this.href
+	var lastChar = link.substr(link.length - 1);	
+	if (lastChar == '#'){
+		return false;
+	}
+	else{
+		$.getScript(this.href);
+		return false;
+	}
+   });
+
+
+  });
+  
+  </script>
+

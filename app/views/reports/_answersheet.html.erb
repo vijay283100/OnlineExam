@@ -1,0 +1,133 @@
+<%@options = []%>
+<%@ans = []%>         
+<%@actual = []%>         
+<%@tot = []%>         
+<%@optionA = []%>        
+<%@matchOption = []%>        
+<%@grandTotal = []%>        
+         
+
+
+<div class="updateStatus">
+
+<table border="1" cellspacing="0">
+<tr class="updateHeader">
+<th>S.No</th>
+<th>Question</th>
+<th>Options</th>
+<th>Match Options</th>
+<th>Your Answer</th>
+<th>Actual Answer</th>
+<th>Qustion Mark</th>
+<th>Mark Scored</th>
+</tr>
+ <%@evaluationContent.each do |evalu|%> 
+ <%evaluationContent = Evaluation.where(["categoryexam_id = ? and categoryuser_id = ? and question_id = ? and attempt = ?", @categoryexamId,@categoryuserId,evalu, @attempt])%>           
+
+ <%allOptions = Answer.where(['question_id = ?',evalu])%>            
+            
+  <%allOptions.each do|option|%>          
+  <%@options << option.name.html_safe unless option.name == nil%>              
+  <%end%>            
+            
+  <%evaluationContent.each do|e|%>            
+  <%@question = Question.find_by_id(e.question_id)%>
+   <%@descriptive_answer = e.descriptive_answer unless e.descriptive_answer == nil%> 
+  <%answer = Answer.find_by_id(e.answer_id)%>            
+  <%if @question.question_type_id == 3 or @question.question_type_id == 10%>            
+  <%@ans << e.answer_name unless e.answer_name == nil%>              
+  <%elsif @question.question_type_id == 11%>            
+  <%@ans << answer.match_answer unless answer.match_answer == nil%>              
+  <%else%>            
+  <% @ans << answer.name unless answer == nil%>             
+  <%end%>            
+              
+  <% @tot << e.answer_mark unless e.answer_mark == nil%>           
+  <%@totalMark = e.question_mark%>             
+  <%end%>            
+      
+  <%@total = @tot.inject(:+)%>          
+  <%@grandTotal << @total unless @total == nil%>          
+            
+  <%if @question.question_type_id == 3 %>          
+  <%@actualAnswer = Answer.where(['question_id = ?',evalu])%>            
+  <%elsif @question.question_type_id == 10%>          
+  <%@actualAnswer = Question.where(['parent_id = ?',evalu])%>            
+  <%elsif @question.question_type_id == 11%>          
+  <%@actualAnswer = Question.where(['parent_id = ?',evalu])%>            
+  <%@actualAnswer.each do|a|%>            
+  <%@optionA << a.name.html_safe unless a.name == nil%>              
+  <%end%>            
+  <%@actualAnswer.each do|a|%>            
+  <%matchOpt = Answer.find_by_question_id(a.id)%>              
+  <%@matchOption << matchOpt.match_answer.html_safe unless matchOpt.match_answer == nil%>              
+   <%end%>           
+  <%else%>          
+  <%@actualAnswer = Answer.where(['question_id = ? and is_answer = ?',evalu,1])%>            
+  <%end%>          
+            
+   <%@actualAnswer.each do|a|%>         
+   <%@actual << a.name.html_safe unless a.name == nil%>            
+   <%end%>          
+         
+
+
+<%unless @question.question_type_id == 12%>  
+
+	<tr>
+	<td><%=@login_count%></td>
+	<td><%=raw(@question.description)%></td>
+        <%if @question.question_type_id == 11%>
+	<td><%=raw @optionA.join(",")%></td>
+        <%else%>
+        <td><%=raw @options.join(",")%></td>
+        <%end%>
+        <td><%=raw @matchOption.join(",")%></td>
+        <td><%=raw @ans.join(",")%></td>
+        <%if @question.question_type_id == 11%>
+	<td></td>
+        <%else%>
+        <td><%=raw @actual.join(",")%></td>
+        <%end%>
+        <td><%=@totalMark%></td>
+        <td><%=@total.round(2)%></td>
+	</tr>
+        
+<%else%>
+  
+
+	<tr>
+	<td><%=@login_count%></td>
+	<td><%=raw(@question.description)%></td>
+        <td></td>
+        <td></td>
+        <td><%=raw @descriptive_answer%></td>
+        <td></td>
+        <td><%=@totalMark%></td>
+        <td><%=@total.round(2)%></td>
+	</tr>
+
+<%end%>
+
+ 
+ 
+   <%@ans.clear%>          
+   <%@actual.clear%>          
+   <%@tot.clear%>          
+   <%@optionA.clear%>          
+   <%@matchOption.clear%>          
+   <%@options.clear%>          
+      
+    <%@login_count +=1%>         
+      
+<%end%>       
+</table>
+
+</div>
+
+<div style="float:left; clear:both; width:100%;">
+<div style="float:right; width:50%; text-align:right;">
+Exam Mark: <%= @findExam.total_mark%><br>
+Mark Scored: <%= @grandTotal.inject(:+)%>
+</div>
+</div>

@@ -1,0 +1,36 @@
+<h2><%=t('exam.exams')%></h2>
+<%unless @exams.blank?%>
+<div class="updateStatus">
+
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+<th><%=t('exam.preview_exam')%></th>
+<th><%=t('general.edit')%></th>
+<th><%=t('general.delete')%></th>
+</tr>
+  
+	<%@exams.each do|exam|%>
+	<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+	<td><%=link_to exam.name, :action=>"previewExam", :exam => exam%></td>
+	<td><%=link_to t('general.view'), :action=>"previewExam", :exam => exam%></td>
+	<td><%=link_to image_tag("edit.png", :alt=>"Edit"), edit_exam_path(exam)%></td>
+	<td><%=link_to image_tag("del.png", :alt=>"Remove"), exam, :confirm => t('json_message.are_you_sure'), :method => :delete%></td>
+	</tr>
+	<%end%>
+
+</table>
+
+</div>
+<%else%>
+<div class="formContainer">
+  <%=t('not_found.no_exam_found')%> 
+ </div>
+ <%end%>
+<%= will_paginate @exams, 
+                :prev_label => t('general.previous'), 
+                :next_label => t('general.next'),
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+              %>
+

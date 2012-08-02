@@ -1,0 +1,419 @@
+
+<fieldset class="formContainer w393 mr10">
+<legend><%=t('exam.exam_sch')%></legend>
+
+
+<%= form_for :exam, :url => {:action => "create"}, :html => { :id => "class_form"} do |f| %>
+            <table  cellspacing="0" cellpadding="0" border="0" align="left" width="350" style=" float:left">
+              <tr>
+                <td align="left" valign="top" style="width: 105px; text-align: left; padding:0 7px 0 3px; margin:0;float:left; line-height:19px;"><%=t('exam.name')%></td>
+                <td align="left" valign="top"  class="td_two">
+		          <%= f.text_field :name,:class=>"validate[required] text-input form_element",:style=>"width:200px;", :disabled => true %>
+		        </td>
+              </tr>
+			  
+			  
+			  <tr>
+                <td align="left" valign="top" style="width: 105px; text-align: left; padding:0 7px 0 3px; margin:0;float:left; line-height:19px;"><%=t('exam.exam_code')%></td>
+                <td align="left" valign="top"  class="td_two">
+		          <%= f.text_field :exam_code,:class=>"validate[required] text-input form_element",:style=>"width:200px;", :disabled => true %>
+		        </td>
+
+              </tr>
+			  
+			  <tr>
+                <td align="left" valign="top" style="width: 105px; text-align: left; padding:0 7px 0 3px; margin:0;float:left; line-height:19px;"><%=t('exam.exam_date')%></td>
+                <td align="left" valign="top"  class="td_two">
+		          <%= f.text_field :exam_date,:class=>"validate[required] text-input form_element",:style=>"width:200px;", :id=>"datepicker", :disabled => true %>
+		        </td>
+
+              </tr>
+
+ 
+ 			  <tr>
+                <td align="left" valign="top" style="width: 105px; text-align: left; padding:0 7px 0 3px; margin:0;float:left; line-height:19px;"><%=t('exam.total_time')%></td>
+                <td align="left" valign="top"  class="td_two">
+		          <%= f.text_field :total_time,:class=>"validate[required] text-input form_element",:style=>"width:200px;", :id=>"total_time", :disabled => true %>
+		        </td>
+
+              </tr>
+
+  			  
+			  <tr>
+                <td align="left" valign="top" style="width: 105px; text-align: left; padding:0 7px 0 3px; margin:0;float:left; line-height:19px;"><%=t('exam.total_mark')%></td>
+                <td align="left" valign="top"  class="td_two">
+		          <%= f.text_field :total_mark,:class=>"validate[required] text-input form_element",:style=>"width:200px;", :id=>"total_time", :disabled => true %>
+		        </td>
+
+              </tr>
+			  
+			  <tr>
+                <td align="left" valign="top" style="width: 105px; text-align: left; padding:0 7px 0 3px; margin:0;float:left; line-height:19px;"><%=t('exam.inst')%></td>
+                <td align="left" valign="top" class="td_two pb0" style="width:235px">
+		          <%= f.text_area :instruction,:class=>"validate[required] text-input", :cols=>40, :rows=>20, :disabled => true  %>
+		        </td>
+				
+              </tr>
+			  
+            </table>
+
+  
+ 
+<% end %>
+
+</fieldset>
+
+<!-- Begin Examinees-->
+
+<fieldset class="formContainer w241" style="float:left; width:258px!important;">
+<legend><%=t('user.examinees')%></legend>
+
+          <div class="formBg h212 w241" style="overflow:auto; overflow-x:hidden; float:left">
+            <table  cellspacing="0" cellpadding="0" border="0" align="left" style="width:220px!important;float:left">
+              <%unless @examinees.empty?%>
+			  <td align="left" valign="top"  style="width:100%!important;">Temporary Examinee(s): ( <%=@exam.tempCount(@exam.id)%> ) </td>
+
+			  <%@examinees.each do|examinee|%>
+			  <tr>
+			  	<% unless "#{examinee.temp_examinee}" == '1'%>
+
+                <td align="left" valign="top"  style="width:100%!important;"><%= "#{examinee.name}" %>  ( <%="#{examinee.year}"%> ) </td>
+                <%end%>
+              </tr>
+			  <%end%>
+			  <%else%>
+			  <%=t('not_found.no_examinees_asg')%>
+		      <%end%>
+            </table>
+          </div>
+
+</fieldset>
+
+<!-- Begin Questions-->
+<fieldset class="formContainer">
+<legend><%=t('general.questions')%></legend>
+
+
+         <%unless @questions.empty?%> 
+         <%@questions.each do|question|%>
+		  <div class="formBg floatL">
+			<table  style="width:100%;">
+			  <tr>
+			  	<% qustionType = QuestionType.find_by_id(question.question_type_id)%>
+              </tr>
+			  <tr>
+                <td ><span style="float:left;" class="toggle" id="<%= question.id %>"> <%=image_tag("plus_icon.png", :alt=>"Shrink", :height=>"20", :width=>'20')%> </span> <span style="float:left; padding-left:10px; padding-top:3px; width:95%;"><%= question.description.html_safe %> <b>(<%= qustionType.name %>)</b></span> </td>
+              </tr>
+            </table>
+			 <%if question.question_type_id == 1%>
+			 <table class="answer_name allQustions ml33" id="toggle_<%=question.id%>">
+			 	<tr><th></th></tr>
+			 	<tr>
+			 	 <td>	
+				  <% answers = Answer.find_all_by_question_id(question.id)%>
+				   <%answers.each do|answer|%>
+				       <div style="width:100%; margin-bottom:10px; float:left;">
+						<%= radio_button_tag "answer_id", answer.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish", :style=>"margin-left: 10px; margin-right: 5px; margin-top:2px; float:left;"} %>
+					    
+						<div title="<%=answer.name%>" style="float:left;"><%= label_tag "answer_label",answer.name.html_safe, :style=>"width:115px; float:left;", :readonly => true%></div>
+					<div class="clear"></div>
+					
+					</div>					 
+				   <%end%>				
+			 	 </td>
+				</tr>
+			 </table>
+
+			 <%end%>
+			 
+			 <%if question.question_type_id == 2%>
+			 <table class="answer_name allQustions ml33" id="toggle_<%=question.id%>">
+			 	<tr><th></th></tr>
+			 	<tr>
+			 	 <td>
+				  <% answers = Answer.find_all_by_question_id(question.id)%>
+				   <%answers.each do|answer|%>
+					<div style="float:left; width:100%; margin-bottom:10px;">
+					<%= check_box_tag "answer_id[]", answer.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish", :style=>"margin-left: 10px; margin-right: 5px; float:left; margin-top:3px"} %>
+				        
+						<div title="<%=answer.name%>" style="float:left;"><%= label_tag "answer_label[]",answer.name.html_safe, :style=>"width:115px; height:19px; border:#d1d1d1 0px solid; ", :readonly => true%></div>
+					 </div>
+				   <%end%>				
+			 	 </td>
+				</tr>
+			 </table>
+			 <%end%>
+			 
+			  <%if question.question_type_id == 3%>
+			  <table class="answer_name allQustions ml33" id="toggle_<%=question.id%>">
+			 	<tr><th></th></tr>
+				<tr><td>
+			   <% answers = Answer.find_all_by_question_id(question.id)%>
+			   <%answers.each do|answer|%>
+			     <div style="float:left; clear:left; margin-bottom:10px;" title="<%=answer.name%>">
+			     	
+			     	<%=text_field_tag "fillups", truncate(answer.name,:length=>35), :style=>"border:#d1d1d1 1px solid; height:19px; width:200px;", :readonly => true%>
+				 </div>
+			   <%end%>
+				</td></tr>
+			 </table>			   
+			 <%end%>
+			 
+			 <%if question.question_type_id == 4%>
+			 <table class="answer_name allQustions ml33" id="toggle_<%=question.id%>">
+			 	<tr><th></th></tr>
+			 	<tr>
+			 	 <td>	
+				  <% answers = Answer.find_all_by_question_id(question.id)%>
+				   <%answers.each do|answer|%>
+				       <div style="width:100%; margin-bottom:10px; float:left;">
+						<%= radio_button_tag "answer_id", answer.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish", :style=>"margin-left: 10px; margin-right: 5px; margin-top:2px; float:left;"} %>
+					    
+						<div title="<%=answer.name%>" style="float:left;"><%= label_tag "answer_label",answer.name.html_safe, :style=>"width:115px; float:left;", :readonly => true%></div>
+					<div class="clear"></div>
+					
+					</div>					 
+				   <%end%>				
+			 	 </td>
+				</tr>
+			 </table>		   
+			 <%end%>
+			 
+			 <%if question.question_type_id == 5%>
+			  <table class="answer_name allQustions ml33" id="toggle_<%=question.id%>">
+			 	<tr><th></th></tr>
+			 	<tr>
+			 	 <td>	
+				  <% answers = Answer.find_all_by_question_id(question.id)%>
+				   <%answers.each do|answer|%>
+				       <div style="width:100%; margin-bottom:10px; float:left;">
+						<%= radio_button_tag "answer_id", answer.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish", :style=>"margin-left: 10px; margin-right: 5px; margin-top:2px; float:left;"} %>
+					    
+						<div title="<%=answer.name%>" style="float:left;"><%= label_tag "answer_label",answer.name.html_safe, :style=>"width:115px; float:left;", :readonly => true%></div>
+					<div class="clear"></div>
+					
+					</div>					 
+				   <%end%>				
+			 	 </td>
+				</tr>
+			 </table>	
+			 <%end%>
+			 
+<!-- Begin Matching Question-->			 
+			 <%if question.question_type_id == 11%>
+			 	<%@sub_questions = Question.where(["parent_id = ?", question.id])%>
+				     <%@ans = []%> 
+    					 <%@sub_questions.each do|sq|%> 
+        				  <%@answer = Answer.find_by_question_id(sq.id)%>
+       					  <%@ans << @answer%> 
+						  <%@ans = @ans%>
+      					 <%end%>
+						 
+			        <table cellpadding="0" cellspacing="0" border="0" class="tblRepeter allQustions ml33" id="toggle_<%=question.id%>">
+				  	<tr>
+				  		<td valign="top"><strong>Match Option A</strong></td>
+						<td valign="top"><strong>Match Option B</strong></td>
+				  	</tr>	
+					<tr align="center">		 
+					<td>
+		  				<div class="tblCols rowValue mt10 mb10">	
+						<%@sub_questions.each do|s|%> 
+							<div class="tblRepeaterRow" title="<%=s.name%>">  
+			    			<%= text_field_tag :answer,truncate(s.name,:length=>35), :style=>"width:200px; height:19px; border:#d1d1d1 1px solid; float:left;", :readonly => true, :id=>s.id%>
+
+							</div>
+						<%end%>
+		 				</div>
+					</td>  	 
+						 
+					<td>
+		  				<div class="tblCols rowValue mt10 mb10">	
+						<%@ans.each do|a|%> 
+							<div class="tblRepeaterRow" title="<%=a.match_answer%>">  
+				            <%= text_field_tag :answer,truncate(a.match_answer,:length=>35), :style=>"width:200px; height:19px; border:#d1d1d1 1px solid; float:left;", :readonly => true, :id=>a.id%>
+							</div>
+						<%end%>
+		 				</div>
+					</td>	
+					</tr>
+					</table>					 
+			 <%end%>
+			 
+<!-- Begin Drag and Drop-->
+			 <%if question.question_type_id == 6%>
+			  <span id="toggle_<%=question.id%>" class="allQustions" style="display:none;">
+			  <%image = Image.find(question.image_id)%>
+			  
+			  <p style="text-align: center;">
+			  <%= image_tag image.photo.url(:original), :size => "200x80", :id=>"preview-photo" %>
+			  </p> <br>
+			  <% answers = Answer.find_all_by_question_id(question.id)%>			   
+			   <%answers.each do|answer|%>
+			   <%ansImage = Image.find(answer.image_id)%>			     
+			     	<div class="imageRept"><%= image_tag ansImage.photo.url(:original), :size => "200x80", :id=>"preview-photo" %></div>
+			   <%end%>
+			  </span> 
+			 <%end%>
+			 
+<!-- Begin Likert-->
+			 
+			 <%if question.question_type_id == 7%>
+			  <table class="answer_name allQustions ml33" id="toggle_<%=question.id%>">
+			 	<tr><th></th></tr>
+				<tr><td>
+			   <% answers = Answer.find_all_by_question_id(question.id)%>
+			   <%answers.each do|answer|%>
+				    <div style="float:left; margin-bottom:10px; width:100%" title="<%=answer.name%>">
+					<%= text_field_tag :answer,truncate(answer.name,:length=>20), :style=>"width:115px; height:19px; border:#d1d1d1 1px solid; float:left;", :readonly => true%>
+					<%= radio_button_tag "answer[]", answer.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish", :disabled => true, :style=>"margin-left: 10px; margin-right: 5px; float:left;"} %><br>
+			        </div>
+			   <%end%>
+			   </td></tr>
+			 </table>	
+			 <%end%>
+
+<!-- Begin Matrix Question-->
+
+			 <%if question.question_type_id == 8%>
+			 	<%@sub_questions = Question.where(["parent_id = ?", question.id])%>
+
+					<%@ans = Answer.where(["question_id = ?",question.id])%>	 
+					<%@ans_length = @sub_questions.length%>
+			        <table cellpadding="0" cellspacing="0" border="0" class="tblRepeter allQustions ml33" id="toggle_<%=question.id%>">
+			        
+					<tr>  	 
+						 
+		  				<div class="tblCols rowValue">	
+						<td></td>
+						<%@sub_questions.each do|a|%> 
+							<!--<div class="tblRepeaterRow">  -->
+				         <td title="<%=a.name%>">
+				         	  <%= text_field_tag :answer,truncate(a.name,:length=>20), :style=>"width:115px; height:19px; border:#d1d1d1 1px solid;", :readonly => true, :id=>a.id%>
+						 </td>	
+							<!--</div>-->
+						<%end%>
+		 				</div>
+						
+					</tr>
+						
+						 
+					
+		  				<div class="tblCols rowValue">	
+						<%@ans.each do|s|%> 
+							<!--<div class="tblRepeaterRow">  -->
+			    		<tr align="center">	
+						<td title="<%=s.name%>">
+			    			<%= text_field_tag :answer,truncate(s.name,:length=>20), :style=>"width:115px; height:19px; border:#d1d1d1 1px solid;", :disabled => true, :id=>s.id%>
+						</td>
+						
+							<%for i in (1 .. @ans_length)%>
+							<td>
+						<%= radio_button_tag "sample_#{s.id}","",false, :readonly => true, :style=>"width:115px; height:19px; border:#d1d1d1 1px solid;"%>
+
+							</td>
+							<%end%>					
+						</tr>
+							<!--</div>-->
+						<%end%>
+		 				</div>
+				    
+
+					</table>					 
+			 <%end%>            
+			 
+<!-- Begin Image based-->			 
+			 <%if question.question_type_id == 9%>
+			 
+			 <span id="toggle_<%=question.id%>" class="allQustions"  style="display:none;">
+			 <table cellpadding="0" cellspacing="0" border="0" class="tblRepeter ml33">
+				<tr>
+					<td>
+			  		<%image = Image.find(question.image_id)%>
+			  		<div class="imageRept"><%= image_tag image.photo.url(:original), :size => "200x80", :id=>"preview-photo" %></div>
+			  		</td>
+				</tr>
+			</table>
+			<div class="clear"></div>
+			<% answers = Answer.find_all_by_question_id(question.id)%>
+			<table class="answer_name ml33">
+				<tr><th></th></tr>
+				<tr>
+					<td>
+			   			<%answers.each do|answer|%>
+				    	<div style="float:left; margin-bottom:10px; width:100%" title="<%=answer.name%>">
+						<%= text_field_tag :answer,truncate(answer.name,:length=>35), :style=>"width:200px; height:19px; border:#d1d1d1 1px solid; float:left;", :readonly => true%>
+						<%= radio_button_tag "answer[]", answer.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish", :disabled => true, :style=>"margin-left: 10px; margin-right: 5px; float:left;"} %><br>
+			   			</div>
+						<%end%>
+			   		</td>
+				</tr>
+			 </table>
+			 </span>
+			 <%end%>
+			 
+			 <%if question.question_type_id == 10%>
+                <%@sub_questions = Question.where(["parent_id = ?", question.id]).order("sort_order ASC")%>
+			    <table cellpadding="0" cellspacing="0" border="0" class="tblRepeter allQustions ml33" id="toggle_<%=question.id%>">
+			    	<tr>
+				  		<td valign="top"></td>
+				  	</tr>	
+					<tr align="center">		 
+						<td>
+			  				<div class="tblCols rowValue">	
+							<%@sub_questions.each do|s|%> 
+								<div class="tblRepeaterRow">  
+				    			<span class="tblInputtxt" style="width:200px;" title="<%=s.name%>"><%=truncate(s.name,:length=>35)%></span><%#= answer_fields.text_field :name, :class=>"tblInputtxt"%>
+								</div>
+							<%end%>
+			 				</div>
+						</td>
+					</tr>
+			 	</table>
+			 <%end%>
+			 
+	      </div>
+		<%end%>
+      <%else%>
+	  <%=t('not_found.no_que_found')%> 
+      <%end%>
+
+</fieldset>
+
+
+<script type="text/javascript">	
+$(document).ready(function() {
+		$( "#datepicker" ).datepicker();
+		$(".allQustions").slideUp();
+	});
+	
+    $('#start_time').timepicker({});
+    $('#total_time').timepicker({});
+	
+	
+		  $(".toggle").click(function(){	
+	    	question_toggle_id = "#toggle_" + this.id
+		
+      // Toggle the label
+      //var symbolSwitch = $(this).text() == " + " ? " - " : " + ";
+	  var plus_sign = ' <img src="/images/plus_icon.png" alt="plus" id="plus" width="20" height="20"> '
+				var minus_sign = ' <img src="/images/minus_icon.png" alt="minus" id="minus" width="20" height="20"> '
+				//var symbolSwitch = $(this).html() ==  minus_sign  ?  plus_sign  :  minus_sign
+	  var symbolSwitch = $(this).hasClass('minus') ?  plus_sign  :  minus_sign
+	  if ($(this).hasClass('minus')) { $(this).addClass('plus');$(this).removeClass('minus') } else {  $(this).addClass('minus');$(this).removeClass('plus') };
+
+      $(this).html(symbolSwitch);
+       switch(symbolSwitch) {
+        case plus_sign:
+         $(question_toggle_id).slideUp();
+		 //alert("hi");
+          break;
+        default:
+          $(question_toggle_id).slideDown();
+          break;
+      }
+    });
+	
+</script>
+
+
+

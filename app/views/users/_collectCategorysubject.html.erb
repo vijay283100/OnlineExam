@@ -1,0 +1,35 @@
+<div class="updateStatus">
+<h2><%=t('general.assign_cat')%></h2>
+<%unless @category_subject.empty?%>
+<div>
+            <table border="0" cellspacing="0">
+              <tr class="updateHeader">
+              	<th><%=t('general.category_sub')%></th>
+				<th></th>
+              </tr>
+			  <%@category_subject.each do|cs|%>
+              <tr class="updateAltrRow">				
+                <% unless cs.gather_cat_sub(cs).blank?%>
+		        <td>
+				  <%= cs.gather_cat_sub(cs)%>
+				</td>
+				<td>
+				  <%= check_box_tag "category[]", cs.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish"} %>
+				</td>
+				<%end%>
+			   </tr> 
+			   <%end%>
+            </table>
+</div>
+</div>
+<%else%>
+<div>
+	<%=t('not_found.add_category')%>
+</div>
+<%end%>
+<%= will_paginate @category_subject, 
+                :prev_label => t('general.previous'), 
+                :next_label => t('general.next'),
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+              %>

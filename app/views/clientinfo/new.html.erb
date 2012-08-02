@@ -1,0 +1,26 @@
+<h2><%=t('client.add_info')%></h2>
+<fieldset class="formContainer">
+<%= form_for :clientinfo, :url => {:action => "create"}, :html => { :id => "class_form"} do |f| %>
+           <div class="formBg">
+            <table  style="width:100%;">
+              <tr>
+                <td style="width:115px; text-align:right; padding-right:5px;"><%= f.label :name %></td>
+                <td style="width:115px;"><%= f.text_field :name, :class=>"validate[required,funcCall[checkHELLO]] text-input", :style=>"width:200px; height:19px; border:#d1d1d1 1px solid;" %></td>
+              <td style="font-style: italic; color: rgb(0, 0, 0); padding-left: 8px;"></td>
+			  </tr>
+            </table>
+          </div>
+
+          <div class="formBg">
+            <table  style="width:100%;">
+              <tr>
+                <td style="width:115px; text-align:right; padding-right:5px;"><%=t('client.client_url')%></td>
+                <td style="width:115px;"><%= f.text_field :url, :class=>"validate[required,funcCall[checkHELLO],custom[url]] text-input", :style=>"width:200px; height:19px; border:#d1d1d1 1px solid;" %></td>
+              <td style="font-style: italic; color: rgb(0, 0, 0); padding-left: 8px;"></td>
+			  </tr>
+            </table>
+          </div>  
+  <%= f.submit t('general.create'), :class=>'btnBg floatL',:id=>"Submit" %>
+<% end %>
+
+</fieldset>

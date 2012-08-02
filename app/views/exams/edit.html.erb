@@ -1,0 +1,372 @@
+<%= hidden_field_tag "now_year",Time.now().year(), :id=>"nowYr"%>
+<%= hidden_field_tag "now_month",Time.now().month(), :id=>"nowMnth"%>
+<%= hidden_field_tag "now_day",Time.now().day(), :id=>"nowDt"%>
+<%= hidden_field_tag "now_hr",Time.now().hour(), :id=>"nowHr"%>
+<%= hidden_field_tag "now_min",Time.now().min(), :id=>"nowMin"%>
+<%= hidden_field_tag "now_sec",Time.now().sec(), :id=>"nowSec"%>
+
+<h2><%= @exam.name%></h2>
+
+<div class="updateStatus"><h3><span class="toggleSchedule"> <%=image_tag("plus_icon.png", :alt=>"Expand", :height=>"20", :width=>'20')%>  </span><%=t('general.view')%>/<%=t('general.edit')%> <%=t('exam.ex')%></h3></div>
+<div class="toggleForm" style=" display:none; width:100%; clear:left;">
+<div class="formContainer">	
+<%= form_for @exam , :html => { :id => "class_form"} do |f| %>
+
+<%=hidden_field_tag "exam_mark", @examMark%>
+<%=hidden_field_tag "questions_mark", @fetchQ%>
+<%=hidden_field_tag "emark", @examMark%>
+
+<table class="formTable">
+<tr>
+<td width="120px;"><%=t('exam.name')%></td>
+<%if @exam.has_attended(@exam.id)== 1%>
+<td><%= f.text_field :name, :class=>"validate[required,funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px;" %></td>
+<%else%>
+<td><%= f.text_field :name,:readonly => true, :class=>"validate[required,funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px;" %></td>
+<%end%>
+</tr>
+
+<tr>
+<td width="120px;"><%=t('exam.exam_code')%></td>
+<%if @exam.has_attended(@exam.id)== 1%>
+<td>
+	<%= f.text_field :exam_code,:class=>"validate[required,funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px;" %>
+</td>
+<%else%>
+<td>
+	<%= f.text_field :exam_code,:readonly => true,:class=>"validate[required,funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px;" %>
+</td>
+<%end%>
+</tr>
+
+<tr>
+<td width="120px;"><%=t('exam.exam_date')%></td>
+<td>
+	<%= f.text_field :exam_date,:class=>"validate[required,custom[dateTime]] text-input", :id=>"datepicker", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px;" %>
+</td></tr>
+
+
+
+<tr>
+<td width="120px;"><%=t('exam.total_time')%></td>
+<td>
+   <%= f.text_field :total_time,:class=>"validate[required,custom[setTime]] text-input", :id=>"total_time", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px;" %>
+</td>
+</tr> 
+  
+
+  
+<tr>
+<td width="120px;"><%=t('exam.total_mark')%></td>
+<%if @exam.has_attended(@exam.id)== 1%>
+<td>
+   <%= f.text_field :total_mark,:class=>"validate[required,custom[onlyNumberSp],funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px;"  %>
+</td>
+<%else%>
+<td>
+   <%= f.text_field :total_mark,:readonly => true,:class=>"validate[required,custom[onlyNumberSp],funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px;"  %>
+</td>
+<%end%>
+</tr>    
+  
+<tr>
+<td width="120px;" style="vertical-align:top;"><%=t('exam.inst')%></td>
+<td>
+   <%= f.text_area :instruction,:class=>"validate[required,funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:87px; width:300px;"  %>
+</td></tr>   
+  
+<tr>
+  <td width="120px;">  
+  <%= f.submit t('general.update'), :class=>'btnBg checkTime' %>
+  </td>
+</tr>
+</table>
+</div>
+</div>
+<% end %>
+
+
+<div class="updateStatus"><h3 class="m0_P25"><span class="toggleQuestion"> <%=image_tag("plus_icon.png", :alt=>"Expand", :height=>"20", :width=>'20')%>  </span><%=t('general.questions')%></h3></div>
+<div class="toggleQuestionForm" style=" display:none; width:100%; clear:left;">
+	
+<div class="updateStatus">	
+
+      <%unless @examQuestions.empty?%>
+			<table  cellspacing="0" border="0">
+			<tr class="updateHeader">
+				<th><%=t('question.ques')%></th>
+				<th><%=t('question.mark')%></th>
+			    <th><%=t('general.delete')%></th>
+				
+				
+			</tr>	
+		   <%@examQuestions.each do|question|%>
+			  	<% qustionType = QuestionType.find_by_id(question.question_type_id)%>
+			  <tr class="updateAltrRow <%= cycle("odd", "even") %>">
+                <td ><%= raw(question.description) %> (<%= qustionType.name %>)</td>
+				<td><%= question.mark %></td>
+				<td><%=link_to(image_tag("del.png", :alt=>"Remove"), {:action=>"deleteExamQuestion",:exam_id=>@exam.id,:question_id=>question.id},{ :confirm=> t('json_message.are_you_sure')})%></td>
+              </tr>
+            
+		   <%end%>
+		 </table>  
+	  <%else%>
+	     <p class="mb10 w100pc floatL "><%=t('not_found.no_ques_avail')%>.</p> 
+	  <%end%>
+	  
+	<div class="n_s_left mt15"><%= link_to t('question.add_more_que'), :action=>"selectQuestion"%></div>
+</div>
+</div>
+
+<div class="clear"></div>
+<div class="updateStatus"><h3 class="m0_P25"><span class="toggleExaminee"> <%=image_tag("plus_icon.png", :alt=>"Expand", :height=>"20", :width=>'20')%>  </span><%=t('user.examinees')%></h3></div>
+<div class="toggleExamineeForm" style=" display:none; width:100%; clear:left;">
+<div class="updateStatus">	
+        <%unless @examUsers.empty?%> 
+		 
+			<table  cellspacing="0" border="0">
+				<tr class="updateHeader">
+				<th><%=t('general.name')%></th>
+				<th></th>
+			    <th><%=t('general.delete')%></th>
+			    </tr>
+			 <%@examUsers.each do|user|%>
+			  	<% examineeId = User.find_by_id(user.id)%>
+			  <tr class="updateAltrRow <%= cycle("odd", "even") %>">
+                <td ><%= "#{user.name}" %> ( <%="#{user.year}"%> ) </td>
+				<td ></td>
+				<td><%=link_to(image_tag("del.png", :alt=>"Remove"), {:action=>"deleteExamUser",:categoryuser_id=>"#{user.categoryuser_id}",:categoryexam_id=>"#{user.categoryexam_id}"},{ :confirm=> t('json_message.are_you_sure')})%></td>
+              </tr>
+            
+		  <%end%>
+		  </table>
+		<%else%>
+		  <p class="mb10 w100pc floatL "><%=t('not_found.no_examinees_asg')%>.</p>
+		<%end%>
+      <div class="n_s_left mt15"><%= link_to t('question.add_more_exa'), :action=>"selectExaminee"%>  <%#= link_to "Add new user", "#", :id=>"newUser"%></div>
+</div>
+</div>
+<div id="box"></div>
+<script type="text/javascript">	
+
+function checkUncheckAll(checkAllState, cbGroup)
+{
+	// Check that the group has more than one element
+	if(cbGroup.length > 0)
+	{
+		// Loop through the array
+		for (i = 0; i < cbGroup.length; i++)
+		{
+			cbGroup[i].checked = checkAllState.checked;
+		}
+	}
+	else
+	{
+		// Single element so not an array
+		cbGroup.checked = checkAllState.checked;
+	}
+}
+
+$(document).ready(function() {
+	
+	   var m = $("#exam_total_mark").val();
+	   $("#emark").val(m)
+	
+	   $('#exam_total_mark').keyup(function(){
+	   	var mark = $(this).val();
+		$("#emark").val(mark)
+	   	
+	    });
+		
+	   $('#exam_submit').click(function(){
+			var examMark = $("#exam_mark").val();
+			var examTotalmark = $("#emark").val();
+			var totalMark = $("#questions_mark").val();
+			//alert(totalMark);
+			//alert(examMark);
+			
+			var markDiff = examTotalmark - totalMark
+			if (totalMark > examTotalmark){
+				alert("<%=t('json_message.cant_update_mark')%>")
+				return false
+			}
+			
+			else if(markDiff != 0){
+				var more_ques = "<%=t('json_message.total_mark_exceeds')%>"
+				var more_mark = "<%=t('json_message.to_attain')%>"
+			var confirmResult = confirm(more_ques +" " + markDiff+" " + more_mark);	
+			//var confirmResult = confirm("Exam mark is exceeding. So please add question(s) containing "+ markDiff +" more mark(s) to the exam");
+			
+			if(confirmResult == true){
+				return true
+			}
+			else{
+				return false
+			}
+
+			}
+            
+        });
+	
+	
+    var now_yr = $("#nowYr").val()
+	var now_mnth = $("#nowMnth").val()
+	var now_dy = $("#nowDt").val()
+	var now_hr = $("#nowHr").val()
+	var now_minu = $("#nowMin").val()
+	var now_sec = $("#nowSec").val()
+
+
+if (now_dy == 0 || now_dy == 1 || now_dy == 2 || now_dy == 3 || now_dy == 4 || now_dy == 5 || now_dy == 6 || now_dy == 7 || now_dy == 8 || now_dy == 9){
+	var dy = '0'+now_dy
+}
+else {
+	var dy = now_dy	
+}
+
+
+	
+if (now_mnth == 10 || now_mnth == 11 || now_mnth == 12 ){
+	var mnth = now_mnth
+}
+else {
+var mnth = '0'+now_mnth	
+}	
+
+var day_mon = mnth+'-'+dy
+
+if (now_hr == 0 || now_hr == 1 || now_hr == 2 || now_hr == 3 || now_hr == 4 || now_hr == 5 || now_hr == 6 || now_hr == 7 || now_hr == 8 || now_hr == 9){
+	var hr = '0'+now_hr
+}
+else {
+var hr = now_hr	
+}
+
+if (now_minu == 0 || now_minu == 1 || now_minu == 2 || now_minu == 3 || now_minu == 4 || now_minu == 5 || now_minu == 6 || now_minu == 7 || now_minu == 8 || now_minu == 9){
+	var mn = '0'+now_minu
+}
+else {
+var mn = now_minu
+}	
+
+var hr_min = hr+':'+mn
+	
+	//var exam_start_time = now_yr+'-'+mnth+'-'+now_dy+' '+final_time+':'+now_sec
+	var exam_start_time = now_yr+'-'+day_mon+' '+hr_min+':'+now_sec
+	
+		$(".checkTime").click(function(){
+		var assignedTime = $("#datepicker").val()
+		//alert(assignedTime + " " + exam_start_time);
+		//alert(exam_start_time); 
+		if(assignedTime > exam_start_time){
+			return true
+		}
+		else{
+			alert("<%=t('json_message.past_time')%>");
+			return false
+		}
+
+	})		
+	
+	
+		//$( "#datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
+
+		$('#datepicker').datetimepicker({ 
+		  dateFormat: 'yy-mm-dd',
+		  timeFormat: ' hh:mm:ss' 
+		});
+
+
+
+		 $('#start_time').timepicker({});
+         $('#total_time').timepicker({
+		 	timeFormat: 'hh:mm:ss',
+			hourMin: 0,
+	        hourMax: 9
+		 });
+		 
+		 $('.toggleForm').slideDown()
+		 $('.toggleQuestionForm').slideDown()
+		 $('.toggleExamineeForm').slideDown()
+	
+	
+		$('#newUser').click(function(){	
+	
+			//var thischeck = $(this);
+				//if (thischeck.is(':checked')) {
+					var target = '<%= url_for(new_user_path)%>';
+					                    //var shared_target = target + "?create_id=" + 4
+										var shared_target = target + "?create_id=" + 4
+                        //                var dialog = "question_" + this.id
+                                            $('#box').dialog({width: 460, minHeight: 300});
+                                            $('#box').load(shared_target)				
+				//}	
+		});
+	
+	
+	});
+
+	
+	
+			$('.toggleSchedule').click(function() {
+			  $('.toggleForm').slideToggle('slow', function() {
+			  });		  
+			  	//var symbolSwitch = $(this).text() == "-" ? "+" : "-";
+				var plus_sign = ' <img src="/images/plus_icon.png" alt="plus" id="plus" width="20" height="20"> '
+				var minus_sign = ' <img src="/images/minus_icon.png" alt="minus" id="minus" width="20" height="20"> '
+				//var symbolSwitch = $(this).html() == minus_sign ? plus_sign : minus_sign
+				var symbolSwitch = $(this).hasClass('minus') ?  plus_sign  :  minus_sign
+	            if ($(this).hasClass('minus')) { $(this).addClass('plus');$(this).removeClass('minus') } else {  $(this).addClass('minus');$(this).removeClass('plus') };
+
+				$(this).html(symbolSwitch);
+			       switch(symbolSwitch) {
+			        case plus_sign:
+			          break;
+			        default:
+			          break;
+			      }
+			});
+
+		    $('.toggleQuestion').click(function() {
+			  $('.toggleQuestionForm').slideToggle('slow', function() {
+			  });
+			  	var plus_sign = ' <img src="/images/plus_icon.png" alt="plus" id="plus" width="20" height="20"> '
+				var minus_sign = ' <img src="/images/minus_icon.png" alt="minus" id="minus" width="20" height="20"> '
+				//var symbolSwitch = $(this).html() == minus_sign ? plus_sign : minus_sign
+				var symbolSwitch = $(this).hasClass('minus') ?  plus_sign  :  minus_sign
+	            if ($(this).hasClass('minus')) { $(this).addClass('plus');$(this).removeClass('minus') } else {  $(this).addClass('minus');$(this).removeClass('plus') };
+
+				$(this).html(symbolSwitch);
+			       switch(symbolSwitch) {
+			        case plus_sign:
+			          break;
+			        default:
+			          break;
+			      }	  
+			});
+			
+		   $('.toggleExaminee').click(function() {
+			  $('.toggleExamineeForm').slideToggle('slow', function() {
+			  });
+			  	var plus_sign = ' <img src="/images/plus_icon.png" alt="plus" id="plus" width="20" height="20"> '
+				var minus_sign = ' <img src="/images/minus_icon.png" alt="minus" id="minus" width="20" height="20"> '
+				//var symbolSwitch = $(this).html() == minus_sign ? plus_sign : minus_sign
+			      var symbolSwitch = $(this).hasClass('minus') ?  plus_sign  :  minus_sign
+				  if ($(this).hasClass('minus')) { $(this).addClass('plus');$(this).removeClass('minus') } else {  $(this).addClass('minus');$(this).removeClass('plus') };
+				
+				$(this).html(symbolSwitch);
+			       switch(symbolSwitch) {
+			        case plus_sign:
+			          break;
+			        default:
+			          break;
+			      }	  
+			});
+	
+
+	
+	</script>
+	
+	
+	
+

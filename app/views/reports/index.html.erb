@@ -1,0 +1,10 @@
+<div style="color: #5C5C5C; float: left; font-weight: bold; padding: 0 0 12px; width: 100%; font-size:14px;"><%=t('reports.report_types')%></div>
+
+<fieldset class="formContainer">
+
+	    <%= link_to t('general.examinees_report'), :action=>"userReport", :controller=>"reports"%><br><br>
+		<%= link_to t('general.exams_report'), :action=>"examReport", :controller=>"reports"%><br><br>
+		<%= link_to t('reports.overall'), :action=>"departmentReport", :controller=>"reports"%><br><br>
+		<%= link_to t('general.org_overview'), :action=>"overall", :controller=>"reports"%><br><br>
+		<%= link_to t('general.pass_fail'), :action=>"pass_fail", :controller=>"reports"%>
+</fieldset>

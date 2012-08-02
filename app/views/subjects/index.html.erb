@@ -1,0 +1,35 @@
+<div class="updateStatus">
+<h2><%=t('general.subjects')%></h2>
+<%unless @subjects.empty?%>
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+	<th><%=t('general.name')%></th>
+	<th><%=t('general.edit')%></th>
+	<th><%=t('general.delete')%></th>
+</tr>
+
+	<%@subjects.each do|subject|%>
+	<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+	<td><%=subject.name%></td>
+	<td><%=link_to image_tag("edit.png", :alt=>"Edit"), edit_subject_path(subject)%></td>
+	<td><%=link_to image_tag("del.png", :alt=>"Remove"), subject, :confirm => t('json_message.are_you_sure'), :method => :delete%></td>
+	</tr>
+	<%end%>
+
+</table>
+<%else%>
+<div class="formContainer">
+  <%=t('subject.no_sub_found')%> 
+ </div>
+ <%end%>
+ <div class="qestionhead"> 
+<div style="float:left; margin:10px 0 0 0; padding:8px 0 0 0;"><%=link_to t('subject.create_sub'), :action=>'new', :controller=>'subjects'%> | <%=link_to t('subject.add_sub_to_cat'), :action=>'add_subject_category', :controller=>'subjects'%></div>
+
+<%= will_paginate @subjects, 
+                :prev_label => t('general.previous'), 
+                :next_label => t('general.next'),
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+              %>
+</div>
+</div>

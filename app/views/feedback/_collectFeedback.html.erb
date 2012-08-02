@@ -1,0 +1,100 @@
+
+<div class="qestionhead"><h3><%if @question_type_id%><%=@question_type_name%> <%=t('general.questions')%><%else%><%=t('question.all_question')%><%end%> </h3>
+<p class="showComment paginationDiv floatR" style="color:#db3939; font-style:italic; font-size:14px; display:inline"></p>
+</div>
+<% unless @questions.empty?%>
+<% form_tag assign_path, :method=>"get", :id=>"class_form", :class=>"assign_question" do -%>
+
+<div class="questionTabele">
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+<th><%=t('question.ques_type')%></th>
+<th class="alignC"><%=t('general.assign')%></th>
+
+
+
+</tr>
+
+
+<%@questions.each do|question|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+
+<td><%=question.description%><span id="question_share_<%=question.id%>"></span></td>
+<td>
+ 	<%qt=QuestionType.find_by_id(question.question_type_id)%>
+ 	<%=qt.name%>
+</td>
+
+<td class="alignC">
+
+       <%if (current_user.role_id == Admin or current_user.role_id == Examiner)or (question.user_id == current_user.id)%>
+       	<%= check_box_tag "question[]", question.id, question.feedback==1 ? true : false, {:class=>"validate[maxCheckbox[1],[minCheckbox[1]] publish checkbox alignV", :id=> "question_#{question.id}"} %>
+       <%else%>
+       <%=t('feedback.published')%>
+       <%end%>
+</td>
+
+</tr>
+<%end%>
+</table>
+<%= submit_tag t('general.assign'), :id=>"assign", :class=>'btnBg' %>
+ 
+	<%= will_paginate @questions, 
+                :prev_label => t('general.previous'), 
+                :next_label => t('general.next'),
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+              %>
+<%end%>
+
+</div>
+<%else%>
+<div class="formContainer">
+  <%=t('not_found.no_que_found')%> 
+ </div>
+ <%end%>
+
+			  
+<script type="text/javascript">	
+$(document).ready(function() {
+
+		//$('.publish').click(function(){	
+			$('.publish').click(function(){
+				var thischeck = $(this);
+				if (thischeck.is (':checked')){
+
+
+				}
+                                
+                   else{
+                                  var target = '<%= url_for(unassign_path)%>';
+                                  var unpublished_target = target + "?question=" + this.id
+                                  $.get(unpublished_target,$("#" + this.id).serialize(),function(data){
+                                    if (data.text == true){
+				    $(".showComment").empty();
+                    $(".showComment").append("<%=t('feedback.ques_unassigned')%>").delay(2000);
+							setTimeout(function() {
+						     $(".showComment").empty();
+						     }, 5000);
+                                    }
+                                  });
+                                }
+
+        });
+		
+		
+		$("#collectQuestion .pagination a").live("click", function(){
+	
+	var link = this.href
+	var lastChar = link.substr(link.length - 1);	
+	if (lastChar == '#'){
+		return false;
+	}
+	else{
+		$.getScript(this.href);
+		return false;
+	}
+   });
+                        });
+  </script>

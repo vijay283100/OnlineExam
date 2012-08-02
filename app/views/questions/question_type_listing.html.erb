@@ -1,0 +1,25 @@
+<fieldset class="formContainer">
+<legend><%=t('question.select_qtype_cat')%></legend>
+
+
+   <% form_tag({:action => "new"}, {:id => "class_form"}) do %>
+   
+	<span style="width: 130px; float: left;"><%=t('question.select_q_type')%>:</span>
+	<%= select_tag "question_type", options_from_collection_for_select(@question_types, "id", "name"), :style=>"width:150px; height:19px; border:#d1d1d1 1px solid;"%>
+	
+
+<br><br>
+	<span style="width: 130px; float: left;"><%=t('subject.select_sub')%>: </span> 
+  <%unless current_user.role_id == Qsetter%>
+  <%=  select_tag 'subject', options_for_select([[t('general.gen') , "0" ]] + @category_subject.reject{|p|p.gather_cat_sub(p).blank?}.collect{|p| [p.gather_cat_sub(p),p.id,{:title=>p.gather_cat_sub(p)}]}), :style=>"width:530px; height:19px; border:#d1d1d1 1px solid;"%>
+  <%else%>
+  <%=  select_tag 'subject', options_for_select([[t('general.select') , "" ]] + @category_subject.reject{|p|p.gather_cat_sub(p).blank?}.collect{|p| [p.gather_cat_sub(p),p.id,{:title=>p.gather_cat_sub(p)}]}), :style=>"width:530px; height:19px; border:#d1d1d1 1px solid;",:class=>"validate[required] text-input"%>
+  <%end%>
+<br><br>   
+   <%= submit_tag t('general.next'), :class=>'btnBg floatL',:id=>"Submit" %> <div class="back_btn"> | <%=link_to t('general.back'), :action=>'index', :question_type=>@qId%></div>
+   <% end %>
+</fieldset>
+
+
+
+

@@ -1,0 +1,44 @@
+<%unless @evaluators.empty?%>
+<p id="deleted"></p>
+
+<div class="updateStatus">
+	<h2><%=t('evaluator.evaluators')%></h2>
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+<th><%=t('general.email')%></th>
+<%unless @nodelete == 1%>
+<th><%=t('general.delete')%></th>
+<%else%>
+<th></th>
+<%end%>
+</tr>
+
+<%@evaluators.each do|evaluator|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<td><%=evaluator.name%></td>
+<td><%=evaluator.email%></td>
+<td>
+<%unless @nodelete == 1%>
+<%=link_to(image_tag("del.png", :alt=>"Remove"), {:action=>:evaluator, :controller=>"exams",:user_id => evaluator.id, :exam =>@exam.id, :delEvaluator=>1},{ :remote=>true,:confirm=> t('json_message.are_you_sure') })%>
+<%end%>
+</td>
+
+
+
+</tr>
+<%end%>
+
+</table>
+<%else%>
+No evaluators found.
+<%end%>
+</div>
+<div class="pagination">
+	<%= will_paginate @evaluators, 
+                :prev_label => "previous", 
+                :next_label => "Next",
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+              %>
+</div>

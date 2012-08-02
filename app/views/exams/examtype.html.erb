@@ -1,0 +1,23 @@
+
+
+<% form_tag create_examtype_path, :id => "class_form" do %>
+
+<h2><%=t('general.create')%> <%=t('exam.exam_type')%></h2>
+<div class="formContainer">
+            <table class="formTable" style="border:0px;">
+              <tr><td>				              			  			  
+			    <div style="float:left; padding:0px; margin:0 20px 0 0;">
+				<label style="float:left; padding-right:10px; width:95px;"><%=t('exam.exam_type')%>:</label>
+				<%= text_field_tag "examType", '',:class=>"validate[required,funcCall[checkHELLO]] text-input", :style=>"width:150px; height:19px; border:#d1d1d1 1px solid;" %>
+				</div>  
+			  </td></tr>
+			  
+			  
+			  
+            </table>
+			<%= submit_tag t('general.create'), :class=>'btnBg',:id=>"Submit" %>
+</div>
+     <script language="JavaScript">
+           	document.getElementById("examType").focus();
+     </script> 
+<% end %>

@@ -1,0 +1,43 @@
+<h2><%=t('general.examinees_report')%></h2>
+<div class="formContainer">
+     <% form_tag userReport_path,:method=>"get", :id=>"class_form", :class=>"assign_examinee" do -%>
+            <table class="formTable" style="border:0px;">
+            <tr>
+            <td> 
+           <div style="float:left; padding:0px; margin:0 20px 0 0;">
+		   <label style="float:left; padding-right:10px; width:120px;"><%=t('general.select_cat')%>: </label>
+		   <%= select_tag "examCategory",options_for_select([[t('general.select') , "" ]] + @c.collect{|p| [p.gathercat(p),p.id,{:title=>p.gathercat(p)}]},:selected=>@category_id), {:id=>"examCategory", :class=>"category w530 bdr validate[required]"} %>
+		   </div>
+		   <div class="clear"></div><br>
+		   		   
+	       <div style="float:left; padding:0px; margin:0; clear: left;">
+		   <label style="float:left; padding-right:10px; width:120px;"><%=t('exam.year')%>:</label>
+		   <%= select_tag 'academicYear', options_for_select(([[t('general.select'),""]] + @yrs.to_a),:selected=>@academicYear),:class=>"validate[required] w120 bdr" %>		   
+		   </div>
+		   <div class="clear"></div><br>		   
+
+			<div style="float:left; padding:0px; margin:0; clear: left;">
+			<label style="float:left; padding:3px 10px 0 0; width:120px;"><%=t('general.examtype')%>:</label>
+			<%= select_tag 'examtype',options_for_select([[t('general.select'),""]] + @examTypes.collect{|p| [truncate(p.name,:length=>30),p.id,{:title=>p.name}]},:selected=>@examtype), {:style=>"width: 200px; height: 19px; border: 1px solid rgb(209, 209, 209);",:class=>"validate[required]"} %>
+            </div>
+            </td> 
+			</tr> 
+            </table>
+			<%= submit_tag t('general.filter'), :id=>"assign", :class=>'btnBg' %>
+	<%end%>
+</div>
+
+
+<span id="collectUser">
+  <%unless @category_id == 0%>	
+	<%unless @category_user.empty?%>
+	<%=render :partial=>"reports/collect_users"%>
+	<%else%>
+	<%=t('not_found.no_examinees')%>
+	<%end%>
+  <%end%>
+</span><br>
+
+<%#= link_to "click", "#", :id=>"share_24"%>
+
+</div>

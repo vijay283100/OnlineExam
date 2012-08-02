@@ -1,0 +1,33 @@
+<fieldset class="formContainer">
+<legend><%=t('about.aboutus')%></legend>
+
+<% form_tag({:action => "create"}, {:id => "class_form"}) do %>
+
+<div class="formBg">
+            <table  style="width:100%;">
+              <tr>
+                <td style="width:115px; text-align:left; padding-right:5px;" valign="top"><%=t('about.english')%></td>
+                <td>
+	          <%=text_area_tag 'content_english',@aboutus_english.description,:class=>"validate[required,funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:200px; width:400px; margin-bottom:8px;"%>
+                </td>
+				
+              </tr>
+            </table>
+</div>
+
+<div class="formBg">
+            <table  style="width:100%;">
+              <tr>
+                <td style="width:115px; text-align:left; padding-right:5px;" valign="top"><%=t('about.german')%></td>
+                <td>
+	          <%=text_area_tag 'content_french',@aboutus_french.description,:class=>"validate[required,funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:200px; width:400px; margin-bottom:8px;"%>
+                </td>
+				
+              </tr>
+            </table>
+</div>
+
+	
+<%= submit_tag t('general.update'), :class=>'btnBg',:id=>"Submit" %>
+<% end %>
+</fieldset>

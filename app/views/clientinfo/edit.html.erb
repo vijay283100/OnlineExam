@@ -1,0 +1,24 @@
+<h2><%=t('user.edit')%></h2>
+<fieldset class="formContainer">
+<% form_for @clientinfo , :html => { :id => "class_form"} do |f| %>
+<table class="formTable">
+
+<tr>
+<td width="120px;"><%= f.label :name %></td>
+<td><%= f.text_field :name, :class=>"validate[required,funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px;" %></td>
+</tr>
+
+<tr>
+<td width="120px;"><%=t('client.client_url')%></td>
+<td><%= f.text_field :url, :class=>"validate[required,funcCall[checkHELLO],custom[url]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px;" %></td>
+</tr>
+
+</table>
+
+<tr>
+  <td width="120px;">  
+  <%= f.submit t('general.update'), :class=>'btnBg' %>
+  </td></tr>
+
+<% end %>
+</fieldset>

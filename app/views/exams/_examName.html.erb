@@ -1,0 +1,114 @@
+
+<div style="float:left; padding:0px; margin:0px; width:100%;", class="showExamname">
+<div style="float:left; padding:0px; margin:0 20px 5px 0;">
+	<label style="float:left; padding-right:10px; width:95px;"><%=t('exam.select_exam')%>:</label>
+   <%=  select_tag "examName", options_for_select([[t('general.select') , "" ]] + @examNames.collect{|e| [e.name[0..30],e.id,{:title=>e.name}]}, :selected=>@selectedExamname), {:style=>"width:200px; height:19px; border:#d1d1d1 1px solid;",:class=>"validate[required]"}%>
+	</div>
+
+<span style="float:right;">
+<%=t('exam.total_mark')%>: <span id="totalMark_value" class="mr10">
+	<%if @taken == 1%>
+	<%=text_field_tag "totalMark", @examMark, :disabled => true,:class=>"validate[required,custom[onlyNumberSp],funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:40px; text-align:right;"%>
+	<%else%>
+    <%=text_field_tag "totalMark", @examMark,:class=>"validate[required,custom[onlyNumberSp],funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:40px; text-align:right;"%>
+	<%end%>
+	</span>
+
+<%=t('exam.mark_assigned')%>: <span id="markAssigned"><%=text_field_tag "assignedMark", @fetchQuestions, :disabled=>true, :style=>"border:#d1d1d1 1px solid; height:19px; width:40px; text-align:right;"%></span>
+</span>
+</div>
+
+
+<script type="text/javascript">	
+
+$(document).ready(function() {
+	
+$("#examName").change(function() {
+	//$("#evaluation_type").show();
+			var s = $("#examName").val();
+            $(".eName").val(s)	
+	
+   var data = {exam_id:$(this).val()}; // the value of input that need to send to server
+   var url = "<%= url_for(getMark_path)%>";
+
+   $.get(url, data, // make ajax request
+    function(data) { // function to handle the response
+	data_class = data.exam_id
+	$("#textvalue").val(data_class)
+        $("#totalMark")
+	      .show()
+	      .val(data.data);
+		$("#assignedMark")
+	      .show()
+	      .val(data.mark_assigned);
+			var etaken = data.taken
+		if(etaken == '1'){
+          $("#totalMark").attr("disabled","disabled");
+		}
+		else{
+			
+			$("#totalMark").attr("disabled","");
+
+		}
+     });
+   });
+
+$("#totalMark").keyup(function() {
+	var msg = "Mark has been updated"
+	
+	//$("#message").html(msg); 
+	//$("#message").fadeOut();
+	
+	var intRegex = /[0-9 -()+]+$/;
+	var mark = $(this).val();
+	
+
+	if(mark.match(intRegex)){
+			var data = {exam_id:$("#textvalue").val(), mark:$(this).val()};
+			var url = "<%= url_for(updateMark_path)%>";
+		
+			//$.get(url, data)
+			
+			$.get(url, data, function(resp_data){
+
+				if (resp_data.text == true) {	
+				 //alert(resp_data.markDiff);
+				 var mark = resp_data.markDiff
+				    $(".showComment").empty();
+					
+					var mark_update = "<%=t('json_message.mark_updated')%>"
+					var more_mark = "<%=t('json_message.more_mark')%>"
+					$(".showComment").append(mark_update +" " + mark + " "+ more_mark).delay(2000);
+                    //$(".showComment").append("Mark updated. Please add question(s) containing "+ mark +" more mark(s) to the exam").delay(2000);
+							setTimeout(function() {
+						     $(".showComment").empty();
+						     }, 5000);
+					  } 
+			    else if(resp_data.notUpdated == true){
+					$(".showComment").empty();
+                            $(".showComment").append("<%=t('json_message.cant_update_mark')%>");
+							setTimeout(function() {
+						     $(".showComment").empty();
+						     }, 3000);
+					  }
+			    else if(resp_data.hasAttended == true){
+					$(".showComment").empty();
+                            $(".showComment").append("<%=t('json_message.cant_edit_mark')%>");
+							setTimeout(function() {
+						     $(".showComment").empty();
+						     }, 3000);
+					  }			    
+			    else{
+					$(".showComment").empty();
+				}
+		    }, 'json')
+			
+	}
+
+	
+   });
+	
+	
+  });
+  
+ </script>

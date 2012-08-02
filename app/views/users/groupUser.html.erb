@@ -1,0 +1,118 @@
+<% form_tag groupUser_path, :method=>"get",:remote=>true, :id=>"question_filter", :class=>"assign_question" do -%>
+<%# end %>
+
+
+<h2><%=t('user.filter_examinee')%></h2>
+<div class="formContainer">
+            <table class="formTable" style="border:0px;">
+			    <tr>
+                <td>
+                	<div style="float:left; padding:0px; margin:0 20px 0 0;">
+					<label style="float:left; padding-right:10px; width:115px;"><%=t('user.select_examinee')%>:</label>
+					<%= select_tag 'examineeType', options_for_select(@examineeTypes.to_a), :style=>"width:185px; height:19px; border:#d1d1d1 1px solid;",:class=>"validate[required]" %>				
+					</div>
+				</td>
+                </tr> 
+            </table>
+			<%= submit_tag t('general.filter'), :id=>"filter", :class=>'btnBg' %>
+</div><br><br><br>
+<%end%>
+
+
+
+
+<%form_for @category, :url => { :action => "createGroup" }, :html => { :class=>"assign_examinee", :id=>"class_form"} do |f|%>
+
+
+<div class="formContainer">
+	<table class="formTable" style="border:0px;">
+		<tr>
+			
+	<td class="pb0">
+		<div style="float:left; padding:0px; margin:0 20px 0 0;">
+			<label style="float:left; padding-right:10px; width:95px;"><%=t('general.select_cat')%>:</label>
+			<%= f.select :id,options_for_select([[t('general.select'),""]] + @c.collect{|p| [p.gathercat(p),p.id,{:title=>p.gathercat(p)}]}),{},:class=>"validate[required] w530 bdr" %>
+		</div><div class="clear"></div><br>
+	    <div style="float:left; padding:0px; margin:0;">
+			<label style="float:left; padding-right:10px; width:95px;"><%=t('general.acedemic_yr')%>:</label>
+			 <%= select_tag 'academicYear', options_for_select(([[t('general.select'),""]] + @yrs.to_a)), :class=>"validate[required] w120 bdr" %>
+		</div>
+	</td>		
+			
+			
+  		</tr>
+</table>
+</div>
+
+<span id="groupuser"><%=render :partial=>"group"%></span>
+
+
+
+<%end%>
+
+
+
+
+<script type="text/javascript">	
+
+function checkUncheckAll(checkAllState, cbGroup)
+{
+	// Check that the group has more than one element
+	if(cbGroup.length > 0)
+	{
+		// Loop through the array
+		for (i = 0; i < cbGroup.length; i++)
+		{
+			cbGroup[i].checked = checkAllState.checked;
+		}
+	}
+	else
+	{
+		// Single element so not an array
+		cbGroup.checked = checkAllState.checked;
+	}
+}
+
+
+$(document).ready(function() {
+
+$("#question_filter").validationEngine();
+		
+		
+		// $('#examineeType').change(function(){
+			
+        //    var target = '<%= url_for(groupUser_path)%>';
+        //    $('.assign_examinee').attr('action', target);
+       //     $('.assign_examinee').submit();
+       // });
+		
+
+		//$( "#datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
+
+  
+  $("#groupuser .pagination a").live("click", function(){
+	
+	var link = this.href
+	var lastChar = link.substr(link.length - 1);	
+	if (lastChar == '#'){
+		return false;
+	}
+	else{
+		$.getScript(this.href);
+		return false;
+	}
+   });
+
+
+  
+  
+  });
+  
+  
+  
+
+
+
+
+  </script>
+

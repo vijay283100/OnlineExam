@@ -1,0 +1,40 @@
+		      <%checkAttended = Evaluation.find_by_question_id_and_categoryexam_id_and_categoryuser_id_and_has_attended_and_attempt(@question.id,@categoryExam,@categoryUser,true,@attempt) %>
+		  
+		      <%image = Image.find(@question.image_id)%>
+			  <table>
+			  <tr>
+			  	 <td>
+				  <div id="draggable" class="ui-widget-content" style="position: relative; left: 207px; top: 0px;">
+				  	<p>Drag me to my target</p>
+				  	<%= image_tag image.photo.url(:original), :size => "200x80", :id=>"preview-photo" %>
+				       <%=hidden_field_tag "dragImage", @question.id%>
+				  </div> <br>
+				 </td> 
+			  </tr>
+
+           <%unless checkAttended == nil%>
+		   		<%= hidden_field_tag "question_type_id", @question.question_type_id%>	
+	            <%= hidden_field_tag "question_id", @question.id%>
+				<%= hidden_field_tag "attended", checkAttended.has_attended%>
+				<%= hidden_field_tag "evaluation_id", checkAttended.id%>	
+		        <%=hidden_field_tag "dropped",checkAttended.answer_id, :id=>"dropedOn" %>
+		   <%else%>
+		   		<%= hidden_field_tag "question_type_id", @question.question_type_id%>	
+	            <%= hidden_field_tag "question_id", @question.id%>		   
+		        <%=hidden_field_tag "dropped",nil, :id=>"dropedOn" %>
+		   <%end%>
+			  <% answers = Answer.find_all_by_question_id(@question.id)%>
+			   <tr>
+			   <%answers.each do|answer|%>
+			   <%ansImage = Image.find(answer.image_id)%>
+			     <td>
+			     	<div class="ui-widget-header droppable" id="<%=answer.id%>">
+			     		<p class="drop" id="ansImage_<%=answer.id%>"></p>
+			     		<span><%= image_tag ansImage.photo.url(:original), :size => "200x80", :id=>"preview-photo", :value=>answer.id %></span>
+						<%= hidden_field_tag "answer_id", answer.id%>
+					</div>
+				 </td>
+			   <%end%>
+			      
+			   </tr>
+			 </table>

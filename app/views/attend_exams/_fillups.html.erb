@@ -1,0 +1,41 @@
+		  <%checkAttended = Evaluation.where(["question_id = ? and categoryexam_id = ? and categoryuser_id = ? and has_attended = ? and attempt = ?", @question.id,@categoryExam,@categoryUser,true,@attempt])%>
+
+		  <%unless checkAttended.empty?%>
+			  <%= hidden_field_tag "question_type_id", @question.question_type_id%>	
+		      <%= hidden_field_tag "question_id", @question.id%>
+			    <table class="answer_name" id="toggle_<%=@question.id%>">
+				 	<tr><th></th></tr>
+					<tr><td>
+				   <% answers = Answer.find_all_by_question_id(@question.id)%>
+				       <% @collectAnswer = []%>
+				       <%answers.each do|answer|%>
+					   <%checkAttended_1 = Evaluation.find_by_question_id_and_answer_id_and_categoryexam_id_and_categoryuser_id_and_has_attended_and_attempt(@question.id,answer.id,@categoryExam,@categoryUser,true,@attempt) %>
+					   <%@collectAnswer << checkAttended_1%>
+				        <%= hidden_field_tag "evaluation_id[]", checkAttended_1.id%>
+
+					   <%end%>
+					   <%@collectAnswer.each do|collectAns|%>
+						 <%= fields_for "answer[]", collectAns do |answer_fields| %>
+							<%= answer_fields.hidden_field :id %>
+							<%= answer_fields.text_field :answer_name, :class=>'validate[required,funcCall[checkHELLO]] text-input blankCount',:style=>"width:200px; height:19px; border:#d1d1d1 1px solid;"%><br><br>
+						 <%end%>
+						 
+				       <%end%>
+					</td></tr>
+				 </table>	
+			  <%else%>
+			     <%= hidden_field_tag "question_type_id", @question.question_type_id%>	
+		      <%= hidden_field_tag "question_id", @question.id%>
+			    <table class="answer_name" id="toggle_<%=@question.id%>">
+				 	<tr><th></th></tr>
+					<tr><td>
+				   <% answers = Answer.find_all_by_question_id(@question.id)%>
+				   <%answers.each do|answer|%>
+				      <%= text_field_tag "fields[#{answer.id}][name]",'', :class=>"validate[required,funcCall[checkHELLO]] text-input",:style=>"width:200px; height:19px; border:#d1d1d1 1px solid;" %>
+					  <%= hidden_field_tag "fields[#{answer.id}][answer_id]", answer.id %>
+	
+						<br><br>
+				        <%end%>
+					</td></tr>
+				 </table>
+			  <%end%>

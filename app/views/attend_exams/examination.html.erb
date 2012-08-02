@@ -1,0 +1,175 @@
+
+
+<%=render :partial=>"timer"%>
+
+<%=@t%> of <%=@questions_length%>
+<%= form_tag "#", :method => :post, :id => 'class_form', :class=>"formExam" do %>
+
+<fieldset class="formContainer">
+<legend><%=t('general.questions')%></legend>
+          
+		 
+		 <%if @question.question_type_id == 1 or @question.question_type_id == 4 or @question.question_type_id == 5%>
+		  <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+		  
+		  <%=render :partial=>"multipleChoice"%>
+		   
+		 <%end%>
+		 
+
+		 <%if @question.question_type_id == 12%>
+		  <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+		  
+		  <%=render :partial=>"descriptive"%>
+		   
+		 <%end%>
+		 
+		 
+		  <%if @question.question_type_id == 6%>
+           <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+
+			<%=render :partial=>"dragandDrop"%> 
+		  <%end%> 
+		 
+		 
+		 
+		 <%if @question.question_type_id == 2%>
+		  <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+          <%=render :partial=>"multipleSelection"%> 
+		 <%end%>
+		 
+		 <%if @question.question_type_id == 3%>
+		  <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+		  
+          <%=render :partial=>"fillups"%> 
+		 <%end%>
+
+		 		 
+		 <%if @question.question_type_id == 9%>
+		  <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+		 
+		  <%=render :partial=>"imageBased"%> 
+		 <%end%>
+		 
+		 <%if @question.question_type_id == 10%>
+		  <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+		  <%@checkAttended = Evaluation.where(["question_id = ? and categoryexam_id = ? and categoryuser_id = ? and has_attended = ? and attempt = ?", @question.id,@categoryExam,@categoryUser,true,@attempt])%>
+		  
+		  <%=render :partial=>"hrcl"%> 
+		 <%end%> 
+		   
+		   			 
+		   <%if @question.question_type_id == 11%>
+             <%=render :partial=>"question_description", :locals=>{:question=>@question}%>
+			 <%=render :partial=>"matching"%> 
+					 
+		   <%end%> 
+	<%= hidden_field_tag "categoryuser_id", @categoryUser%>	
+	<%= hidden_field_tag "categoryexam_id", @categoryExam%>	
+	<%= hidden_field_tag "attempt", @attempt%>	
+
+</fieldset>
+
+      <% if @t == 1%>
+	  <%= submit_tag t('general.next'), :class=>'btnBg',:onclick=>"return false;", :id=>"examNext" %>
+	  <% elsif @questions_length >= @t%>	
+	  <%= submit_tag t('general.next'), :class=>'btnBg',:onclick=>"return false;", :id=>"examNext" %> 
+	  	
+	  <span style="float:right;">
+	  <%= submit_tag t('general.previous'), :class=>'btnBg', :id=>"examPrev" %>
+	  </span>	
+	 
+	 <%end%>  
+	 <span><%= submit_tag t('general.finish'), :class=>'btnBg',:onclick=>"return false;", :id=>"finishBtn" %></span> 
+<%end%>
+
+
+	<script>
+	$(document).ready(function() {
+		
+       var msg = $("#clock1").text();
+		
+		if (msg == "Time elapsed, Please click finish button"){
+		    $("#examNext").hide()
+	 	 	$("#examPrev").hide()
+	  		$("#finishBtn").show()
+		}
+		else{
+			$("#finishBtn").hide();
+			$("#examNext").show()
+	 	 	$("#examPrev").show()
+		}
+		
+		//$("#finishBtn").hide();
+		$( "#sortable" ).sortable();
+		
+      
+	  
+	  $( "#draggable" ).draggable();
+		$( ".droppable" ).droppable({
+			drop: function( event, ui ) {
+				
+				drop_length = ($(".drop").length)
+			    drop_id = $(".droppable").find("p")
+		            var drop_check
+			    for (i=0; i<drop_length; i++)
+			    {
+			     //if($("#") + drop_id[i].id).html() == "Dropped!") {
+			     if($("#" + drop_id[i].id).html() == "Dropped!") {
+		                drop_check = "false"
+				 break;
+		             }
+			    }
+
+				if(drop_check != "false") {
+					 $("#dropedOn").val(this.id)
+
+				$( this )
+					.addClass( "ui-state-highlight" )
+					.find( "p" )
+						.html( "Dropped!" );
+			    //var imgId = $(this).attr('id');
+				//alert(imgId);
+			  }
+			}
+		});
+		
+		
+  //  $('#examNext').click(function(){
+   //         var target = '<%= examination_path(:t => @t+1) %>';
+    //        $('#exam_form').attr('action', target);
+     //       $('#exam_form').submit();
+      //  });
+	  
+	  
+	     $('#examNext').click(function(){
+            var target = '<%= evaluation_path(:t => @t+1, :categoryuser_id=> @categoryUser, :categoryexam_id=>@categoryExam, :attempt=>@attempt) %>';
+            $('#class_form').attr('action', target);
+            $('#class_form').submit();
+        });
+	  
+
+        $('#examPrev').click(function(){
+            jQuery('form#class_form').unbind('submit').submit();
+
+            var target = '<%= examination_path(:t => @t-1) %>';
+            $('#class_form').attr('action', target);
+            $('#class_form').submit();
+		
+        });
+		
+	    $('#finishBtn').click(function(){
+            jQuery('form#class_form').unbind('submit').submit();
+			var target = '<%= calculateScore_path(:categoryuser_id=> @categoryUser, :categoryexam_id=>@categoryExam, :attempt=>@attempt) %>';
+            $('#class_form').attr('action', target);
+            $('#class_form').submit();
+        });
+	
+	});
+
+
+
+
+
+	
+	</script>

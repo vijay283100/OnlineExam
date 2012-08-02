@@ -1,0 +1,177 @@
+<div id = "categoryList">
+	<h2><%=@name%></h2>
+	<%unless @orgLevels.empty?%>		
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+<th><%=t('general.edit')%></th>
+<th><%=t('general.delete')%></th>
+</tr>
+
+<%@orgLevels.each do|title|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<td>
+	<span id="titleLabel_<%=title.id%>" title="<%=title.name%>"><%=title.name%></span>
+	<%= text_field_tag "titleText", title.name, :id=>"titleText_#{title.id}", :class=>"categories",:style=>"width:200px; height:19px; border:#d1d1d1 1px solid;"%>
+</td>
+
+<%=hidden_field_tag "categoryType", @collect_type%>
+<td><%=link_to image_tag("edit.png", :alt=>"Edit"),"#nogo",:id=>"#{title.id}", :class=>"editCategory" %>
+<%=link_to t('general.update'), "#nogo",:id=>"update_#{title.id}", :class=>"updateCategory" %>
+<td>
+<%=link_to image_tag("del.png", :alt=>"Remove"), "#nogo",:id=>"delete_#{title.id}", :class=>"deleteCategory" %>
+</td>
+
+</tr>
+<%end%>
+
+</table>
+<%= will_paginate @orgLevels, 
+                :prev_label => t('general.previous'), 
+                :next_label => t('general.next'),
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+              %>
+<%else%>
+<div class="formContainer">
+  <%=t('not_found.no_data')%>. 
+ </div>
+ <%end%>
+</div>
+
+<script type="text/javascript">	
+
+$(document).ready(function() {
+	$(".categories").hide();
+	$(".updateCategory").hide();
+	$(".editCategory").click(function() {
+		 var categoryId = $(this).attr('id');
+		 $("#titleLabel_"+categoryId).hide();
+		 $("#"+categoryId).hide();
+          $("#titleText_"+categoryId).show();
+		  
+		  $("#update_"+categoryId).show();
+     
+
+		$("#update_"+categoryId).click(function() {
+           var titleText = $("#titleText_"+categoryId).val();
+		   var ctype = $("#categoryType").val();
+		   
+		   $("#titleLabel_"+categoryId).html(titleText)
+		   $("#titleText_"+categoryId).hide();
+		   $("#titleLabel_"+categoryId).show();
+		   $("#update_"+categoryId).hide();
+		   $("#"+categoryId).show();
+		   
+		   var s = $("#titleText_"+categoryId).val();
+		   var uptVal = s.replace(/\s+/g,'')
+		    if (uptVal == null || uptVal == "") {
+			
+				$(".titles").empty();
+				$(".titles").show();
+				$(".titles").append("<%=t('json_message.updation_failed')%>");
+				
+				$(".updateCategory").live("click", function(){
+				
+					$.getScript(this.href);
+					return false;
+				});
+				
+				setTimeout(function(){
+					$(".titles").hide();
+				}, 3000);
+				
+			}
+			else {
+			
+			
+				var data = {
+					category_id: categoryId,
+					categoryType: $("#categoryType").val(),
+					categoryName: $("#titleText_" + categoryId).val()
+				};
+				var url = "<%= url_for(updateCategory_path)%>";
+				
+				$.get(url, data, function(resp_data){
+					if (resp_data.text == true) {
+						$(".titles").empty();
+						$(".titles").show();
+						$(".titles").append("<%=t('json_message.updated')%>");
+						setTimeout(function(){
+							$(".titles").hide();
+						}, 2000);
+					}
+					else if (resp_data.notUpdated == true) {
+						//$(".updateCategory").live("click", function(){
+						//	alert('hi');
+							$.getScript(this.href);
+						//	return false;
+						//});						
+						$(".titles").empty();
+						$(".titles").show();
+						$(".titles").append("<%=t('json_message.not_updated')%>");
+											
+						setTimeout(function(){
+							$(".titles").hide();
+						}, 2000);
+					}
+				
+				}, 'json')
+			}
+			
+			
+		   });
+
+
+   });
+   
+	       $(".deleteCategory").click(function() {
+	         categoryId = $(this).attr('id').split('_').slice(-1); 
+			 var agree=confirm("<%=t('json_message.are_you_sure')%>");
+				if (agree){
+					var data = {category_id:categoryId, categoryType:$("#categoryType").val()};
+					 var url = "<%= url_for(deleteCategory_path)%>";
+					 		//$(".deleteCategory").live("click", function(){
+							 $.getScript(this.href);
+							// return false;
+							// });
+				     
+					$.get(url, data, function(resp_data){
+
+					    if (resp_data == true) {
+							$.getScript(this.href);
+        					 $(".titles").append("<%=t('json_message.deleted')%>");
+							 
+			                 setTimeout(function() {
+						     $(".titles").empty();
+						     }, 2000);
+
+					    } else {
+							$.getScript(this.href);
+							$(".titles").append("<%=t('json_message.not_deleted')%>");
+						     setTimeout(function() {
+						     $(".titles").empty();
+						     }, 2000);
+					    }
+					}, 'json')
+						
+
+				}
+				    
+				else{
+					return false ;
+				}
+					
+
+			 
+			 
+			 
+		   });
+		
+		
+		
+	  });
+  
+  </script>
+
+	

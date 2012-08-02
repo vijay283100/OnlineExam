@@ -1,0 +1,32 @@
+        <div class="loginForm pt20">
+          <%= form_for @user_session, :url => {:action => "create"}, :html => { :id => "class_form"} do |f|%>
+            <div class="block_col">
+              <label><%=t('login.email')%></label>
+              <div class="inwr">
+                <%= f.text_field :login, :class=>"validate[required,funcCall[checkHELLO]] text-input"%>
+              </div>
+            </div>
+            <div class="block_col">
+              <label><%=t('login.password')%></label>
+              <div class="inwr">
+                <%= f.password_field :password, :class=>"validate[required,funcCall[checkHELLO]] text-input"%>
+              </div>
+            </div>
+            <div class="forgotPas">
+              <p class="floatL"><%= link_to t('login.forgot_pwd'), :action=>"new", :controller=>"password_resets"%></p>
+              <p class="floatR">
+              	<%if @setting == true%>
+              	<%= link_to t('login.register'), :action=>"new", :controller=>"user_registration"%>
+				<%end%>
+			  </p>
+            </div>
+            <div class="rembr_butn_box">
+              <div class="remeCol">
+                <%= f.check_box :remember_me%>
+                <span><%=t('login.rememberme')%></span> </div>
+              <div class="btncol">
+                <%= f.submit t('general.login'), :class=>'lgn_bttn', :value=>'Login'%>
+              </div>
+            </div>
+          <%end%>
+        </div>

@@ -1,0 +1,12 @@
+var flg = '<%=@flag%>'
+
+
+if(flg == "c") {
+
+$("#examN").html("<%= escape_javascript(render("examName"))%>")
+}
+
+else {
+
+$("#collectQuestion").html("<%= escape_javascript(render("collect_questions"))%>")
+}

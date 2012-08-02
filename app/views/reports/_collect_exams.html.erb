@@ -1,0 +1,38 @@
+<div class="updateStatus">
+	<h2><%=t('exam.exams')%></h2>
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+
+<th><%=t('reports.view_report')%></th>
+<th><%=t('reports.excel')%></th>
+<th><%=t('reports.pdf')%></th>
+</tr>
+
+<%@category_exam.each do|catexam|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<% exam = Exam.find_by_id(catexam.exam_id)%>
+<td><%=exam.name%></td>
+
+
+<td>
+<%category = Category.find_by_id(catexam.category_id)%>
+<%semesterId = category.semester_id%>
+<%= link_to t('general.view'), :action =>"viewexamReport", :exam_id=>exam.id,:category_id=>@category_id, :examType=>@examtype, :currentyear=>@academicYear %>
+
+<%#= link_to "View", :action =>"viewexamReport", :exam_id=>exam.id, :semester_id=>semesterId %>
+</td>
+<td>
+	<%= link_to image_tag("excel.png", :alt=>"excel report"), :action=>"generateExamReport", :exam_id=>exam.id,:category_id=>@category_id, :examType=>@examtype, :currentyear=>@academicYear, :csv=>1%>
+
+</td>
+<td>
+	<%= link_to image_tag("pdf.png", :alt=>"pdf report"), :action=>"generateExamReport", :exam_id=>exam.id,:category_id=>@category_id, :examType=>@examtype, :currentyear=>@academicYear, :pdf=>1%>
+
+</td>
+</tr>
+<%end%>
+
+</table>
+
+</div>

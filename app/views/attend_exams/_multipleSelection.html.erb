@@ -1,0 +1,42 @@
+		  <%checkAttended = Evaluation.where(["question_id = ? and categoryexam_id = ? and categoryuser_id = ? and has_attended = ? and attempt = ?", @question.id,@categoryExam,@categoryUser,true,@attempt])%>
+
+		   <%unless checkAttended.empty?%> 
+		     <table class="answer_name" id="toggle_<%=@question.id%>" style="width:80%;">
+			 	<tr><th></th></tr>
+			 	<tr>
+			 	 <td>
+			 	  <%= hidden_field_tag "question_type_id", @question.question_type_id%>	
+	              <%= hidden_field_tag "question_id", @question.id%>
+				  <% answers = Answer.find_all_by_question_id(@question.id)%>
+				   <%answers.each do|answer|%>
+				   <%checkAttended_1 = Evaluation.find_by_question_id_and_answer_id_and_categoryexam_id_and_categoryuser_id_and_attempt(@question.id,answer.id,@categoryExam,@categoryUser,@attempt) %>
+					  <div style="float:left; width:100%; margin-bottom:10px;">  <%= check_box_tag "answer_id[]", answer.id, checkAttended_1 != nil ? true : false, {:class=>"validate[minCheckbox[1]] checkbox publish", :style=>"margin-left: 10px; margin-right: 5px; float:left; margin-top:3px",:disabled => false} %>
+				        
+						<div title="<%=answer.name%>" style="float:left;"><%= label_tag "answer_label[]",answer.name.html_safe, :style=>"width:115px; height:19px; border:#d1d1d1 0px solid; ", :readonly => true%></div>
+					    <%= hidden_field_tag "answer_name[]",answer.name%>
+					    <%= hidden_field_tag "evaluation_id[]", checkAttended_1.id if checkAttended_1 != nil %>
+				   </div>
+				   <%end%>				
+			 	 </td>
+				</tr>
+			 </table>
+		   <%else%>
+		      <table class="answer_name" id="toggle_<%=@question.id%>" style="width:80%;">
+			 	<tr><th></th></tr>
+			 	<tr>
+			 	 <td>
+			 	  <%= hidden_field_tag "question_type_id", @question.question_type_id%>	
+	              <%= hidden_field_tag "question_id", @question.id%>	
+				  <% answers = Answer.find_all_by_question_id(@question.id)%>
+				   <%answers.each do|answer|%>
+					<div style="float:left; width:100%; margin-bottom:10px;">
+					<%= check_box_tag "answer_id[]", answer.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish", :style=>"margin-left: 10px; margin-right: 5px; float:left; margin-top:3px"} %>
+				        
+						<div title="<%=answer.name%>" style="float:left;"><%= label_tag "answer_label[]",answer.name.html_safe, :style=>"width:115px; height:19px; border:#d1d1d1 0px solid; ", :readonly => true%></div>
+					<%= hidden_field_tag "answer_name[]",answer.name%>
+					 </div>
+				   <%end%>				
+			 	 </td>
+				</tr>
+			  </table>   
+		   <%end%>

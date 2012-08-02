@@ -1,0 +1,16 @@
+
+<fieldset class="formContainer">
+<legend><%=t('general.create')%> <%=@name%></legend>
+
+
+<% form_tag({:action => "create"}, {:id => "class_form"}) do %>
+
+    <%=render :partial=>"add_titles"%>
+	
+	<%= hidden_field_tag "c_id", @collect_type %>
+
+
+<%= submit_tag t('general.create'), :class=>'btnBg floatL',:id=>"Submit" %> <div class="back_btn">|  <%=link_to t('general.back'), :action=>'index', :type=>@collect_type.to_i%></div>
+<% end %>
+
+</fieldset>

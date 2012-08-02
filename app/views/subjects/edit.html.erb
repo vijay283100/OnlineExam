@@ -1,0 +1,24 @@
+<br><br>
+<div style="color: #5C5C5C; float: left; font-weight: bold; padding: 0 0 12px; width: 100%; font-size:14px;"><%=t('subject.edit_sub')%></div>
+
+<fieldset class="formContainer">
+
+<%form_for @subject, :html => { :id => "class_form"} do |f|%>
+  <%= f.error_messages %>
+  
+
+
+            <table  style="width:100%;">
+              <tr><td>
+			  <div class="regformRep">
+              <label><%= f.label :name %></label>
+                <%= f.text_field :name,:class=>"validate[required,funcCall[checkHELLO]] text-input", :style=>"width:115px; height:19px; border:#d1d1d1 1px solid;" %>
+              </div>
+              </td>
+			</tr>
+           </table>
+ 
+
+  <%= f.submit t('general.update'), :class=>'btnBg' %>
+<% end %>
+</fieldset>

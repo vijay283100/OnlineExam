@@ -1,0 +1,72 @@
+<h2><%=t('general.filter')%></h2>
+
+<%= form_tag '/feedback/index', :method=>"get", :remote=>true,:id=>"question_filter", :class=>"assign_question" do -%>
+
+
+<div class="formContainer">
+            <table class="formTable" style="border:0px;">
+              <tr>
+                <td><div style="float:left; padding:0px; margin:0 20px 0 0;">
+				<label style="float:left; padding-right:10px; width:auto;"><%=t('feedback.select_ques')%></label>
+				<%= select_tag "question_type", options_for_select([[t('general.all'),0],[t('feedback.assigned'),1]] + @question_types.collect{ |q| [q.name, q.id] }),:class=>"validate[required] w120 bdr"%>
+				</div>
+				</td>
+                </tr> 
+            </table>
+		<%= submit_tag t('general.filter'), :id=>"filter", :class=>'btnBg' %>	
+</div>
+
+<%end%>
+
+
+<div class="updateStatus">
+
+<span id="collectQuestion"><%=render :partial=>"collectFeedback"%></span><br>
+
+
+
+
+</div>
+
+<script type="text/javascript">	
+$(document).ready(function() {
+
+		//$('.publish').click(function(){	
+			$('.publish').click(function(){
+				var thischeck = $(this);
+				if (thischeck.is (':checked')){
+
+
+				}
+                                
+                   else{
+                                  var target = '<%= url_for(unassign_path)%>';
+                                  var unpublished_target = target + "?question=" + this.id
+                                  $.get(unpublished_target,$("#" + this.id).serialize(),function(data){
+                                    if (data.text == true){
+				    $(".showComment").empty();
+                    $(".showComment").append("Feedback question unassigned.").delay(2000);
+							setTimeout(function() {
+						     $(".showComment").empty();
+						     }, 5000);
+                                    }
+                                  });
+                                }
+
+        });
+		
+		
+		$("#collectQuestion .pagination a").live("click", function(){
+	
+	var link = this.href
+	var lastChar = link.substr(link.length - 1);	
+	if (lastChar == '#'){
+		return false;
+	}
+	else{
+		$.getScript(this.href);
+		return false;
+	}
+   });
+                        });
+  </script>

@@ -1,0 +1,22 @@
+		<table cellpadding="0" cellspacing="0" border="0" class="tblRepeter answer_name">
+			<tr><td><h2><%=t('question.opt_image')%></h2><br></td></tr> 
+			<tr>
+				<td>
+			<%@answers.each do|answer|%>
+            <div class="uploadRept">
+			 <%=hidden_field "fields[#{answer.id}][image_id]",answer.id%>
+		     <%= file_field "fields[#{answer.id}]update_image","photo",:id=>@answer_count,:class=>"dragdropfields uploadReptCtrl",:onchange => "preview_answer(this,this.id);" %>
+              <div class="imageRept"><%= image_tag answer.image.photo.url(:original), :size => "200x80", :id=>"preview-answer-photo_#{@answer_count}" %></div>
+		     <%@answer_count=@answer_count+1%>
+				
+			
+			<%= hidden_field_tag('seen[]', answer.id) %>
+			<%= check_box_tag "is_answer[]", answer.id, answer.is_answer==1 ? true : false, :style=>"margin-left: 10px; margin-right: 5px;" %>
+            <%=link_to image_tag("cross.jpg", :alt=>"Add Option"), {:action=>"delete_option",:controller=>"questions",:id=>answer.id,:question_id=>@question.id}, :confirm => t('json_message.are_you_sure')%><br>
+			</div>
+			<%end%>
+			</td>
+			</tr>
+			<!--</td></tr>-->
+
+		</table>

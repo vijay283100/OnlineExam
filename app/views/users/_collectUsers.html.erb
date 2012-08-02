@@ -1,0 +1,71 @@
+
+
+<div class="qestionhead"><h3><%=@name%></h3> <%=render :partial=>"users/pageLinks"%></div>
+
+<%unless @users.empty?%>
+<div class="questionTabele">
+<table border="0" cellspacing="0" cellpadding="0">
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+<th><%=t('login.userid')%></th>
+<th><%=t('general.email')%></th>
+<th><%=t('general.status')%></th>
+<th><%=t('general.edit')%></th>
+<th><%=t('general.delete')%></th>
+</tr>
+
+
+<% @users.each do|user| %>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<td><%= user.name%></td>
+<td><%= user.login%></td>
+<td><%= user.email unless user.name == ''%></td>
+<td>
+	<%if user.confirmed == true%>
+	<%=t('general.confirmed')%>
+	<%elsif user.confirmed == false and user.is_approved == 2%>
+	<%=t('user.reject')%>
+	<%else%>
+	<%=t('general.pending')%>
+	<%end%>
+</td>
+
+<%unless user.is_temp_examinee == 1%>
+<td>
+  <%if @current_user.role_id == Admin%>
+  <%=link_to image_tag("edit.png", :alt=>"Edit"), edit_user_path(user)%>
+  <%else%>
+  <%=image_tag "edit_d.png", :alt=>"Edit"%>
+  <%end%>
+</td>
+<%else%>
+<td></td>
+<%end%>
+<td>
+  <%if @current_user.role_id == Admin%>
+  <%=link_to image_tag("del.png", :alt=>"Delete"), user, :confirm => t('json_message.are_you_sure'), :method => :delete%>
+  <%else%>
+  <%=image_tag "del_d.png", :alt=>"Delete"%>
+  <%end%>  
+</td>
+</tr> 
+<%end%>
+
+</table>
+</div>
+<%else%>
+<div class="formContainer">
+  <%=t('user.user_notfound')%>
+ </div>
+<%end%>
+
+<div class="qestionhead_new">
+
+
+<%= will_paginate @users, 
+                :prev_label => t('general.previous'), 
+                :next_label => t('general.next'),
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+              %>
+</div>

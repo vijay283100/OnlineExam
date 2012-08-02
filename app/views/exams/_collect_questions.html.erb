@@ -1,0 +1,93 @@
+<%= hidden_field_tag "question_type", @questionType %>
+<%= hidden_field_tag "category_type", @categoryType %>
+<% unless @questions.blank?%>
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+<th><%=t('question.ques_type')%></th>
+<th><%=t('subject.sub')%></th>
+<th>Mark</th>
+<th><%= check_box "checkall", "checkall", :onclick => "checkUncheckAll(this,question_);" %></th>
+
+</tr>
+
+<%@questions.each do|question|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<td><%=question.description.html_safe%></td>
+<td>
+ 	<%qt=QuestionType.find_by_id(question.question_type_id)%>
+ 	<%=qt.name%>
+</td>
+<td>
+	<%if question.categorysubject_id != 0%>
+         <%= question.collect_subject(question.categorysubject_id)%>
+	<%else%>
+   	 <%=t('general.gen')%>
+ 	<%end%>
+</td>
+<td><%=question.mark%></td>
+<td>
+<%= check_box_tag "question[]", question.id,false, :class=>"validate[minCheckbox[1]] checkbox publish evaluate" %>
+
+</td>
+
+</tr>
+<%end%>
+
+</table>
+
+<%else%>
+<div class="formContainer">
+  <%=t('not_found.no_que_found')%>
+  </div>
+<%end%>
+<%= will_paginate @questions, 
+                :prev_label => t('general.previous'), 
+                :next_label => t('general.next'),
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+              %>
+
+
+<% unless @questions.blank?%>
+<%= submit_tag t('general.assign'), :id=>"assign", :class=>'btnBg', :name=>"sub" %>  
+<%end%>
+
+
+<script type="text/javascript">	
+$(document).ready(function() {
+	
+	$("#evaluationtype").attr("disabled", true);
+	$("#evaluation_type").hide();
+	
+	//--------------------------------------------------------------------
+	
+	$('#checkall_checkall,.evaluate').click(function(){
+        var attributes_names = [];
+       $('input:checkbox[name="question[]"]:checked').each(function(index) { 
+		attributes_names.push($(this).val());
+	
+	   });
+
+		var target = '<%= url_for(showEvaluationtype_path)%>';
+		//var data = [];
+		var data = {questions:attributes_names};
+		//alert(data)
+				$.get(target, data, function(data){
+					if (data.manual_eval == true) {
+						$("#evaluationtype").attr("disabled", false);
+						$("#evaluation_type").show();
+					}
+					
+					if (data.manual_eval == false) {
+						$("#evaluationtype").attr("disabled", true);
+						$("#evaluation_type").hide();
+					}					
+                   });	       
+       
+
+	});
+
+		
+  });
+</script>

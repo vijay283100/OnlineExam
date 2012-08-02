@@ -1,0 +1,114 @@
+<div class="updateStatus">
+<h2><%=t('result.res')%></h2>
+<%unless @examHeaders.empty?%>
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('org.dept')%></th>
+<th><%=t('general.name')%></th>
+<%eH = []%>
+<%@tM = []%>
+
+<%@examHeaders.each do|header|%>
+<th><%="#{header.examname}"%></th>
+<%eH << header.examname%>
+<%@tM << header.totalMark.to_f%>
+<%end%>
+<th><%=t('org.total')%></th>
+<th><%=t('exam.percent')%></th>
+
+</tr>
+<% @arr = []%>
+<%@userIds.each do|user|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+	
+<% @arr << "#{user.userId}" %>
+
+<td> <%="#{user.department}"%></td>	
+<td> <%= user.tempexaminee == '1' ? "#{user.login}" : "#{user.username}"%></td>
+
+<% samp = "SELECT  Distinct U.id as userId, U.name as username, F.id as categoryId, N.name as department, S.name,C.currentyear as currentyear, Y.id as examtype
+    From exam_results E
+    Inner Join categoryexams C on E.categoryexam_id = C.id
+    Inner Join categoryusers D on E.categoryuser_id = D.id
+    Inner Join categories F on C.category_id = F.id
+    Inner Join exams S on C.exam_id = S.id
+    Inner Join users U on D.user_id = U.id
+    Inner Join departments N on F.department_id = N.id
+    Inner Join examtypes Y on C.examtype_id = Y.id
+    where F.id = #{user.categoryId} and C.category_id = F.id and D.user_id = #{user.userId} and C.currentyear = #{@academicyear}  and Y.id = #{@examtype};"
+%>
+  <% @get = ExamResult.find_by_sql(samp)%>
+ 
+ <%@grandTotal = []%>
+ <%@totalMark = []%>
+<% @get.each do|subject|%>
+
+
+ 	<% marks = "SELECT N.name as department,S.name,S.subject,S.id,Q.attempt,E.total_mark,E.score,E.percent,E.status,max(E.attempt)
+          From exam_results E
+          Inner Join categoryexamusers Q on E.categoryuser_id = Q.categoryuser_id
+           AND  E.categoryexam_id = Q.categoryexam_id AND E.attempt = Q.attempt
+          Inner Join categoryexams C on E.categoryexam_id = C.id
+          Inner Join categoryusers D on E.categoryuser_id = D.id
+          Inner Join categories F on C.category_id = F.id
+          Inner Join exams S on C.exam_id = S.id
+          Inner Join users U on D.user_id = U.id
+          Inner Join departments N on F.department_id = N.id
+          Inner Join examtypes Y on C.examtype_id = Y.id
+          where F.id = #{subject.categoryId} and U.id = #{subject.userId} and S.name = '#{subject.name}' and C.currentyear = #{@academicyear}  and Y.id = #{@examtype}
+          Group By F.id,S.id,U.name,S.name,Q.attempt,S.total_mark,E.percent;" %>
+	
+	<% getMarks = ExamResult.find_by_sql(marks)%>
+ 	<%getMarks.each do|g|%>
+	<%@grandTotal << "#{g.score}".to_f%>
+	<%@totalMark << "#{g.total_mark}".to_f%>
+	<!-- <%#="#{g.score}"%> (<%#="#{g.status}"%>) -->
+	<%end%>
+
+<%end%>
+
+<%s=[]%>
+ 	<% eH.each do|e|%>
+	 <td>
+	  <% @get.each do|subject|%>
+	    <%if subject.name == e%>
+		<% s << subject.dptReport(subject.categoryId,subject.userId,subject.name,subject.currentyear,subject.examtype)%>
+		<%else%>
+		<% s << 0%>
+		<%end%>
+	  <%end%>
+	  <% a = s.compact%>
+	  <% f = a.inject{|sum,x| sum + x }%>
+	  <%= f == nil ? 0 : f.to_f.round(2)%>
+	  <%s.clear%>
+	  </td>
+	<%end%>
+
+ <td>
+    <%@grandTotal = @grandTotal.compact%>
+	<%g = @grandTotal.inject{|sum,x| sum + x }%>
+	<%= g==nil ? 0 : g.to_f.round(2)%>
+    <%if g == nil%>
+	<%g = 0%>
+	<%end%>	
+	<%#gt = @grandTotal.inject{|sum,x| sum + x }%>
+	<%tM = @tM.compact%>
+	<%gt = tM.inject{|sum,x| sum + x }%>
+    <%tot = @totalMark.inject{|sum,x| sum + x }%>
+	
+ </td>
+ <td><%percent=g/gt * 100%>
+     <%=percent.to_f.round(2)%>
+ </td>
+
+</tr>
+<%end%>
+
+</table>
+
+<%else%>
+<div class="formContainer">
+ <%=t('not_found.no_result')%>.
+ </div>
+<%end%>
+</div>

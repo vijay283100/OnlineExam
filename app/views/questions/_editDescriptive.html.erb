@@ -1,0 +1,15 @@
+
+                <table class="answer_name">
+			<tr><th style="text-align:left;">Enter Keywords(Answer)</th></tr> <br>
+			
+			<%@answers.each do|answer|%>
+			<tr><td>
+			<%= fields_for "answer[]", answer do |answer_fields| %>
+				<%= answer_fields.hidden_field :id %>
+				<%= answer_fields.text_field :name, :style=>"width:115px; height:19px; border:#d1d1d1 1px solid;",:class=>'validate[required,funcCall[checkHELLO]] text-input'%>
+                <%=link_to image_tag("cross.jpg", :alt=>"Add Option"), {:action=>"delete_option",:controller=>"questions",:id=>answer.id,:question_id=>@question.id}, :confirm => t('json_message.are_you_sure')%><br>
+			<%end%>
+			</td></tr>
+			<%end%>
+			
+		</table>

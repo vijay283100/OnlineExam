@@ -1,0 +1,68 @@
+<%if @examineeType == "1" or @examineeType=="0"%>
+<div class="updateStatus">
+	<h2>Examinees</h2>
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th>Name</th>
+<th>Login</th>
+<th>Email</th>
+<th><%= check_box "checkall", "checkall", :onchange => "checkUncheckAll(this,examinee_);" %></th>
+
+</tr>
+
+<%@examinees.each do|examinee|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<td><%=examinee.name%></td>
+<td><%=examinee.login%></td>
+<td><%=examinee.email unless examinee.name == ''%></td>
+
+<td>
+<%= check_box_tag "examinee[]", examinee.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish"} %>
+
+</td>
+
+</tr>
+<%end%>
+
+</table>
+
+</div>
+<div class="pagination">
+	<%= will_paginate @examinees, 
+                :prev_label => "previous", 
+                :next_label => "Next",
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+              %>
+</div>
+<%end%>
+
+<%if @examineeType == "2"%>
+        <%=hidden_field_tag 'groupedExaminee', true%>
+	<div class="updateStatus">
+		<h2>Group</h2>
+	<table border="0" cellspacing="0">
+	<tr class="updateHeader">
+	<th>Group Name</th>
+	<th><%= check_box "checkall", "checkall", :onchange => "checkUncheckAll(this,examinee_);" %></th>
+	
+	</tr>
+	<tr class="updateAltrRow">
+	  
+	<%@collect.each do|group|%>
+		
+		<td><%=group.gathercat(group)%></td>
+	
+	<td>
+	<%= check_box_tag "group[]", group.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish"} %>
+	
+	</td>
+	
+	</tr>
+	<%end%>
+	
+	</table>
+	
+	</div>
+
+<%end%>

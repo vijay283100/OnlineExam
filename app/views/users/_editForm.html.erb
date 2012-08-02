@@ -1,0 +1,31 @@
+<%= form.label :name %><br />
+<%= form.text_field :name, :class=>"validate[required] text-input" %><br />
+<br />
+<%= form.label :login %><br />
+<%= form.text_field :login, :class=>"validate[required] text-input" %><br />
+<br />
+<%= form.label :email %><br />
+<%= form.text_field :email, :class=>"validate[required,custom[email]] text-input" %><br />
+<br />
+Password
+<%=password_field_tag "password", '',:class=>"validate[required] text-input", :id=>"password"%>
+<br />
+Comfirm password
+<%=password_field_tag "confirm_password", '',:class=>"validate[required,equals[password]]", :id=>"password"%>
+<br />
+<%if @value == 3%>
+<h3>Select Subjects</h3>
+<ul>
+    <% @subjects.each do |subject| %>
+		  <%= check_box_tag "subject[]", subject.id,false,:class=>"validate[minCheckbox[1]]" %>
+          <%= h subject.name -%>
+    <% end %>
+</ul>
+
+
+<%end%><br /><br />
+
+<%= form.hidden_field :role_id, :value => @value %>
+<%= form.hidden_field :is_approved, :value => 1 %>
+
+ 

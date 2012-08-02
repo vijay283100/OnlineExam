@@ -1,0 +1,82 @@
+
+
+
+<%if @question.question_type_id == 7%>
+<div class="updateStatus">
+
+<h3><%=t('feedback.feedback_res')%></h3>
+
+		  <%=render :partial=>"attend_exams/question_description", :locals=>{:question=>@question}%>
+		  
+		 <table class="answer_name" id="toggle_<%=@question.id%>">
+			  <tr>
+                                  <th><%=t('feedback.answer')%></th>
+                                  <th><%=t('feedback.res_count')%></th>
+                          </tr>
+				
+                
+                          
+
+			   <% answers = Answer.find_all_by_question_id(@question.id)%>
+			  
+                           <%answers.each do|answer|%>
+				     <tr>
+                                <td title="<%=answer.name%>">   <%= text_field_tag :answer,truncate(answer.name,:length=>25), :style=>"width:115px; height:19px; border:#d1d1d1 1px solid;", :disabled => true%>
+				                </td>
+                                <td>  <%=answer.getCount(answer,@question) %></td>
+                                 
+					</tr>  
+			   <%end%>
+			   
+                         
+		</table>
+
+</div>
+
+<%end%>
+
+
+<%if @question.question_type_id == 8%>
+		  <%=render :partial=>"attend_exams/question_description", :locals=>{:question=>@question}%>
+		  
+
+					<%@ans = Answer.where(["question_id = ?",@question.id])%>	 
+					<%@ans_length = @ans.length%>
+			        <table cellpadding="0" cellspacing="0" border="0" class="tblRepeter flexiWidth w100pc table_border" id="toggle_<%=@question.id%>">
+			        
+					<tr>  	 
+						 <%@ansArr = []%>
+		  				<div class="tblCols rowValue">	
+						<td style="border-left: 1px solid #D1D1D1; width:20%;" class="td_v_mid"></td>
+						<%@ans.each do|a|%> 
+				         <td style=" width:20%;" class="td_v_mid" title="<%=a.name%>">
+				         	  <%= label_tag :answer,truncate(a.name,:length=>25), :style=>"width:auto; padding: 0 5px; word-wrap:break-word;  text-align:center; padding:0px; line-height:18px;", :disabled => true, :id=>a.id%>
+						      <%@ansArr << a.id%>
+						 </td>	
+						<%end%>
+		 				</div>
+						
+					</tr>
+							
+		  				<div class="tblCols rowValue">	
+						<%@subQuestions.each do|s|%> 
+			    		<tr align="center">	
+						<td style="width:25%;" class="td_v_mid" title="<%=s.name%>">
+			    			<%= label_tag :answer,truncate(s.name,:length=>25), :style=>"width:auto; padding: 0 5px; word-wrap:break-word;  text-align:center; padding:0px; line-height:18px;", :disabled => true, :id=>s.id%>
+						</td>
+						
+							<%for i in (1 .. @ans_length)%>
+							<td class="td_v_mid">
+                               <span style="text-align:center;"><%=s.getCount(s.id,@ansArr[i-1].to_i) %></span>
+							</td>
+							<%end%>					
+						</tr>
+						<%end%>
+		 				</div>
+				    
+
+					</table>	
+		 <%end%>
+
+
+

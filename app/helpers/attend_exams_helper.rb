@@ -1,0 +1,2 @@
+module AttendExamsHelper
+end

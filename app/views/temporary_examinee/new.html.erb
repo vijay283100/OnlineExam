@@ -1,0 +1,33 @@
+<fieldset class="formContainer">
+<legend><%=t('user.temp_create')%></legend>
+
+<% form_tag({:action => "create"}, {:id => "class_form"}) do -%>
+
+          <div class="formBg">
+
+			
+		<table class="formTable" style="border:0px;">
+              <tr>
+                <td>
+                	<div style="float:left; padding:0px; margin:0;">
+					<label style="float:left; padding-right:10px; width:150px;"><%=t('user.examinee_count')%></label>
+				 <%= text_field_tag "count", '',:class=>"validate[required,custom[integer],min[1],max[100]", :style=>"width:115px; height:19px; border:#d1d1d1 1px solid;" %>
+				</div>
+				</td>
+				
+                </tr> 
+            </table>
+			
+			
+			
+          </div>
+
+  <%= submit_tag t('general.create'), :class=>'btnBg floatL',:id=>"Submit" %><div class="back_btn">| <%=link_to "Back", :controller=>"users", :create_id=>"4"%></div>
+
+   <script language="JavaScript">
+           	document.getElementById("count").focus();
+  </script> 
+ 
+<% end %>
+
+</fieldset>

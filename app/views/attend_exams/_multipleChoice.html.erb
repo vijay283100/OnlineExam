@@ -1,0 +1,47 @@
+		  <%checkAttended = Evaluation.find_by_question_id_and_categoryexam_id_and_categoryuser_id_and_has_attended_and_attempt(@question.id,@categoryExam,@categoryUser,true,@attempt) %>
+		  
+		  <%unless checkAttended == nil%>
+		     <table class="answer_name" id="toggle_<%=@question.id%>" style="width:80%;">
+			 	<tr><th></th></tr>
+			 	<tr>
+			 	 <td>
+			 	  <%= hidden_field_tag "question_type_id", @question.question_type_id%>	
+	              <%= hidden_field_tag "question_id", @question.id%>
+				  <%= hidden_field_tag "attended", checkAttended.has_attended%>
+				  <%= hidden_field_tag "evaluation_id", checkAttended.id%>	
+				  <% answers = Answer.find_all_by_question_id(@question.id)%>
+				   <%answers.each do|answer|%>
+				       <div style="width:100%; margin-bottom:10px; float:left;">
+					    <%= radio_button_tag "answer_id", answer.id, checkAttended.answer_id == answer.id ? true : false, {:class=>"validate[minCheckbox[1]] checkbox publish", :style=>"margin-left: 10px; margin-right: 5px; margin-top:2px; float:left;",:disabled => false} %>
+				        <div title="<%=answer.name%>" style="float:left;"><%= label_tag "answer_label",answer.name.html_safe, :style=>"width:115px; float:left; ", :readonly => true%></div>
+						<%= hidden_field_tag "answer_name","answer.name"%>
+					<div class="clear"></div>
+					
+					</div>
+					 
+				   <%end%>				
+			 	 </td>
+				</tr>
+			 </table>
+		   <%else%>
+		      <table class="answer_name" id="toggle_<%=@question.id%>" style="width:80%;">
+			 	<tr><th></th></tr>
+			 	<tr>
+			 	 <td>
+			 	  <%= hidden_field_tag "question_type_id", @question.question_type_id%>	
+	              <%= hidden_field_tag "question_id", @question.id%>	
+				  <% answers = Answer.find_all_by_question_id(@question.id)%>
+				   <%answers.each do|answer|%>
+				       <div style="width:100%; margin-bottom:10px; float:left;">
+						<%= radio_button_tag "answer_id", answer.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish", :style=>"margin-left: 10px; margin-right: 5px; margin-top:2px; float:left;"} %>
+					    
+						<div title="<%=answer.name%>" style="float:left;"><%= label_tag "answer_label",answer.name.html_safe, :style=>"width:115px; float:left;", :readonly => true%></div>
+						<%= hidden_field_tag "answer_name","answer.name"%>
+					<div class="clear"></div>
+					
+					</div>					 
+				   <%end%>				
+			 	 </td>
+				</tr>
+			  </table>   
+		   <%end%>

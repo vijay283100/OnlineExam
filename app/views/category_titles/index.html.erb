@@ -1,0 +1,39 @@
+
+<h2><%=t('org.org_levels')%></h2>
+<%unless @category_types.empty?%>
+<% @category_types.each do |category_type| %>
+<%if category_type.id == 1%>
+<%=link_to t('org.class'), :action=>'index', :controller=>"category_titles", :type=>category_type.id%><br><br>
+<%elsif category_type.id == 2%>
+<%=link_to t('org.section'), :action=>'index', :controller=>"category_titles", :type=>category_type.id%><br><br>
+<%elsif category_type.id == 3%>
+<%=link_to t('org.course'), :action=>'index', :controller=>"category_titles", :type=>category_type.id%><br><br>
+<%elsif category_type.id == 4%>
+<%=link_to t('org.year'), :action=>'index', :controller=>"category_titles", :type=>category_type.id%><br><br>
+<%elsif category_type.id == 5%>
+<%=link_to t('org.dept'), :action=>'index', :controller=>"category_titles", :type=>category_type.id%><br><br>
+<%elsif category_type.id == 6%>
+<%=link_to t('org.semester'), :action=>'index', :controller=>"category_titles", :type=>category_type.id%><br><br>
+<%elsif category_type.id == 7%>
+<%=link_to t('org.dept'), :action=>'index', :controller=>"category_titles", :type=>category_type.id%><br><br>
+<%elsif category_type.id == 8%>
+<%=link_to t('org.domain'), :action=>'index', :controller=>"category_titles", :type=>category_type.id%><br><br>
+<%end%>
+<% end %>
+<%else%>
+<div class="formContainer">
+<%=t('not_found.no_org_level')%>
+</div>
+<% end %><br><br><br>
+<p class="titles" style="color:#db3939; font-style:italic;  text-align:center; font-size:14px;"></p>
+<div class="updateStatus">
+<%unless @collect_type == nil%>
+<span id="collectTitles"><%=render :partial=>"categorytitle_name"%></span><br>
+
+<%=link_to t('general.create'), :action=>"new", :controller=>"category_titles", :type=>@collect_type%>
+
+<%end%>
+
+
+
+</div>

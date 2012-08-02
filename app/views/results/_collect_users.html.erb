@@ -1,0 +1,33 @@
+<div class="updateStatus">
+	<h2><%=t('user.examinees')%></h2>
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+
+<th><%=t('result.view_res')%></th>
+
+</tr>
+
+<%@category_user.each do|examinee|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<% user = User.find_by_id(examinee.user_id)%>
+
+<%if user.is_temp_examinee == 1%>
+<td><%=user.login%></td>
+<%else%>
+<td><%=user.name%></td>
+<%end%>
+
+
+<td>
+
+<a href="/viewUserResult?user_id=<%=user.id%>&category_id=<%=examinee.categoryid%>&academicyear=<%=examinee.academicyear%>&examtype=<%=examinee.examtype%>&lay=1&height=250&width=680" style="font-size:13px;" class="thickbox" id='email_id'><%=t('general.view')%></a>
+
+</td>
+
+</tr>
+<%end%>
+
+</table>
+
+</div>

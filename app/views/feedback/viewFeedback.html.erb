@@ -1,0 +1,106 @@
+<div class="updateStatus">
+<h3><%=t('feedback.give_your')%></h3>
+<%unless @questions.empty?%>
+          <%@questions.each do|question|%>
+          <% @question = question%>
+		  <%if @question.question_type_id == 7%>
+		  <% @feedback_given = Feedback.find_by_user_id_and_question_id(current_user.id,@question.id)%>
+		  <%if @feedback_given == nil%>
+
+		  <%= form_tag "/submitFeedback", :method => :post, :id => 'class_form', :class=>"formExam" do %>
+            
+                 
+		           <%=render :partial=>"attend_exams/question_description", :locals=>{:question=>@question}%>
+		  
+				    <table class="answer_name" id="toggle_<%=@question.id%>">
+					 	<tr><th></th></tr>
+						<tr><td>
+						<%= hidden_field_tag "question_type_id", @question.question_type_id%>	
+			            <%= hidden_field_tag "question_id", @question.id%>	
+					   <% answers = Answer.find_all_by_question_id(@question.id)%>
+					   <%answers.each do|answer|%>
+						    <span title="<%=answer.name%>"><%= text_field_tag :answer,truncate(answer.name,:length=>25), :style=>"width:115px; height:19px; border:#d1d1d1 1px solid; text-align:center;", :disabled => true%></span>
+							<%= radio_button_tag :answerid, answer.id,false, {:class=>"validate[required] radio publish", :style=>"margin-left: 10px; margin-right: 5px;"} %><br><br>
+					   <%end%>
+					   </td></tr>
+					 </table>
+					 <%= submit_tag "Submit", :class=>'btnBg', :id=>"examNext" %>
+		          <%end%>
+		    	 
+           
+		 	<%else%>
+		  </div>
+          <%=t('feedback.given')%>
+		  </div>
+        <%end%>  
+		<%end%>
+		
+		<% @feedback_given = Feedback.find_by_user_id_and_question_id(current_user.id,@question)%>
+		<%if @question.question_type_id == 8%>
+		  <%if @feedback_given == nil%>   
+		  
+        <%= form_tag "/submitFeedback", :method => :post, :id => 'class_form', :class=>"formExam" do %>
+		 
+		  <%=render :partial=>"attend_exams/question_description", :locals=>{:question=>@question}%>
+		    <%= hidden_field_tag "question_type_id", @question.question_type_id%>	
+		    <%@sub_questions = Question.where(["parent_id = ?", @question.id])%>
+
+					<%@ans = Answer.where(["question_id = ?",@question.id])%>	 
+					<%@ans_length = @sub_questions.length%>
+			        <table cellpadding="0" cellspacing="0" border="0" class="tblRepeter  bt0 bl0" id="toggle_<%=@question.id%>" style="width:100%!important">
+			        
+					<tr class="bb0">
+		  				<div class="tblCols rowValue">	
+						<td style="border-left:1px solid #D1D1D1; width:20%; text-align:center;">&nbsp;</td>
+						<%@sub_questions.each do|a|%>
+				         <td style="border-left:1px solid #D1D1D1; min-width:80px;width:auto!important;width:80px; text-align:center;" class="td_v_mid" title="<%=a.name%>">
+				         	  <%= label_tag :question,truncate(a.name,:length=>25), :style=>"min-width:80px;width:auto!important;width:80px; display:inline; padding: 0 5px; word-wrap:break-word;  text-align:center; padding:0px; line-height:18px;", :disabled => true, :id=>a.id%>
+						    <%= hidden_field_tag('seen[]', a.id) %>
+						 </td>	
+						<%end%>
+		 				</div>
+					</tr>
+						
+						 
+					    <%count = 0%>
+		  				<div class="tblCols rowValue">	
+						<%@ans.each do|s|%> 
+			    		<tr align="center" class="bb0">	
+						<td style="border-left:1px solid #D1D1D1; width:25%;" class="td_v_mid" title="<%=s.name%>">
+			    			<%= label_tag :answer,truncate(s.name,:length=>25), :style=>"min-width:80px;width:auto!important;width:80px; display:inline; padding: 0 5px; word-wrap:break-word;  text-align:center; padding:0px; line-height:18px;", :disabled => true, :id=>s.id%>
+						</td>
+						   
+							<%for i in (1 .. @ans_length)%>
+							<td class="td_v_mid" style="text-align:center;border-left:1px solid #D1D1D1;">
+                             <span style="text-align:center; "><%= radio_button_tag "fields[#{i}][is_answer]", s.id, false, :class=>"validate[required] radio", :style=>" margin-right: 5px; text-align:center;" %></span>
+							</td>
+							<%end%>	
+							<%count = count + 1%>
+						</tr>
+						<%end%>
+		 				</div>
+				    
+                        <%= hidden_field_tag'parent_question', @question.id %>
+						
+					</table>	
+					<div class="clear"></div>
+			  <%= submit_tag t('general.submit'), :class=>'btnBg', :id=>"examNext" %> 
+		 <%end%>
+                 
+                
+        
+	    <%else%>
+		<div class="formContainer">
+          <%=t('feedback.given')%>
+		</div>
+        <%end%>	
+		<%end%>	
+
+<%end%>
+
+<%else%>
+<div class="formContainer">
+<%=t('not_found.no_feedback')%>
+</div>
+<%end%>
+</div>

@@ -1,0 +1,15 @@
+<h1><%=t('exam.create')%></h1>
+
+<% form_tag exams_path, :id => "class_form" do %>
+  <label><%=t('exam.name')%></label><br />
+  <%= text_field_tag "exam", '',:class=>"validate[required] text-input" %> <br /> <br />
+  
+  Select Examinee <br />
+  <%= select_tag 'user_id', options_for_select(@users.collect{ |u| [u.login, u.id] }),{:size=>5, :multiple => true}%>
+
+  <br /><br />
+  <%= submit_tag t('general.create') %>
+     <script language="JavaScript">
+           	document.getElementById("exam").focus();
+     </script> 
+<% end %>

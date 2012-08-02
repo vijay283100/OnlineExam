@@ -1,0 +1,16 @@
+
+
+
+<% if @flag == 'c'%>
+$("#select_category").html("<%= escape_javascript(render("select_category"))%>")
+<%else%>
+$("#collectUser").html("<%= escape_javascript( render(:partial => "collect_users") ) %>");
+<%end%>
+
+
+
+
+
+
+
+

@@ -1,0 +1,30 @@
+<h2><%=t('email.edit_email')%></h2>
+
+<% form_for @email_template, :html => { :id => "class_form"} do |f| %>
+  <%= f.error_messages %>
+  
+    <%#= f.label :content %><br />
+        <label><%=t('email.english_content')%></label><br><br>
+	<%= f.text_area :content, :style=>"border: 1px solid rgb(209, 209, 209); width: 496px; height: 142px;", :class=>"validate[required,funcCall[checkHELLO]] text-input" %><br />
+	<%= f.hidden_field :section_id%>
+	<br /><br>
+	<label><%=t('email.german_content')%></label><br><br>
+	<%= f.text_area :content_de, :style=>"border: 1px solid rgb(209, 209, 209); width: 496px; height: 142px;", :class=>"validate[required,funcCall[checkHELLO]] text-input" %><br />
+	<%= f.hidden_field :section_id%>
+	<br />
+  <%= f.submit t('general.update'), :class=>'btnBg',:id=>"Submit" %>
+<% end %>
+
+<br><br>
+ 
+ <!--<div class="help">-->
+ 	<h2><%=t('email.help_content')%></h2><br>
+	<%#if @collection.length >=1 %>
+	<%if @collection %>
+		<%@collection.each do|c|%>
+		<%=c.html_safe%><br>
+	    <%end%>
+	<%else%>
+	<%=t('not_found.no_help')%>
+	<%end%>
+ <!--</div>-->

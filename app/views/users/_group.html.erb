@@ -1,0 +1,42 @@
+<div class="updateStatus">
+<h2><%=t('user.examinees')%></h2>
+<%unless @users.empty?%>
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+<th><%=t('login.userid')%></th>
+<th><%=t('general.email')%></th>
+<th><%= check_box "checkall", "checkall", :onclick => "checkUncheckAll(this,examinee_);" %></th>
+
+</tr>
+
+<%@users.each do|examinee|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<td><%=examinee.name%></td>
+<td><%=examinee.login%></td>
+<td><%=examinee.email unless examinee.name == ''%></td>
+
+<td>
+<%= check_box_tag "examinee[]", examinee.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish"} %>
+<%#= check_box_tag "fields[#{examinee.id}][examinee]", examinee.id,false, {:class=>"validate[minCheckbox[1]] checkbox publish"} %>
+
+</td>
+
+</tr>
+<%end%>
+
+</table>
+<%= submit_tag t('general.assign'), :id=>"assign", :class=>'btnBg floatL' %>  <%#= submit_tag "Share", :id=>"share", :class=>'btnBg' %>
+  <div class="n_s_right"> <%= will_paginate @users, 
+                :prev_label => t('general.previous'), 
+                :next_label => t('general.next'),
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+    %> </div>
+<%else%>
+<div class="formContainer">
+  No Users found. 
+ </div>
+ <%end%>
+</div>
+

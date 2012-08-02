@@ -1,0 +1,19 @@
+<fieldset class="formContainer">
+<legend><%=t('password_reset.change_password')%></legend>
+
+<% form_for @user, :url => password_reset_path, :method => :put, :html => { :id => "class_form"} do |f| %>
+
+  <table  style="width:100%;">
+  <tr>
+  <td><%=t('login.password')%>:</td> 
+  <td><%= password_field_tag "password",'', :class=>"validate[required],minSize[6]", :id=>"password", :style=>"border:#d1d1d1 1px solid; height:19px; width:160px;" %><br /></td>
+</tr>
+ <tr>
+<td><%=t('login.confirm_pwd')%>:</td>
+<td> <%= password_field_tag "password_confirmation",'', :class=>"validate[required,minSize[6],equals[password]]", :style=>"border:#d1d1d1 1px solid; height:19px; width:160px;" %><br /></td>
+</tr>
+</table>
+  <%= f.submit t('general.create'),:class=>"btnBg" %>
+  </fieldset>
+<% end %>
+

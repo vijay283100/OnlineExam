@@ -1,0 +1,88 @@
+<%unless @registered_examinees.empty?%>
+<% form_tag '#', :method => :post, :class => 'confirm_reject',:id => "class_form" do %>
+<div class="questionTabele">
+<table border="0" cellspacing="0"><!--<table border="1" id="activation_pending">-->
+<tr class="updateHeader">
+<th><%=t('general.name')%></th>
+<th><%=t('general.email')%></th>
+<th><%=t('general.status')%></th>
+<th><%= check_box "checkall", "checkall", :onclick => "checkUncheckAll(this,check_examinee_);" %></th>
+</tr>
+
+
+<% @registered_examinees.each do|examinee| %>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<td><%= examinee.name%></td>
+<td><%= examinee.email%></td>
+<td>
+	<%if examinee.confirmed == true%>
+	<%=t('user.confirmed')%>
+	<%elsif examinee.confirmed == false and examinee.is_approved == 0%>
+	<%=t('user.approve')%>
+	<%elsif examinee.confirmed == false and examinee.is_approved == 2%>
+	<%=t('user.reject')%>
+	<%else%>
+	<%=t('user.pending')%>
+	<%end%>
+</td>
+<td><%= check_box_tag "check_examinee[]", examinee.id, false, {:class=>"validate[minCheckbox[1]] checkbox"} %></td>
+
+</tr> 
+
+<%end%>
+
+</table>
+</div>
+<%= submit_tag t('general.approve'), :id=>"confirm", :class=>'btnBg' %>  <%= submit_tag t('general.reject'), :id=>"reject", :class=>'btnBg' %>
+<%= will_paginate @registered_examinees, 
+                :prev_label => t('general.previous'), 
+                :next_label => t('general.next'),
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+              %>
+<% end %> 
+<%else%>
+<div class="formContainer">
+<%=t('not_found.no_examinee_found')%>
+</div>
+<% end %>
+<script type="text/javascript">	
+function checkUncheckAll(checkAllState, cbGroup)
+{
+	// Check that the group has more than one element
+	if(cbGroup.length > 0)
+	{
+		// Loop through the array
+		for (i = 0; i < cbGroup.length; i++)
+		{
+			cbGroup[i].checked = checkAllState.checked;
+		}
+	}
+	else
+	{
+		// Single element so not an array
+		cbGroup.checked = checkAllState.checked;
+	}
+}
+
+$(document).ready(function() {
+
+		$("#class_form").validationEngine();
+		
+        $('#confirm').click(function(){
+            var target = '<%= welcome_confirm_registration_path %>';
+            $('.confirm_reject').attr('action', target);
+            $('.confirm_reject').submit();
+        });
+
+        $('#reject').click(function(){
+            var target = '<%= welcome_reject_registration_path %>';
+            $('.confirm_reject').attr('action', target);
+            $('.confirm_reject').submit();
+        });
+
+  });
+
+
+
+</script>

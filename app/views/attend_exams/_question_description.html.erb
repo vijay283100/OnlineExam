@@ -1,0 +1,13 @@
+		  <div class="formBg" style="margin-bottom: 15px;">
+		  	
+			<table  style="width:100%;">
+			  <tr>
+			  	<% qustionType = QuestionType.find_by_id(@question.question_type_id)%>
+              </tr>
+			  <tr>
+			  	
+                <td><b><%= qustionType.name %></b><br><span class="toggle" id="<%= question.id %>"></span><%= @question.description.html_safe %> </td>
+                
+			  </tr>
+            </table>
+			</div>

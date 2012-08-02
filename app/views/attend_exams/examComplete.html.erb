@@ -1,0 +1,55 @@
+<%#= form_for :exam, :url => {:action => "examination"} do |f| %>
+<%=render :partial=>"timer"%>
+<%= form_tag "#", :id => 'exam_form' do %>
+<fieldset class="formContainer">
+<legend><%=t('exam.exam_completed')%></legend>
+<br>
+ <p style="text-align:justify;">
+ 	<%=t('exam.completed_msg')%>. <br><br>
+	
+	<%=t('exam.click_finish')%>.
+ </p>
+
+
+	<%= hidden_field_tag "categoryuser_id", @categoryUser%>	
+	<%= hidden_field_tag "categoryexam_id", @categoryExam%>	
+    <%= hidden_field_tag "t", @t%>
+	<%= hidden_field_tag "attempt", @attempt%>
+</fieldset>
+    <%= submit_tag t('general.previous'), :class=>'btnBg floatL', :id=>"examPrev" %>
+	<span style="float:right;">
+	  <%= submit_tag t('general.finish'), :class=>'btnBg',:onclick=>"return false;", :id=>"finishBtn" %>
+	  <%#= submit_tag "Finish", :class=>'btnBg', :id=>"examNext", :disabled=>false %>
+	</span>
+
+<%end%>
+
+
+	<script>
+	$(document).ready(function() {
+
+	  
+	     $('#finishBtn').click(function(){
+            // var target = '<%= welcome_examinee_dashboard_path %>';
+			var target = '<%= calculateScore_path(:categoryuser_id=> @categoryUser, :categoryexam_id=>@categoryExam, :attempt=>@attempt) %>';
+            $('#exam_form').attr('action', target);
+            $('#exam_form').submit();
+        });
+	  
+
+        $('#examPrev').click(function(){
+            var target = '<%= examination_path(:t => @t-1) %>';
+            $('#exam_form').attr('action', target);
+            $('#exam_form').submit();
+        });
+		
+		
+	
+	});
+
+
+
+
+
+	
+	</script>

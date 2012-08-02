@@ -1,0 +1,71 @@
+
+
+<div id="flash_notice" style="display: none;"></div>
+
+<h2><%=t('welcome.filter_examinees')%></h2>
+<div class="formContainer">
+	<table class="formTable" style="border:0px;">
+		<tr>
+<td style="width:auto;" class="lettersort"><%=link_to t('general.all'), :action=>"admin_dashboard"%> | <% for char in 'A'..'Z' %>
+<%=link_to( "#{char}", :char=>char, :action=>"admin_dashboard")%>
+<%end%></td>
+
+		</tr>
+</table>
+</div>
+
+<%if @setting.examineeApprove == 1%>
+<div class="updateStatus">
+<div class="qestionhead"><h3><%=t('welcome.reg_examinees')%></h3><%=render :partial=>"users/pageLinks"%></div>
+<%unless @letter == nil%>
+<%=hidden_field_tag "char",@letter%>
+<%else%>
+<%=hidden_field_tag "char"%>
+<%end%>	
+<div id="examinee_activation"><%=render 'activation', :collection => @registered_examinees%></div><br>
+</div>
+<%else%>
+<%=t('user.user_notfound')%>
+<%end%>
+
+<script type="text/javascript">	
+
+
+$(document).ready(function() {
+
+		$(".pageNum").click(function(){
+			var data = {pageLength: this.id, char: $("#char").val()};
+			var url = "<%= url_for(welcome_admin_dashboard_path)%>";
+			$.get(url, data)
+			  
+			$(".pageNum").live("click", function(){
+				var url = "<%= url_for(welcome_admin_dashboard_path)%>";
+				var target = url + "?pageLength=" + this.id + "&char=" + $("#char").val()
+							$.getScript(target,$("#" + this.id).serialize(),function(data){
+		                   });
+			//$.getScript(this.href,+"?pageLength="+this.id);
+			return false;
+		   });
+			
+		});
+
+  $("#examinee_activation .pagination a").live("click", function(){
+	
+	var link = this.href
+	var lastChar = link.substr(link.length - 1);	
+	if (lastChar == '#'){
+		return false;
+	}
+	else{
+		$.getScript(this.href);
+		return false;
+	}
+   });
+
+
+  
+  
+  });
+  
+
+  </script>

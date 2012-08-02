@@ -1,0 +1,19 @@
+<h2><%=t('about.clients')%></h2>
+<div class="formContainer">
+
+<div class="formBg">
+			<p class="linkGroup">
+			<%unless @clients.empty?%>
+			  <% @clients.each do|client|%>
+			  	<p class="about_virtualx_inner"><%=link_to client.name, client.url%></p><br />
+			  <%end%>
+                <%else%>
+                <%=t('not_found.no_clients')%>
+			<%end%>
+			</p>
+</div>
+</div>
+
+
+
+

@@ -1,0 +1,303 @@
+
+<br>
+<% form_tag selectQuestion_path, :method=>"get",:remote=>true, :id=>"question_filter", :class=>"assign_question floatL w100pc mb15" do -%>
+<%=hidden_field_tag "flag", "f"%>
+
+<h2><%=t('general.filter')%></h2>
+<div class="formContainer mb0">
+            <table class="formTable" style="border:0px;">
+			<%=hidden_field_tag "categoryId", @categoryId, :class=>"f_cid", :id=>"f_cid"%>
+			<%=hidden_field_tag "academicYear", @categoryId, :class=>"f_yr", :id=>"f_yr"%>
+			<%=hidden_field_tag "et_name", @categoryId, :class=>"f_ename", :id=>"f_ename"%>
+              <tr>
+                <td>
+                <div style="float:left; padding:0px; margin:0 20px 5px 0;">
+					<label style="float:left; padding-right:10px; width:95px;"><%=t('question.ques_type')%>:</label>
+					<%= select_tag "question_type", options_for_select([[t('general.select'),""],[t('general.all') , "0" ]] + @question_types.collect{ |q| [q.name, q.id,{:title=>q.name}] }, :selected=>@questionType), :id=>"assignQuestion", :class=>"validate[required]"%>
+				</div>
+				<div class="clear"></div><br>
+			    <div style="float:left; padding:0px; margin:0;">
+					<label style="float:left; padding-right:10px; width:95px;"><%=t('general.category')%>:</label>
+					<%=  select_tag "category_type", options_for_select([[t('general.gen') , "0" ]] + @category_subject.reject{|p|p.gather_cat_sub(p).blank?}.collect{|p| [p.gather_cat_sub(p),p.id,{:title=>p.gather_cat_sub(p)}]}, :selected=>@categoryType), :class=>"category w530 bdr validate[required]"%>
+				</div>
+				</td>
+              </tr> 
+            </table>
+			<%= submit_tag t('general.filter'), :id=>"filter", :class=>'btnBg' %>
+</div><br><br><br>
+<%end%>
+
+<% form_tag selectQuestion_path, :method => :get,:remote=>true, :class => 'submitCategory',:id => "class_form1" do %>
+<%=hidden_field_tag "flag", "c"%>
+<%=hidden_field_tag "question_type", @question_type_id, :class=>"qType"%>
+<%=hidden_field_tag "category_type", @category_type, :class=>"cType"%>
+
+
+<div class="formContainer">
+	<table class="formTable" style="border:0px;">
+		<tr>
+			
+	<td class="pb0">
+		<div style="float:left; padding:0px; margin:0 20px 5px 0;">
+			<label style="float:left; padding-right:10px; width:95px;"><%=t('general.select_cat')%>:</label>
+			<%= select_tag "categoryId", options_for_select([[t('general.select') , "" ]] + Category.find(:all, :conditions=>["organization_id = ?", @organization_id]).collect { |p| [p.gathercat(p),p.id,{:title=>p.gathercat(p)}] },:selected=>@categoryId), :class=>"category w530 bdr validate[required]"%>
+		</div>
+		<div class="clear"></div><br>
+	    <div style="float:left; padding:0px; margin:0; clear: left;">
+			<label style="float:left; padding-right:10px; width:95px;"><%=t('exam.exam_type')%>:</label>
+             <%= select_tag 'et_name',options_for_select([[t('general.select') , "" ]] + @examTypes.collect{|p| [p.name[0..30],p.id,{:title=>p.name}]},:selected=>@examtypeName), {:class=>"validate[required] w200 bdr"} %>
+		</div>
+		<div class="clear"></div><br>
+	    <div style="float:left; padding:0px; margin:0;">
+			<label style="float:left; padding-right:10px; width:95px;"><%=t('exam.year')%>:</label>
+			<%= select_tag 'academicYear', options_for_select([[t('general.select') , "" ]] + @yrs.collect{|p| [p]},:selected=>@academicYear), {:class=>"validate[required] w120 bdr academicYear"} %>
+		</div>
+	</td>				
+  		</tr>
+</table>
+<%= submit_tag t('general.filter'), :id=>"filterexam", :class=>'btnBg' %>
+</div>
+<%end%>
+
+<div class="updateStatus floatL w100pc mb15">
+<% form_tag assignQustions_path, :method=>"get", :id=>"class_form", :class=>"assign_question" do -%>
+<p class="showComment" style="color:#db3939; font-style:italic;  text-align:center; font-size:14px; display:inline"></p>
+<%=hidden_field_tag "question_type", @question_type_id, :class=>"qType", :id=>"pass_qtype"%>
+<%=hidden_field_tag "category_type", @category_type, :class=>"cType", :id=>"pass_ctype"%>
+<%=hidden_field_tag "examname", @selectedExamname, :class=>"eName", :id=>"pass_ename"%>
+<%=hidden_field_tag "categoryId", @categoryId, :class=>"cId", :id=>"pass_cid"%>
+<%=hidden_field_tag "academicYear", @academicYear, :class=>"pass_year", :id=>"pass_year"%>
+<%=hidden_field_tag "et_name", @examtypeName, :class=>"pass_etname", :id=>"pass_etname"%>
+
+
+<span id="examN"><%=render :partial=>"examName"%></span>
+<div class="clear"></div>
+
+<span id="evaluation_type" class="">
+	<label style="float:left; padding-right:10px; width:95px; ">Evaluation Type:</label>
+    <%#= select_tag 'evaluationtype', options_for_select([[t('general.select') , "" ]] + @evaluation_type.to_a), {:class=>"validate[required] w120 bdr"} %>
+    <%= select_tag 'evaluationtype', options_for_select(@evaluation_type.to_a), {:class=>"validate[required] w120 bdr"} %>
+</span>
+
+<div class="clear"></div>
+<h3 class="floatL">
+ <%if @question_type_id%><%=@question_type_name%> <%=t('general.questions')%><%else%><%=t('question.select_que')%><%end%>
+</h3>
+<div class="clear"></div>
+<span id="collectQuestion" class="n_s_left w100pc"><%=render :partial=>"collect_questions"%></span><br>
+
+<%end%>
+</div>
+
+<%= hidden_field_tag "textvalue", @selectedExamname %>
+
+<script type="text/javascript">	
+
+function checkUncheckAll(checkAllState, cbGroup)
+{
+	// Check that the group has more than one element
+	if(cbGroup.length > 0)
+	{
+		// Loop through the array
+		for (i = 0; i < cbGroup.length; i++)
+		{
+			cbGroup[i].checked = checkAllState.checked;
+		}
+	}
+	else
+	{
+		// Single element so not an array
+		cbGroup.checked = checkAllState.checked;
+	}
+}
+
+$(document).ready(function() {
+$("#question_filter").validationEngine();
+$("#class_form1").validationEngine();
+	
+	$('.selecthide').hide();
+	var arr = [14, 28, 44, 32];
+	$('#academicYear').val(arr)
+	
+$(".pageNum").click(function(){
+	var data = {pageLength: this.id};
+	var url = "<%= url_for(activate_inactivate_path)%>";
+	$.get(url, data)
+	  
+	$(".pageNum").live("click", function(){
+		var url = "<%= url_for(activate_inactivate_path)%>";
+		var target = url + "?pageLength=" + this.id
+					$.getScript(target,$("#" + this.id).serialize(),function(data){
+                   });
+	//$.getScript(this.href,+"?pageLength="+this.id);
+	return false;
+   });
+	
+});		
+	
+		$('#categoryId').change(function(){
+			var s = $("#categoryId").val();
+            $(".f_cid").val(s)
+			$(".cId").val(s)
+        });
+		
+		$('#et_name').change(function(){
+			var s = $("#et_name").val();
+            $(".f_ename").val(s)
+			$(".pass_etname").val(s)
+        });
+
+		$('.academicYear').change(function(){
+			var s = $(".academicYear").val();
+            $(".f_yr").val(s)
+			$(".pass_year").val(s)
+        });
+	
+		$('#examName').change(function(){
+			var s = $("#examName").val();
+            $(".eName").val(s)
+        });
+	
+	    $('#assignQuestion').change(function(){
+			var s = $("#assignQuestion").val();
+            $(".qType").val(s)
+        });
+		
+	   $('#assignCategory').change(function(){
+			var s = $("#assignCategory").val();
+            $(".cType").val(s)
+        });
+
+      //  $('.category').change(function(){
+      //      var target = "<%= url_for(selectQuestion_path)%>";
+      //      $('.submitCategory').attr('action', target);
+      //      $('.submitCategory').submit();
+       // });
+
+
+$("#examName").change(function() {
+   var data = {exam_id:$(this).val()}; // the value of input that need to send to server
+   var url = "<%= url_for(getMark_path)%>";
+
+   $.get(url, data, // make ajax request
+    function(data) { // function to handle the response
+	data_class = data.exam_id
+	$("#textvalue").val(data_class)
+        $("#totalMark")
+	      .show()
+	      .val(data.data);
+		$("#assignedMark")
+	      .show()
+	      .val(data.mark_assigned);
+	
+     });
+   });
+
+$("#totalMark").keyup(function() {
+	var msg = "Mark has been updated"
+	
+	//$("#message").html(msg); 
+	//$("#message").fadeOut();
+	
+	var intRegex = /[0-9 -()+]+$/;
+	var mark = $(this).val();
+	
+
+	if(mark.match(intRegex)){
+			var data = {exam_id:$("#textvalue").val(), mark:$(this).val()};
+			var url = "<%= url_for(updateMark_path)%>";
+		
+			//$.get(url, data)
+			
+			$.get(url, data, function(resp_data){
+
+				if (resp_data.text == true) {	
+				 //alert(resp_data.markDiff);
+				 var mark = resp_data.markDiff
+				    $(".showComment").empty();
+					var mark_update = "<%=t('json_message.mark_updated')%>"
+					var more_mark = "<%=t('json_message.more_mark')%>"
+					$(".showComment").append(mark_update +" " + mark + " "+ more_mark).delay(2000);					
+                    //$(".showComment").append("Mark updated. Please add question(s) containing "+ mark +" more mark(s) to the exam").delay(2000);
+							setTimeout(function() {
+						     $(".showComment").empty();
+						     }, 5000);
+					  } 
+			    else if(resp_data.notUpdated == true){
+					$(".showComment").empty();
+                            $(".showComment").append("<%=t('json_message.cant_update_mark')%>");
+							setTimeout(function() {
+						     $(".showComment").empty();
+						     }, 3000);
+					  }
+			    else if(resp_data.hasAttended == true){
+					$(".showComment").empty();
+                            $(".showComment").append("<%=t('json_message.cant_edit_mark')%>");
+							setTimeout(function() {
+						     $(".showComment").empty();
+						     }, 3000);
+					  }			    
+			    else{
+					$(".showComment").empty();
+				}
+		    }, 'json')
+			
+	}
+
+	
+   });
+
+
+
+
+
+
+ //     $('#assign').click(function(){
+ //           var target = '<%= url_for(assignQustions_path)%>';
+ //           $('.assign_question').attr('action', target);
+ //           $('.assign_question').submit();
+ //       });
+		
+
+	  
+//	  	 $('#filter').click(function(){
+  //          var target = '<%= url_for(selectQuestion_path)%>';
+  //          $('.assign_question').attr('action', target);
+  //          $('.assign_question').submit();
+ //       });
+
+
+
+//$("#collectQuestion #filter #examName .pagination a").live("click", function(){
+$("#collectQuestion .pagination a").live("click", function(){
+    var y= 'pn';
+
+	//$.getScript(this.href, y);
+	//return false;
+
+	var link = this.href
+	var lastChar = link.substr(link.length - 1);	
+	if (lastChar == '#'){
+		return false;
+	}
+	else{
+		$.getScript(this.href, y);
+		return false;
+	}
+	
+	
+	
+   });
+
+
+
+
+
+
+
+   
+   
+
+  });
+  
+  </script>

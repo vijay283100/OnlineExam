@@ -1,0 +1,13 @@
+<br><br>
+<% @question_types.each do |question_type| %>
+
+<%=link_to "#{question_type.name}", :action=>'index', :controller=>"questions", :type=>question_type.id%><br>
+
+<% end %><br><br>
+
+
+<%#if @question_type_id%>
+<h3><%#=@question_type_name%> Questions list </h2>
+
+
+

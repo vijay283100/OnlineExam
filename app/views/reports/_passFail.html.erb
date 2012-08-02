@@ -1,0 +1,38 @@
+
+<h2><%=t('user.examinees')%></h2>
+  <%unless @category_id == 0 or @allYears.empty?%>	
+    
+			<table border="0" cellspacing="0">
+			<tr class="updateHeader">
+			<th><%=t('general.name')%></th>
+			
+			<th><%=t('exam.mark_scored')%></th>
+			<th><%=t('exam.percent')%></th>
+			<th><%=t('general.status')%></th>
+			
+			</tr>
+			
+			<%@allYears.each do|examinee|%>
+			<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+		    <%if examinee.tempexaminee == '1'%>
+			<td><%=examinee.login%></td>
+			<%else%>
+			<td><%=examinee.name%></td>
+			<%end%>
+			<td><%=examinee.score.to_f.round(2)%></td>
+			<td><%=examinee.percent.to_f.round(2)%></td>
+			<td><%#=examinee.status == 'p'? t('reports.pass') : t('reports.fail')%>
+			<%=examinee.result_pending.to_i == 0 ? ("#{examinee.status}" == "p" ? t('reports.pass') : t('reports.fail')) : "pending"%>
+			</td>
+			</tr>
+			<%end%>
+			
+			</table>
+	<div class="n_s_left mt15">	<%= link_to t('reports.excel'), :action=>"generatePassfail", :category_id=>@category_id, :exam_id=>@examId, :passfail=>@passFail, :academicyear=>@academicYear, :examtype=>@examtype, :csv => 1%>	| 
+	    <%= link_to t('reports.pdf'), :action=>"generatePassfail", :category_id=>@category_id, :exam_id=>@examId, :passfail=>@passFail, :academicyear=>@academicYear, :examtype=>@examtype, :pdf => 1%>	
+    </div>
+<%else%>
+<div class="formContainer">
+<%=t('not_found.no_examinees')%>
+</div>
+ <%end%>

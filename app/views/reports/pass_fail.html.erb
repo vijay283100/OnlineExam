@@ -1,0 +1,112 @@
+
+<% form_tag pass_fail_path,:method=>"get",:remote=>true, :id=>"class_form", :class=>"assign_examinee" do -%>
+<h2><%=t('general.pass_fail')%></h2>
+<div class="formContainer">
+     
+            <table class="formTable" style="border:0px;">
+              <tr>
+                
+           <td> 
+		   <div style="float:left; padding:0px; margin:0 20px 0 0;">
+		   <label style="float:left; padding-right:10px; width:120px;"><%=t('general.select_cat')%>: </label>
+		   <%= select_tag "examCategory",options_for_select([[t('general.select') , "" ]] + @c.collect{|p| [p.gathercat(p),p.id,{:title=>p.gathercat(p)}]},:selected=>@category_id), {:id=>"examCategory", :class=>"category w530 bdr validate[required]"} %>
+		   </div>
+		   <div class="clear"></div><br>
+		   		   
+	       <div style="float:left; padding:0px; margin:0; clear: left;">
+		   <label style="float:left; padding-right:10px; width:120px;"><%=t('exam.year')%>:</label>
+		   <%= select_tag 'academicYear', options_for_select(([[t('general.select') , "" ]] + @yrs.to_a),:selected=>@academicYear),:class=>"validate[required] w120 bdr" %>
+	       </div>
+		   <div class="clear"></div><br>		   
+
+			<div style="float:left; padding:0px; margin:0; clear: left;">
+			<label style="float:left; padding:3px 10px 0 0; width:120px;"><%=t('general.examtype')%>:</label>
+            <%= select_tag 'examtype',options_for_select([[t('general.select') , "" ]] + @examTypes.collect{|p| [truncate(p.name,:length=>30),p.id,{:title=>p.name}]},:selected=>@examtype), {:style=>"width: 200px; height: 19px; border: 1px solid rgb(209, 209, 209);",:class=>"validate[required]"} %>
+            </div>
+		   
+
+		   </td>
+               </tr> 
+            </table>
+		
+			<%#= link_to t('general.filter'),'#', :id=>"filterExam", :class=>'btnBg', :style=>"margin-top:0px !important;" %>
+		   <%=link_to(content_tag('span',t('general.filter')),'#nogo',{:title=>t('general.filter'),:class=>"btnLink w105", :id=>"filterExam"}) %>
+			
+</div>
+			<h2><%=t('general.select')%></h2>
+			<div class="formContainer">
+				<table class="formTable" style="border:0px;">
+				<tr>
+					<td> 
+		    
+			<div style="float:left; padding:0px; margin:0 20px 0 0;">
+			<label style="float:left; padding:3px 10px 0 0; width:120px;"><%=t('exam.exams')%>:</label>
+		    <%= select_tag 'examId', options_for_select([[t('general.select') , "" ]] + @exams.collect{|p| [p.name,p.id,{:title=>p.name}]},:selected=>@examId),{:style=>"width: 200px; height: 19px; border: 1px solid rgb(209, 209, 209);",:class=>"validate[required]"} %>	
+            </div>
+			<div class="clear"></div><br>
+			<div style="float:left; padding:0px; margin:0 20px 0 0;">
+			<label style="float:left; padding:3px 10px 0 0; width:120px;"><%=t('reports.pass_fail')%>:</label>
+			<%= select_tag 'passfail', options_for_select(([[t('general.select') , "" ],[t('general.all') , "All" ]] + @status.to_a),:selected=>@passFail),{:style=>"width: 120px; height: 19px; border: 1px solid rgb(209, 209, 209);",:class=>"validate[required]"} %>
+			</div>
+			
+
+			</td>
+				</tr>
+				</table>
+			</div>
+<%= submit_tag t('general.filter'), :id=>"assign", :class=>'btnBg', :style=>"margin-top:0px !important;" %>
+<%end%>
+
+
+<span id="collectUser">
+
+	      <div class="updateStatus">
+		  				
+         <span class="passFail" class="n_s_left w100pc"><%=render :partial=>"passFail"%></span><br>
+
+	    </div>
+	   
+
+</span><br>
+
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+     //$("#examtype").change(function() {
+	 $("#filterExam").click(function() {
+	  //var data = {categoryId:$("#examCategory").val(), year:$("#academicYear").val(),examType:$(this).val()};
+	  var data = {
+	  	categoryId: $("#examCategory").val(),
+	  	year: $("#academicYear").val(),
+	  	examType: $("#examtype").val()
+	  };
+	  var url = "<%= url_for(fetchExam_path)%>";
+	  
+	  			$.get(url, data, function(resp_data){
+				   var arr = resp_data.examNames
+				    $("#examId").empty();  
+				 $("#examId").append("<option value=" + "" + ">" + "<%=t('general.select')%>" + "</option>");
+				 jQuery.each(arr, function(index, value) {
+					$("#examId").append("<option title='"+value.exam.name+"' value=" + value.exam.id + ">" + value.exam.name + "</option>");
+				    });
+
+		    }, 'json')
+	  
+	  
+	  
+	  
+     });
+	 
+	 
+$(".passFail .pagination a").live("click", function(){
+	
+	$.getScript(this.href);
+	return false;
+   });
+	 
+	 
+	 
+});
+
+</script>

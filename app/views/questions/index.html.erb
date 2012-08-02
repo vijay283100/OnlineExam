@@ -1,0 +1,70 @@
+
+<h2><%=t('general.filter')%></h2>
+<div class="formContainer">
+	     <% form_tag '/questions', :method=>"get",:remote=>true, :id=>"class_form", :class=>"assign_question" do -%>
+            <table class="formTable" style="border:0px;">
+              <tr>
+                <td>
+                	<div style="float:left; padding:0px; margin:0;">
+					<label style="float:left; padding-right:10px; width:150px;"><%=t('question.select_q_type')%>:</label>
+				<%= select_tag "question_type", options_for_select([[t('general.select'),""],[t('question.all_question') , "0" ]] +@question_types.collect{ |q| [q.name, q.id] }, :selected=>@qId),:class=>"w200 floatL validate[required]"%>
+				</div>
+				</td>
+				
+                </tr> 
+            </table>
+			<%= submit_tag t('general.filter'), :id=>"filter", :class=>'btnBg' %>
+</div>
+<%end%>
+<div class="updateStatus">
+<%= hidden_field_tag "textvalue", @selectedExamname %>
+<span id="collectQuestion"><%=render :partial=>"collect_questions"%></span>
+
+</div>
+
+
+
+<script type="text/javascript">	
+function checkUncheckAll(checkAllState, cbGroup)
+{
+	// Check that the group has more than one element
+	if(cbGroup.length > 0)
+	{
+		// Loop through the array
+		for (i = 0; i < cbGroup.length; i++)
+		{
+			cbGroup[i].checked = checkAllState.checked;
+		}
+	}
+	else
+	{
+		// Single element so not an array
+		cbGroup.checked = checkAllState.checked;
+	}
+}
+
+$(document).ready(function() {
+
+$("#question_filter").validationEngine();
+
+$("#collectQuestion .pagination a").live("click", function(){
+	
+	var link = this.href
+	var lastChar = link.substr(link.length - 1);	
+	if (lastChar == '#'){
+		return false;
+	}
+	else{
+		$.getScript(this.href);
+		return false;
+	}
+	
+	//$.getScript(this.href);
+	//return false;
+	
+	
+   });
+
+  });
+  
+  </script>

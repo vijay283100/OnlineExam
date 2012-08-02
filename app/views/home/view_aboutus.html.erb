@@ -1,0 +1,17 @@
+<h2><%=t('about.aboutus')%></h2>
+<div class="formContainer">
+
+<div class="formBg">
+
+	  <%if t('language.lang') == "en"%>
+	      <div class="about_virtualx_inner" style="text-align:justify; text-decoration:none;"><%=@aboutus_english.description.html_safe%></div>
+	  <%elsif t('language.lang') == "de"%>
+	      <div class="about_virtualx_inner" style="text-align:justify; text-decoration:none;"><%=@aboutus_german.description.html_safe%></div>
+	  <%end%>
+
+</div>
+</div>
+
+
+
+

@@ -1,0 +1,67 @@
+<div class="updateStatus">
+<h2><%=t('general.assign_cat')%></h2>
+<p class="titles" style="color:#db3939; font-style:italic;  text-align:center; font-size:14px;"></p>
+
+<div>
+            <table border="0" cellspacing="0">
+              <tr class="updateHeader">
+              	<th><%=t('general.category_sub')%></th>
+				<th></th>
+              </tr>
+			  <%@category_subject.each do|cs|%>
+              <tr class="updateAltrRow">				
+                <% unless cs.gather_cat_sub(cs).blank?%>
+		        <td>
+				  <%= cs.gather_cat_sub(cs)%>
+				</td>
+				<td>
+				  <%= check_box_tag "category[]", cs.id,cs.getuser(@user.id,cs.id),:id=>cs.id, :class=>"assign validate[minCheckbox[1]] checkbox publish" %>
+
+				</td>
+				<%end%>
+			   </tr> 
+			   <%end%>
+            </table>
+</div>
+</div>
+
+<%= will_paginate @category_subject, 
+                :prev_label => t('general.previous'), 
+                :next_label => t('general.next'),
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+              %>
+	<script>		  
+			  
+			  $(document).ready(function() {
+
+   
+   $(".assign").click(function() {
+   	var thischeck = $(this);
+	if (thischeck.is(':checked')) {
+	}
+	else {
+		var s = this.id
+		var uid = $("#user_id").val();
+			var data = {user_id:$("#user_id").val(), subject_id:this.id};
+	        var url = "<%= url_for(deleteUsersubject_path)%>";
+	                               //  if (data == "true"){
+                                   //   alert("Successfilly update")
+                                   // }
+								   
+				   		$.get(url, data, function(resp_data){
+					    if (resp_data == true) {
+        					 $(".titles").append("<%=t('user.category_unassigned')%>");
+			                 setTimeout(function() {
+						     $(".titles").empty();
+						     }, 2000);
+
+					    } 
+					}, 'json')							   
+	   
+	}
+   	
+   	});
+   });
+   
+   </script>

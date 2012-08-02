@@ -1,0 +1,114 @@
+<% unless @allYears.empty?%>
+<div id="container" style="width:700px; height:400px;"></div>
+<%end%>
+
+<div class="updateStatus">
+<h2><%=t('reports.overall')%></h2>
+<% unless @allYears.empty?%>
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('org.course')%></th>
+<th><%=t('org.dept')%></th>
+	<th><%=t('exam.yr')%></th>
+<th><%=t('org.semester')%></th>
+     <th><%=t('reports.tot_examinees')%></th>
+	 <th><%=t('reports.passed')%></th>
+	 <th><%=t('reports.failed')%></th>
+     <th><%=t('reports.pass_percent')%></th>
+<!--<th colspan="2"></th>-->
+</tr>
+<%@allYears.each do|ay|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+
+<%@courseName = ay.coursename%>
+<%@displayYear = ay.currentyear%>
+<%@department = ay.departmentname%>
+<%@academicYear = ay.yearname%>
+<td>
+	<%="#{ay.coursename}"%>
+</td>
+<td>
+	<%="#{ay.departmentname}"%>
+</td>
+
+<td>
+	<%="#{ay.yearname}"%>
+</td>
+<td>
+	<%="#{ay.semestername}"%>
+</td>
+	 <td><%="#{ay.TotalUser}"%></td>
+	 <td><%="#{ay.PassedUsers.to_i}"%></td>
+	 <td><%="#{ay.FailedUser}" == "" ? 0 : "#{ay.FailedUser}"%></td>
+<td>
+	<%="#{ay.Totalpercentage.to_f.round(2)}"%>
+</td>
+
+</tr>
+<%end%>
+</table>
+     <%else%>
+     <div class="formContainer">
+  		<%= t('not_found.no_data')%>
+ 	 </div>
+	 <%end%>
+</div>
+
+
+<script type="text/javascript">
+var chart;
+$(document).ready(function() {
+   chart = new Highcharts.Chart({
+      chart: {
+         renderTo: 'container',
+         plotBackgroundColor: null,
+         plotBorderWidth: null,
+         plotShadow: false
+      },
+
+      title: {
+         text: '<b style="font-size:14px;">' + ' <%=t('reports.semester_msg')%>' + ' <%=raw truncate("#{@courseName}",:length=>12)%> <%=raw truncate("#{@department}",:length=>18)%> <%=raw "#{@academicYear}"%>' + ' <%=t('reports.year')%>'  + ' <%=t('reports.in_the_year')%>' + ' <%=raw "#{@displayYear}"%>' +'</b>'
+      },
+
+      tooltip: {
+         formatter: function() {
+            return ''+
+                this.series.name +': '+ this.y +' ('+ Math.round(this.percentage,2) +'%)';
+         }
+      },
+
+      plotOptions: {
+         pie: {
+            dataLabels: {
+               formatter: function() {
+                  return '<b>'+ this.point.name +'</b>: '+ this.y +' %';
+               }
+            }
+         }
+      },
+
+       series: [{
+         type: 'pie',
+         name: 'Percentage',
+         data: [<%@allYears.each do|ay|%>
+		 
+            ['<%=raw truncate("#{ay.semestername}",:length=>20) %>', <%=raw "#{ay.Totalpercentage.to_f.round(2)}" %>],
+         
+         <%end%>]
+      }]
+
+   });
+   
+   
+});
+
+
+</script>
+
+
+
+
+
+
+
+

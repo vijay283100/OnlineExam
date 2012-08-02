@@ -1,0 +1,98 @@
+<%unless @results.empty?%>
+<div id="chart-container-1" style="width:700px; height:350px;"></div>
+<%end%>
+<% i = 0%>
+<div class="updateStatus">
+<h2><%=t('general.result')%></h2>
+<%unless @results.empty?%>
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('reports.s_no')%></th>
+<th><%=t('welcome.examinee')%></th>
+<th><%=t('exam.attempt')%></th>
+<th><%=t('exam.total_mark')%></th>
+<th><%=t('exam.mark_scored')%></th>
+<th><%=t('exam.percent')%></th>
+<th><%=t('general.status')%></th>
+</tr>
+<tr class="updateAltrRow">
+<%@results.each do|result|%>
+<td><%= i%></td>
+<%if "#{result.tempexaminee}" == '1'%>
+<td>
+	<%="#{result.login}"%>
+</td>
+<%else%>
+<td>
+	<%="#{result.name}"%>
+</td>
+<%end%>
+<td>
+ 	<%="#{result.attempt}"%>
+</td>
+<td>
+	<%="#{result.total_mark}"%>
+</td>
+<td>
+	<%="#{result.score.to_f.round(2)}"%>
+</td>
+<td>
+	<%="#{result.percent.to_f.round(2)}"%>
+</td>
+<td>
+	<%#=result.status == 'p' ? t('reports.pass') : t('reports.fail')%>
+	<%=result.result_pending.to_i == 0 ? ("#{result.status}" == "p" ? t('reports.pass') : t('reports.fail')) : "pending"%>
+</td>
+
+</tr>
+<%i=i+1%>
+<%end%>
+
+</table>
+<%else%>
+<div class="formContainer">
+  <%=t('not_found.no_result')%>
+ </div>
+<%end%>
+</div>
+
+<script type="text/javascript">
+var chart1; // globally available
+$(document).ready(function() {
+      chart1 = new Highcharts.Chart({
+         chart: {
+            renderTo: 'chart-container-1',
+            defaultSeriesType: 'column'
+
+         },
+         title: {
+            text: '<%=t('general.exams_report')%>'
+         },
+         xAxis: {
+            //categories: ['Apples', 'Bananas', 'Oranges', 'Grapes']
+			categories: [<%@results.each do |d|%>
+ 					'<%=raw "#{d.name}" %>',
+			        <%end%>],
+		    title: {
+                text: '<%=t('user.examinees')%>'
+            }
+         },
+         yAxis: {
+            min: 0,
+            max: 100,
+            tickInterval: 5,
+            title: {
+                text: '<%=t('exam.percent')%>'
+            }
+        },
+         series: [{
+            name: 'Percentage',
+            data: [ <%@results.each do |d|%>
+ 					<%=raw "#{d.percent.to_f.round(2)}" %>,
+			        <%end%>
+			]
+         }]
+
+      });
+   });
+</script>

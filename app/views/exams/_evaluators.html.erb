@@ -1,0 +1,42 @@
+
+<div class="updateStatus">
+	<h2><%=t('evaluator.evaluators_qsetters')%></h2>
+	<% unless @category_user.empty?%>
+<table border="0" cellspacing="0">
+<tr class="updateHeader">
+<th><%=t('evaluator.evaluators_qsetters')%></th>
+<th><%=t('evaluator.subject')%></th>
+<th><%= check_box "checkall", "checkall", :onclick => "checkUncheckAll(this,examinee_);" %></th>
+
+</tr>
+
+<%@category_user.each do|examinee|%>
+<tr class="updateAltrRow <%= cycle("odd", "even") %>">
+<td style="width:95%">	
+<%=examinee.userName%>
+</td>
+<td><%=examinee.subjectName%></td>
+<td style="width:5%">
+<%= check_box_tag "examinee[]", examinee.userId,false, {:class=>"validate[minCheckbox[1]] checkbox publish"} %>
+<%=hidden_field_tag "categoryId", examinee.categoryId%>
+</td>
+
+</tr>
+<%end%>
+
+</table>
+	<%#= will_paginate @category_user, 
+                :prev_label => t('general.previous'), 
+                :next_label => t('general.next'),
+                :page_links =>true,           
+                :renderer => PaginationListLinkRenderer
+              %>
+<%= submit_tag t('general.assign'), :id=>"assign", :class=>'btnBg' %>
+<%else%>
+<div class="formContainer">
+ <%=t('evaluator.no_evaluator')%>
+ </div>
+<%end%>
+</div>
+
+			  

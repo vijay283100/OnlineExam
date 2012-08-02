@@ -1,0 +1,9 @@
+<br><br><h3>Upload image</h3>
+
+<%= form_for @image  , :html => { :multipart => true } do |f| %>
+
+<%= f.file_field :photo %><br><br>
+
+<%= f.submit t('general.create') %>
+
+<%end%>

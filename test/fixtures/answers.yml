@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: MyString
+  question_id: 1
+  is_answer: 1
+  sort_order: 1
+
+two:
+  name: MyString
+  question_id: 1
+  is_answer: 1
+  sort_order: 1

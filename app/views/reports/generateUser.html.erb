@@ -1,0 +1,35 @@
+<% if @organization_id == 1 %>
+
+<%=t('user.examinee')%>: <%=@username%> <br>
+Class: <%=@findCourse.name%><br>
+Section: <%=@findSection.name%><br>
+<%=t('general.acedemic_yr')%>: <%=@findCategoryuser.currentyear%><br>
+<%=t('exam.exam_type')%>: <%=@findExamtype.name%><br>
+<%=t('exam.name')%>: <%=@findExam.name%><br><br>
+
+<%= render :partial=>"answersheet"%>
+
+<% elsif @organization_id == 2 %>
+
+<%=t('user.examinee')%>: <%=@username%> <br>
+<%=t('org.dept')%>: <%=@findDepartment.name%><br>
+<%=t('org.course')%>: <%=@findCourse.name%><br>
+<%=t('org.year')%>: <%=@findyear.name%><br>
+<%=t('org.semester')%>: <%=@findSemester.name%><br>
+<%=t('general.acedemic_yr')%>: <%=@findCategoryuser.currentyear%><br>
+<%=t('exam.exam_type')%>: <%=@findExamtype.name%><br>
+<%=t('exam.name')%>: <%=@findExam.name%><br><br>
+
+<%= render :partial=>"answersheet"%>
+
+<% elsif @organization_id == 3 or @organization_id == 4 %>
+
+<%=t('user.examinee')%>: <%=@username%> <br>
+<%=t('org.dept')%>: <%=@findDepartment.name%><br>
+<%=t('general.acedemic_yr')%>: <%=@findCategoryuser.currentyear%><br>
+<%=t('exam.exam_type')%>: <%=@findExamtype.name%><br>
+<%=t('exam.name')%>: <%=@findExam.name%><br><br>
+
+<%= render :partial=>"answersheet"%>
+
+<%end%>

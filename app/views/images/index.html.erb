@@ -1,0 +1,10 @@
+<h3>Images</h3>
+
+<%@images.each do|image|%>
+<% if image.photo.exists? then %>
+	<%= image_tag image.photo.url(:original), :size => "80x60" %>
+<% end %>
+<% end %>
+
+<br><br> <%=link_to "Create Image", :action=>"new"%>
+

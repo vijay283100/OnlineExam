@@ -1,0 +1,164 @@
+<%#= Time.now()%>
+<%= hidden_field_tag "now_year",Time.now().year(), :id=>"nowYr"%>
+<%= hidden_field_tag "now_month",Time.now().month(), :id=>"nowMnth"%>
+<%= hidden_field_tag "now_day",Time.now().day(), :id=>"nowDt"%>
+<%= hidden_field_tag "now_hr",Time.now().hour(), :id=>"nowHr"%>
+<%= hidden_field_tag "now_min",Time.now().min(), :id=>"nowMin"%>
+<%= hidden_field_tag "now_sec",Time.now().sec(), :id=>"nowSec"%>
+
+<fieldset class="formContainer">
+<legend><%=t('exam.create_sch')%></legend>
+
+
+<%= form_for :exam, :url => {:action => "create"}, :html => { :id => "class_form"} do |f| %>
+          <div class="formBg">
+            <table  style="width:100%;">
+              <tr>
+                <td style="width:115px; text-align:left; padding-right:5px;"><%=t('exam.name')%></td>
+                <td style="width:115px;">
+		          <%= f.text_field :name,:class=>"validate[required,funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px;  margin-bottom:8px;" %>
+		        </td>
+				<td></td>
+              </tr>
+
+			  
+			  <tr>
+                <td style="width:115px; text-align:left; padding-right:5px;"><%=t('exam.exam_code')%></td>
+                <td style="width:115px;">
+		          <%= f.text_field :exam_code,:class=>"validate[required,funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px; margin-bottom:8px;" %>
+		        </td>
+				<td></td>
+              </tr>
+			  
+			  <tr>
+                <td style="width:115px; text-align:left; padding-right:5px;"><%=t('exam.exam_date')%></td>
+                <td style="width:115px;">
+		          <%= f.text_field :exam_date,:class=>"validate[required,custom[dateTime]] text-input", :id=>"datepicker", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px; margin-bottom:8px;" %>
+		        </td>
+				<td></td>
+              </tr>
+
+ 
+ 			  <tr>
+                <td style="width:115px; text-align:left; padding-right:5px;"><%=t('exam.total_time')%></td>
+                <td style="width:115px;">
+		          <%= f.text_field :total_time,:class=>"validate[required,custom[setTime]] text-input", :id=>"total_time", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px; margin-bottom:8px;" %>
+		        </td>
+				<td></td>
+              </tr>
+
+			  
+			  <tr>
+                <td style="width:115px; text-align:left; padding-right:5px;" valign="top"><%=t('exam.total_mark')%></td>
+                <td>
+		          <%= f.text_field :total_mark,:class=>"validate[required,custom[onlyNumberSp],funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:200px; margin-bottom:8px;"  %>
+		        </td>
+				
+              </tr>
+			  
+			  <tr>
+                <td style="width:115px; text-align:left; padding-right:5px;" valign="top"><%=t('exam.inst')%></td>
+                <td>
+		          <%= f.text_area :instruction,:class=>"validate[required,funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:87px; width:300px; margin-bottom:8px;"  %>
+		        </td>
+				
+              </tr>
+              <tr>
+                <td style="width:115px; text-align:left; padding-right:5px;">Set Pass Percentage</td>
+                <td style="width:115px;">
+		          <%= f.text_field :pass_mark,:class=>"validate[required,custom[integer],min[1],max[100],funcCall[checkHELLO]] text-input", :style=>"border:#d1d1d1 1px solid; height:19px; width:50px;  margin-bottom:8px;" %>
+		        </td>
+				<td></td>
+              </tr>	 			  
+			  
+            </table>
+          </div>
+
+  <%= f.submit t('general.create'), :class=>'btnBg checkTime',:id=>"Submit" %> 
+
+ 
+<% end %>
+
+</fieldset>
+
+
+<script type="text/javascript">	
+$(document).ready(function() {
+	
+    var now_yr = $("#nowYr").val()
+	var now_mnth = $("#nowMnth").val()
+	var now_dy = $("#nowDt").val()
+	var now_hr = $("#nowHr").val()
+	var now_minu = $("#nowMin").val()
+	var now_sec = $("#nowSec").val()
+
+
+if (now_dy == 0 || now_dy == 1 || now_dy == 2 || now_dy == 3 || now_dy == 4 || now_dy == 5 || now_dy == 6 || now_dy == 7 || now_dy == 8 || now_dy == 9){
+	var dy = '0'+now_dy
+}
+else {
+	var dy = now_dy	
+}
+
+
+	
+if (now_mnth == 10 || now_mnth == 11 || now_mnth == 12 ){
+	var mnth = now_mnth
+}
+else {
+var mnth = '0'+now_mnth	
+}	
+
+var day_mon = mnth+'-'+dy
+
+if (now_hr == 0 || now_hr == 1 || now_hr == 2 || now_hr == 3 || now_hr == 4 || now_hr == 5 || now_hr == 6 || now_hr == 7 || now_hr == 8 || now_hr == 9){
+	var hr = '0'+now_hr
+}
+else {
+var hr = now_hr	
+}
+
+if (now_minu == 0 || now_minu == 1 || now_minu == 2 || now_minu == 3 || now_minu == 4 || now_minu == 5 || now_minu == 6 || now_minu == 7 || now_minu == 8 || now_minu == 9){
+	var mn = '0'+now_minu
+}
+else {
+var mn = now_minu
+}	
+
+var hr_min = hr+':'+mn
+	
+	//var exam_start_time = now_yr+'-'+mnth+'-'+now_dy+' '+final_time+':'+now_sec
+	var exam_start_time = now_yr+'-'+day_mon+' '+hr_min+':'+now_sec
+	
+		$(".checkTime").click(function(){
+		var assignedTime = $("#datepicker").val()
+		//alert(assignedTime + " " + exam_start_time);
+		//alert(exam_start_time); 
+		if(assignedTime > exam_start_time){
+			return true
+		}
+		else{
+			alert("<%=t('exam.past_time')%>");
+			return false
+		}
+
+	})	
+	
+	
+		//$( "#datepicker" ).datepicker();
+		//$( "#datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' }).val();
+		$('#datepicker').datetimepicker({ 
+		  dateFormat: 'yy-mm-dd',
+		  timeFormat: ' hh:mm:ss' 
+		});
+	});
+	
+    $('#start_time').timepicker({});
+    $('#total_time').timepicker({
+		    timeFormat: 'hh:mm:ss',
+			hourMin: 0,
+	        hourMax: 9
+	});
+	
+	
+	</script>
