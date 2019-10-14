@@ -13,7 +13,7 @@ gem 'declarative_authorization', '0.5.2'
 #gem "acl9"
 gem 'rails3-generators', '0.17.3'
 gem 'nifty-generators', '0.4.4'
-gem 'will_paginate', '2.3.15'
+gem 'will_paginate', '3.0.5'
 #gem 'mongrel', '>= 1.2.0.pre2'
 gem "prawn", "~> 0.11.1"
 # gem 'jquery-rails'
