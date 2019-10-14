@@ -6,7 +6,7 @@ gem 'pdfkit'
 gem 'rake', '0.8.7'
 gem 'rails3-jquery-autocomplete'
 gem "acts_as_tree"
-gem 'rails', '3.0.3'
+gem 'rails', '3.2.17'
 gem 'mysql'
 gem 'authlogic', '2.1.6'
 gem 'declarative_authorization', '0.5.2'
