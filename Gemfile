@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 gem 'pdfkit'
 #gem 'wkhtmltopdf'
 #gem 'htmlentities'
-gem 'rake', '0.8.7'
+gem 'rake', '12.3.3'
 gem 'rails3-jquery-autocomplete'
 gem "acts_as_tree"
 gem 'rails', '3.0.3'
